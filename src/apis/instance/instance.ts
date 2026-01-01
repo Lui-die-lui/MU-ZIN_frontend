@@ -12,7 +12,8 @@ export const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
-    if (token) {
+    if (token && token !== "null" && token !== "undefined") {
+      config.headers = config.headers ?? {};
       config.headers.Authorization = token.startsWith("Bearer ")
         ? token
         : `Bearer ${token}`;

@@ -35,6 +35,9 @@ function SigninForm() {
     }
   };
 
+  const signupOnClick = () => {
+    navigate("/signup", { replace: true });
+  };
 
   return (
     <div
@@ -62,6 +65,10 @@ function SigninForm() {
       <button onClick={onSubmit} disabled={isLoading}>
         {isLoading ? "로그인 중..." : "로그인"}
       </button>
+
+      <div>
+        <p onClick={signupOnClick}>회원가입</p>
+      </div>
     </div>
   );
 }
