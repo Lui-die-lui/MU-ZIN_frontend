@@ -14,7 +14,7 @@ function MainRouter() {
           <Route path="/" element={<Home />} />
           <Route path="/lessons" element={<LessonMain />} />
           <Route path="/profile" element={<MyPage />} />
-          <Route path="/login" element={<Signin />} />
+          <Route path="/signin" element={<Signin />} />
         </Route>
       </Routes>
     </div>

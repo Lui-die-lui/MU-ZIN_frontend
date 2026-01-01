@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
-import React from 'react'
+import SigninForm from "./SigninForm/SigninForm";
 
 function Signin() {
   return (
     <div>
-      signin
+      <SigninForm />
     </div>
-  )
+  );
 }
 
-export default Signin
+export default Signin;

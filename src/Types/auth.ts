@@ -2,6 +2,13 @@
 export type ArtistStatus = "NONE" | "PENDING" | "APPROVED" | "REJECTED";
 
 
+// 로그인(signin) 받아올 때 
+export type SigninPayload = {
+    email: string;
+    password: string;
+}
+
+
 // 로그인 유저의 핵심 데이터 - 로그인 성공 시 반환된 유저 정보 json으로 담음
 export interface Principal {
     userId: number;

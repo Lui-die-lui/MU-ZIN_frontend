@@ -11,7 +11,7 @@ export const instance = axios.create({
 // 요청 인터셉터 설정 - 모든 요청마다 헤더에 jwt를 자동으로 붙여줌
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("jwt");
+    const token = localStorage.getItem("accessToken");
     if (token) {
       config.headers.Authorization = token.startsWith("Bearer ")
         ? token

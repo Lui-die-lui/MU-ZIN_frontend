@@ -5,12 +5,18 @@ import { usePrincipalState } from "../../../stores/usePrincipalState";
 
 function NavBar() {
   const navigate = useNavigate();
-  const { principal, logout } = usePrincipalState();
+  const { principal} = usePrincipalState();
+  const logout = usePrincipalState((s) => s.logout);
 
   const navItems = [
     // { path: "/", label: "홈" },
     { path: "/lessons", label: "레슨" },
   ];
+
+  const onLogout = () => {
+    logout();
+    navigate("/signin", { replace: true });
+  };
 
   return (
     <s.Header>
@@ -36,10 +42,10 @@ function NavBar() {
         {principal ? (
           <>
             <s.Btn onClick={() => navigate("/mypage")}>마이페이지</s.Btn>
-            <s.Btn onClick={logout}>로그아웃</s.Btn>
+            <s.Btn onClick={onLogout}>로그아웃</s.Btn>
           </>
         ) : (
-          <s.Btn onClick={() => navigate("/login")}>로그인</s.Btn>
+          <s.Btn onClick={() => navigate("/signin")}>로그인</s.Btn>
         )}
       </s.Right>
     </s.Header>
