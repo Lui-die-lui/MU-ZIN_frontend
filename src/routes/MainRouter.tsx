@@ -14,7 +14,7 @@ function MainRouter() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/lessons" element={<LessonMain />} />
-          <Route path="/profile" element={<MyPage />} />
+          <Route path="/mypage" element={<MyPage />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
         </Route>

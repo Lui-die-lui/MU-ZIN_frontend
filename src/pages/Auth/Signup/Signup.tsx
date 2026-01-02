@@ -57,7 +57,6 @@ function Signup() {
     try {
       await signupReq(form);
       navigate("/signin", { replace: true });
-      const res = await signupReq(form);
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.response?.status === 409) {
