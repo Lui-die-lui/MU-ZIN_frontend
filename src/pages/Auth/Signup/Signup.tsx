@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import * as s from "./styles";
 import { useNavigate } from "react-router-dom";
 import type { SignupErrors, SignupPayload } from "../../../Types/auth";
-import * as s from "./styles";
 import { useState } from "react";
 import SignupForm from "./SignupForm/SignupForm";
 import { signupReq } from "../../../apis/auth/authApi";
