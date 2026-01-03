@@ -8,6 +8,8 @@ type PrincipalStore = {
   isAuthenticated: boolean;
   setPrincipal: (p: Principal | null) => void;
 
+  updatePrincipal: (patch: Partial<Principal>) => void;
+
   signin: (email: string, password: string) => Promise<void>; // 이거 왜 이렇게 되는거임?
   bootstrap: () => Promise<void>; // 앱 시작시 principal 상태 관리
 
@@ -19,6 +21,17 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
   isAuthenticated: false,
 
   setPrincipal: (p) => set({ principal: p, isAuthenticated: !!p }),
+
+  // 업데이트 
+  updatePrincipal: (patch) =>
+    set((state) => {
+      if (!state.principal) return state; // 로그인 전이면 변경 불가
+      return {
+        ...state,
+        principal: { ...state.principal, ...patch },
+        isAuthenticated: true,
+      };
+    }),
 
   signin: async (email, password) => {
     // 1. 로그인 요청 -> ApiRespDto<string|null>
@@ -70,7 +83,7 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
       set({ principal, isAuthenticated: true });
     } catch {
       // 네트워크/401 등
-      localStorage.removeItem("accassToken");
+      localStorage.removeItem("accessToken");
       set({ principal: null, isAuthenticated: false });
     }
   },
