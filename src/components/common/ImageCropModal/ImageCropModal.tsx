@@ -7,8 +7,8 @@ type Props = {
   open: boolean;
   imageSrc: string; //objectUrl
   onClose: () => void;
-  onConfirm: (croppedAreaPixels: Area) => void;
-  title?: string;
+  onConfirm: (croppedAreaPixels: Area) => Promise<void>;
+  // title?: string;
 };
 
 function ImageCropModal({
@@ -16,14 +16,16 @@ function ImageCropModal({
   imageSrc,
   onClose,
   onConfirm,
-  title = "프로필 설정",
-}: Props) {
+}: // title = "프로필 설정",
+Props) {
   // 크롭 좌표
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   // 배율
   const [zoom, setZoom] = useState(1);
   // 잘라낼 이미지 영역
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  // 이미지 저장중일 때 적용버튼 disabled
+  const [isLoading, setIsLoading] = useState(false);
 
   // useCallback = 함수 참조가 고정됨
   // Cropper 내부 불필요한 업데이트를 줄일 수 있음.
@@ -31,12 +33,23 @@ function ImageCropModal({
     setCroppedAreaPixels(areaPixels);
   }, []);
 
+  const handleConfirm = async () => {
+    if (!croppedAreaPixels || isLoading) return;
+    try {
+      setIsLoading(true);
+      await onConfirm(croppedAreaPixels); // 여기서 업로드 + patch 진행 - 비동기라서 위에 Promise로 바꿔줌
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (!open) return null;
+
   return (
     <s.Overlay>
       <s.Modal>
         <s.Header>
-          <s.Title>{title}</s.Title>
+          {/* <s.Title>{title}</s.Title> */}
           <s.CloseBtn type="button" onClick={onClose} aria-label="닫기">
             ✕
           </s.CloseBtn>
@@ -57,7 +70,7 @@ function ImageCropModal({
         </s.CropArea>
 
         <s.Controls>
-          <label>
+          {/* <label>
             줌
             <s.Range
               type="range"
@@ -67,15 +80,17 @@ function ImageCropModal({
               value={zoom}
               onChange={(e) => setZoom(Number(e.target.value))}
             />
-          </label>
+          </label> */}
 
           <s.BtnRow>
-            <s.Btn type="button" onClick={onClose}>
+            <s.Btn type="button" onClick={onClose} disabled={isLoading}>
               취소
             </s.Btn>
             <s.PrimaryBtn
               type="button"
-              onClick={() => croppedAreaPixels && onConfirm(croppedAreaPixels)}
+              // onClick={() => croppedAreaPixels && onConfirm(croppedAreaPixels)}
+              disabled={isLoading || !croppedAreaPixels}
+              onClick={handleConfirm}
             >
               적용
             </s.PrimaryBtn>

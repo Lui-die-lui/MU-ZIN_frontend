@@ -1,9 +1,14 @@
+/** @jsxImportSource @emotion/react */
+import * as s from "./styles";
 import React, { useRef, useState } from "react";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
 import { useFirebaseUpload } from "../../../../hooks/useFirebaseUpload";
 import type { Area } from "react-easy-crop";
 import { getCroppedFile } from "../../../../utils/imageUtils";
 import { patchMyProfileImgReq } from "../../../../apis/myPage/myPageApis";
+import { IoMdSettings } from "react-icons/io";
+import { getInitials } from "../../../../utils/myPageUtils";
+import ImageCropModal from "../../../../components/common/ImageCropModal/ImageCropModal";
 
 // 업로드되는 파일 확장자 및 허용 파일 크기
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -75,17 +80,66 @@ function ProfileHeaderCard() {
         quality: 0.92,
       });
 
-      // const url = await uploadFile(croppedFile, `profiles/${principal.userId}`)
+      const url = await uploadFile(croppedFile, `profiles/${principal.userId}`);
 
-      // setProfileImgUrl(url)
-      // await patchMyProfileImgReq({profileImgUrl: url})
-      // onClose();
-    } catch (error) {
-      alert(error);
+      updatePrincipal({ profileImgUrl: url });
+
+      await patchMyProfileImgReq({ profileImgUrl: url });
+      onClose();
+    } catch (error: unknown) {
+      console.error(error);
+      setErrorMsg(
+        error instanceof Error ? error.message : "프로필 이미지 저장 실패"
+      );
     }
   };
 
-  return <div></div>;
+  return (
+    <s.Card>
+      <s.AvatarWrap>
+        <s.AvatarCircle>
+          {avatarUrl ? (
+            <s.AvatarImg src={avatarUrl} alt="프로필 이미지" />
+          ) : (
+            // 없으면 이름 보여주는데 지금 이름을 이메일로 가져와서 의미없는듯 한번 생각해보기
+            <s.AvatarText>{getInitials(name)}</s.AvatarText>
+          )}
+        </s.AvatarCircle>
+
+        <s.EditPicBtn
+          type="button"
+          onClick={onClickUpdate}
+          disabled={isUploading}
+          aria-label="프로필 사진 변경"
+          title="프로필 사진 변경"
+        >
+          <s.EditIcon>
+            <IoMdSettings fontSize={"18px"}/>
+          </s.EditIcon>
+        </s.EditPicBtn>
+      </s.AvatarWrap>
+
+      {/* 읽기 전용 - 편집 ui 없음 / 구글 참고 */}
+      <s.UserName>{name}</s.UserName>
+      <s.Email>{email}</s.Email>
+
+        <input
+        ref={fileRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        hidden
+        onChange={onPickFile}
+      />
+
+      <ImageCropModal
+        open={open}
+        imageSrc={imageSrc}
+        onClose={onClose}
+        onConfirm={onConfirm}
+        title="프로필 사진 자르기"
+      />
+    </s.Card>
+  );
 }
 
 export default ProfileHeaderCard;

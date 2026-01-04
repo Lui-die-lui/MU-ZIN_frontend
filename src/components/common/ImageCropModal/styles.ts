@@ -11,35 +11,37 @@ export const Overlay = styled.div`
   z-index: 9999;
 `;
 
-// 모달 
+// 모달
 export const Modal = styled.div`
   width: min(520px, calc(100vw - 24px));
   background: #fff;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
+  /* border: 1px solid #e5e7eb; */
 `;
 
 // 제목 및 취소 아이콘
 export const Header = styled.div`
   padding: 14px 16px;
-  display: flex;
+  /* display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; */
+  display: flex;
+  justify-content: flex-end;
 `;
 
 // props 내 제목
-export const Title = styled.h2`
-  margin: 0;
-  font-size: 14px;
-  font-weight: 900;
-`;
+// export const Title = styled.h2`
+//   margin: 0;
+//   font-size: 14px;
+//   font-weight: 900;
+// `;
 
 // 닫기 버튼
 export const CloseBtn = styled.button`
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: 50px;
   border: 1px solid #e5e7eb;
   background: #fff;
   cursor: pointer;
@@ -67,9 +69,9 @@ export const Controls = styled.div`
   }
 `;
 
-export const Range = styled.input`
-  width: 100%;
-`;
+// export const Range = styled.input`
+//   width: 100%;
+// `;
 
 // 버튼 공간
 export const BtnRow = styled.div`
@@ -88,8 +90,16 @@ export const Btn = styled.button`
   cursor: pointer;
 `;
 
+
+// 저장 - 바로 반영 버튼
 export const PrimaryBtn = styled(Btn)`
   background: #111827;
   color: #fff;
   border-color: #111827;
+
+  &:disabled {
+    background: #9ca3af;   /* gray-400 */
+    border-color: #9ca3af;
+    color: #ffffff;
+  }
 `;
