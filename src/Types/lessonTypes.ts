@@ -4,6 +4,8 @@ export type LessonMode = "ONLINE" | "OFFLINE" | "VISIT" | "REQUEST_ONLY";
 // 레슨 활성 상태
 export type LessonStatus = "ACTIVE" | "INACTIVE";
 
+
+
 // 스타일 태그 응답
 export interface LessonStyleTagResponse {
   lessonStyleTagId: number;
@@ -20,7 +22,7 @@ export interface LessonBase {
   status: LessonStatus;
 }
 
-// 리스트 - 정렬 표시용으로 있으면 good
+// 리스트/검색 공용 - 정렬 표시용으로 있으면 good
 export interface LessonSummary extends LessonBase {
   updateDt: string;
 }

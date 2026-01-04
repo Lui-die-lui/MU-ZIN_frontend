@@ -5,9 +5,11 @@ import { css } from "@emotion/react";
 // 프로필 카드 전체 섹션
 export const Card = styled.section`
   width: 100%;
+  box-sizing: border-box;
   /* background: #eef3f7; */
   border-radius: 18px;
   padding: 34px 16px;
+  margin-bottom: 30px;
 
   display: grid;
   justify-items: center;

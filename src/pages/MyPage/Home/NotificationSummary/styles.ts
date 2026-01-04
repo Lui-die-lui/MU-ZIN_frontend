@@ -4,18 +4,29 @@ import { css } from "@emotion/react";
 export type CardKey = "message" | "reservation" | "lesson";
 
 const gradients: Record<CardKey, string> = {
-  message:
-    "linear-gradient(135deg, #E8C8F0 0%, #F0D8F0 45%, #F8D8D0 100%)",
-  reservation:
-    "linear-gradient(135deg, #F8D8D0 0%, #F8C8C8 55%, #F0C8E8 100%)",
-  lesson:
-    "linear-gradient(135deg, #F0C8E8 0%, #F8D0D0 55%, #F0D0F0 100%)",
+  message: "linear-gradient(135deg, #E8C8F0 0%, #F0D8F0 45%, #F8D8D0 100%)",
+  reservation: "linear-gradient(135deg, #F8D8D0 0%, #F8C8C8 55%, #F0C8E8 100%)",
+  lesson: "linear-gradient(135deg, #F0C8E8 0%, #F8D0D0 55%, #F0D0F0 100%)",
 };
+
+// export const wrap = css`
+//   display: grid;
+//   gap: 18px;
+//   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+//   justify-content: center;
+// `;
 
 export const wrap = css`
   display: grid;
   gap: 18px;
+
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+
+  width: 100%;
+  max-width: 920px; /* 원하는 폭으로 조절 */
+  margin: 0 auto; /* ★ 가운데 정렬 핵심 */
+  padding: 0 24px; /* 모바일 여백 */
+  box-sizing: border-box;
 `;
 
 export const card = (kind: CardKey) => css`
@@ -29,7 +40,7 @@ export const card = (kind: CardKey) => css`
   border: 1px solid rgba(255, 255, 255, 0.55);
 
   color: #111;
-  overflow: hidden;
+  overflow: visible;
 
   transition: transform 120ms ease, box-shadow 120ms ease;
   &:hover {
