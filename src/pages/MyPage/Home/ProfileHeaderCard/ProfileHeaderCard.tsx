@@ -136,7 +136,7 @@ function ProfileHeaderCard() {
         imageSrc={imageSrc}
         onClose={onClose}
         onConfirm={onConfirm}
-        title="프로필 사진 자르기"
+        // title="프로필 사진 자르기"
       />
     </s.Card>
   );
