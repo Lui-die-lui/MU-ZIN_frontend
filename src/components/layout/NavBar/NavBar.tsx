@@ -11,6 +11,7 @@ function NavBar() {
   const navItems = [
     // { path: "/", label: "홈" },
     { path: "/lessons", label: "레슨" },
+    { path: "/artist", label: "아티스트" },
   ];
 
   const onLogout = () => {

@@ -45,20 +45,24 @@ function SigninForm() {
         if (e.key === "Enter") onSubmit();
       }}
     >
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="이메일"
-        autoComplete="email"
-      />
+      <div>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="이메일"
+          autoComplete="email"
+        />
+      </div>
 
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="비밀번호"
-        autoComplete="current-password"
-      />
+      <div>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="비밀번호"
+          autoComplete="current-password"
+        />
+      </div>
 
       {errorMsg && <p style={{ marginTop: 8 }}>{errorMsg}</p>}
 
