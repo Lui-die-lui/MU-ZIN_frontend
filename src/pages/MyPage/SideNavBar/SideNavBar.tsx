@@ -2,6 +2,7 @@
 import * as s from "./styles";
 import type { ArtistStatus } from "../../../Types/auth";
 import { buildMyPageNavItems } from "./navItems";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   artistStatus: ArtistStatus;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 function SideNavBar({ artistStatus, badgeMap }: Props) {
+  const navigate = useNavigate();
   const items = buildMyPageNavItems(artistStatus).map((item) => ({
     ...item,
     badgeCount: badgeMap?.[item.key] ?? item.badgeCount,
@@ -17,7 +19,8 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
 
   return(
     <s.Aside>
-        <s.Title>My page</s.Title>
+        <s.Title onClick={() => navigate("/")}>MU:ZIN</s.Title>
+       
 
         <s.Nav>
             {items.map((item) => (

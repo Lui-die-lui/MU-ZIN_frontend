@@ -12,12 +12,13 @@ import OAuth2Redirect from "../pages/Auth/OAuth2Redirect/OAuth2Redirect";
 function MainRouter() {
   return (
     <Routes>
+      <Route path="/mypage/*" element={<MyPageRouter />} />
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
         <Route path="/lessons" element={<LessonMain />} />
         <Route path="/artist" element={<ArtistMain />} />
-        <Route path="/mypage/*" element={<MyPageRouter />} />
+
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
       </Route>

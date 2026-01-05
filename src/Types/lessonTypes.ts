@@ -1,10 +1,10 @@
+import type { ApiRespDto } from "./responseType";
+
 // 레슨 오프라인, 온라인
 export type LessonMode = "ONLINE" | "OFFLINE" | "VISIT" | "REQUEST_ONLY";
 
 // 레슨 활성 상태
 export type LessonStatus = "ACTIVE" | "INACTIVE";
-
-
 
 // 스타일 태그 응답
 export interface LessonStyleTagResponse {
@@ -22,19 +22,32 @@ export interface LessonBase {
   status: LessonStatus;
 }
 
-// 리스트/검색 공용 - 정렬 표시용으로 있으면 good
-export interface LessonSummary extends LessonBase {
-  updateDt: string;
+// 아티스트 프로필 요약
+export interface ArtistSummaryResponse {
+  artistProfileId: number;
+  username: string;
+  profileImgUrl: string | null; // 프로필 이미지 없을 수도 있으니까
 }
 
+// 리스트/검색 공용 - 정렬 표시용으로 있으면 good
+export interface LessonSummary extends LessonBase {
+  description: string | null;
+}
+
+export type LessonSearchResp = ApiRespDto<LessonSummary[]>;
+
+// 레슨 단일 조회
 // 상세 페이지
 export interface LessonDetail extends LessonBase {
   description: string | null;
   requirementText: string | null;
   styleTags: LessonStyleTagResponse[];
   createDt: string;
-  updateDt: string; 
+  updateDt: string;
+  artist: ArtistSummaryResponse;
 }
+
+export type LessonDetailResp = ApiRespDto<LessonDetail>;
 
 // 레슨 생성
 export interface LessonCreateReq {
@@ -54,9 +67,10 @@ export interface LessonUpdateReq {
   price?: number | null;
   description?: string | null;
   requirementText?: string | null;
+  status?: LessonStatus | null;
 }
 
 // 레슨 스타일 토글
 export interface SetLessonStylesReq {
-  styleTagIds: number[]; 
+  styleTagIds: number[];
 }

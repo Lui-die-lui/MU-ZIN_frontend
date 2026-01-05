@@ -26,10 +26,16 @@ export const Aside = styled.aside`
 `;
 
 export const Title = styled.h2`
-  margin: 4px 8px 12px;
+  /* margin: 4px 8px 12px;
   font-size: 14px;
   font-weight: 700;
-  color: #111827;
+  color: #111827; */
+  margin: 4px 8px 12px;
+  display: flex;
+  justify-content: flex-start;
+  font-weight: 700;
+  font-size: 18px;
+  cursor: pointer;
 `;
 
 // 사이드 바 네비게이션 메뉴
