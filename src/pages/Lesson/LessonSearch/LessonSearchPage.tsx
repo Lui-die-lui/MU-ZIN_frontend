@@ -7,8 +7,17 @@ import React, { useMemo, useState } from "react";
 import { getLessonStyleTagsReq } from "../../../apis/lesson/lessonApis";
 import { searchLessonReq } from "../../../apis/lesson/lessonSearchApis";
 import { css } from "@emotion/react";
+import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "../../../hooks/useIsMobile";
+import LessonDetailDrawer from "../LessonDetailDrawer/LessonDetailDrawer";
 
 function LessonSearchPage() {
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+
+  const [open, setOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
   // draft (입력중)
   const [draftKeyword, setDraftKeyword] = useState("");
   const [draftMode, setDraftMode] = useState<LessonMode | "ALL">("ALL");
@@ -43,7 +52,6 @@ function LessonSearchPage() {
     data: lessonResp,
     isFetching,
     isError,
-    refetch,
   } = useQuery({
     queryKey: ["lessons", "search", appliedParams],
     queryFn: async () => (await searchLessonReq(appliedParams!)).data,
@@ -65,8 +73,23 @@ function LessonSearchPage() {
       styleTagIds: draftTagIds.length ? draftTagIds : undefined,
     });
 
-    // enabled가 true로 바뀌면서 자동호출되긴하는데 즉시호출 원하면
-    refetch();
+
+  };
+
+  // 레슨 클릭 시
+  const onClickLesson = (lessonId: number) => {
+    // if (isMobile) {
+    //   // 모바일이면
+    //   navigate(`/lessons/${lessonId}`);
+    //   return;
+    // }
+    setSelectedId(lessonId);
+    setOpen(true); // 데스크탑이면 사이드바
+  };
+
+  const close = () => {
+    setOpen(false);
+    setSelectedId(null);
   };
 
   return (
@@ -168,7 +191,11 @@ function LessonSearchPage() {
             `}
           >
             {lessons.map((l) => (
-              <div key={l.lessonId} css={s.card}>
+              <div
+                key={l.lessonId}
+                css={s.card}
+                onClick={() => onClickLesson(l.lessonId)}
+              >
                 <div
                   css={css`
                     font-weight: 700;
@@ -201,6 +228,7 @@ function LessonSearchPage() {
           </div>
         </>
       )}
+      <LessonDetailDrawer open={open} lessonId={selectedId} onClose={close} />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import Signup from "../pages/Auth/Signup/Signup";
 import MyPageRouter from "./MyPageRouter";
 import ArtistMain from "../pages/Artist/ArtistMain";
 import OAuth2Redirect from "../pages/Auth/OAuth2Redirect/OAuth2Redirect";
+import LessonRouter from "./LessonRouter";
 
 function MainRouter() {
   return (
@@ -16,7 +17,7 @@ function MainRouter() {
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
-        <Route path="/lessons" element={<LessonMain />} />
+        <Route path="/lessons/*" element={<LessonRouter />} />
         <Route path="/artist" element={<ArtistMain />} />
 
         <Route path="/signin" element={<Signin />} />

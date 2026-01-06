@@ -1,4 +1,8 @@
-import type { LessonMode, LessonSummary } from "../../Types/lessonTypes";
+import type {
+  LessonDetail,
+  LessonMode,
+  LessonSummary,
+} from "../../Types/lessonTypes";
 import type { ApiRespDto } from "../../Types/responseType";
 import { instance } from "../instance/instance";
 
@@ -29,3 +33,7 @@ export const searchLessonReq = (params: LessonSearchParams) => {
   const url = qs.toString() ? `/lessons?${qs.toString()}` : "/lessons";
   return instance.get<ApiRespDto<LessonSummary[]>>(url);
 };
+
+// 레슨 단일 조회
+export const getPublicLessonDetailReq = (lessonId: number) =>
+  instance.get<ApiRespDto<LessonDetail>>(`/lessons/${lessonId}`);

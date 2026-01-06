@@ -22,7 +22,7 @@ export const updateMyLessonReq = (lessonId: number, body: LessonUpdateReq) =>
 
 // 삭제
 export const deleteLessonReq = (lessonId: number) =>
-  instance.delete<ApiRespDto<null>>(`/lessons/${lessonId}`);
+  instance.delete<ApiRespDto<null>>(`/lessons/me/${lessonId}`);
 
 // 내 레슨 리스트
 export const getMyLessonsReq = () =>
@@ -45,3 +45,5 @@ export const setMyLessonStyleTagsReq = (
     `/lessons/me/${lessonId}/style-tag`,
     body
   );
+
+
