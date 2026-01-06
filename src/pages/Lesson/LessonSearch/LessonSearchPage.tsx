@@ -3,13 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 import type { LessonMode } from "../../../Types/lessonTypes";
 import * as s from "./styles";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { getLessonStyleTagsReq } from "../../../apis/lesson/lessonApis";
 import { searchLessonReq } from "../../../apis/lesson/lessonSearchApis";
 import { css } from "@emotion/react";
 import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import LessonDetailDrawer from "../LessonDetailDrawer/LessonDetailDrawer";
+import InstFilterDropdown from "../InstFilterDropdown/InstFilterDropdown";
 
 function LessonSearchPage() {
   const navigate = useNavigate();
@@ -23,11 +24,19 @@ function LessonSearchPage() {
   const [draftMode, setDraftMode] = useState<LessonMode | "ALL">("ALL");
   const [draftTagIds, setDraftTagIds] = useState<number[]>([]);
 
+  //악기 카테고리
+  const [draftInstCategory, setDraftInstCategory] = useState<string | "ALL">(
+    "ALL"
+  );
+  const [draftInstIds, setDraftInstIds] = useState<number[]>([]);
+
   // 검색버튼 눌러서 확정된 조건
   const [applied, setApplied] = useState<null | {
     keyword?: string;
     mode?: LessonMode;
     styleTagIds?: number[];
+    instIds?: number[];
+    instCategory?: string;
   }>(null);
 
   // 태그 목록(chip UI)
@@ -66,14 +75,15 @@ function LessonSearchPage() {
     );
   };
 
+  // 검색
   const onSearch = () => {
     setApplied({
       keyword: draftKeyword.trim() || undefined,
       mode: draftMode === "ALL" ? undefined : draftMode,
       styleTagIds: draftTagIds.length ? draftTagIds : undefined,
+      instIds: draftInstIds.length ? draftInstIds : undefined,
+      instCategory: draftInstCategory === "ALL" ? undefined : draftInstCategory,
     });
-
-
   };
 
   // 레슨 클릭 시
@@ -123,6 +133,12 @@ function LessonSearchPage() {
           <option value="ONLINE">온라인</option>
           <option value="OFFLINE">오프라인</option>
         </select>
+        <InstFilterDropdown
+          category={draftInstCategory}
+          onChangeCategory={setDraftInstCategory}
+          instIds={draftInstIds}
+          onChangeInstIds={setDraftInstIds}
+        />
 
         <button
           onClick={onSearch}
@@ -153,6 +169,9 @@ function LessonSearchPage() {
             </div>
           );
         })}
+      </div>
+      <div css={s.row}>
+        
       </div>
 
       {/* 결과 */}

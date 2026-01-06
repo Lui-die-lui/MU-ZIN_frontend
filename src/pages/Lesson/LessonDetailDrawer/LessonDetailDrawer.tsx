@@ -2,7 +2,6 @@
 import * as s from "./styles";
 import { usePublicLessonDetail } from "../../../hooks/usePublicLessonDetail";
 import SideDrawer from "../../../components/common/SideDrawer/SideDrawer";
-import { AvatarCircle } from "../../MyPage/Home/ProfileHeaderCard/styles";
 import { useState } from "react";
 
 type Props = {

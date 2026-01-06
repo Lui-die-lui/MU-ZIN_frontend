@@ -10,6 +10,8 @@ export type LessonSearchParams = {
   keyword?: string;
   mode?: LessonMode;
   styleTagIds?: number[];
+  instIds?: number[];
+  instCategory?: string;
 };
 
 // params로 검색 조건을 받음 - 나중에 확장될 예정
@@ -26,6 +28,12 @@ export const searchLessonReq = (params: LessonSearchParams) => {
   // append는 ?styleTagIds=1&styleTagIds=3&styleTagIds=5 같은 키 중복때문에...
   if (params.styleTagIds?.length) {
     params.styleTagIds.forEach((id) => qs.append("styleTagIds", String(id)));
+  }
+
+  if (params.instCategory) qs.set("instCategory", params.instCategory);
+
+  if (params.instIds?.length) {
+    params.instIds.forEach((id) => qs.append("instIds", String(id)));
   }
 
   //쿼리 파라미터가 하나라도 있으면 형태 만들어서 호출
