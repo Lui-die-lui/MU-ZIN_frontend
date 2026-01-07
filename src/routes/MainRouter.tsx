@@ -19,7 +19,6 @@ function MainRouter() {
         <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
         <Route path="/lessons/*" element={<LessonRouter />} />
         <Route path="/artist" element={<ArtistMain />} />
-
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
       </Route>

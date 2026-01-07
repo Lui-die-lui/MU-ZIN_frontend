@@ -8,6 +8,9 @@ import {
 } from "../../../apis/instrument/instrumentApis";
 import type { InstrumentResponse } from "../../../Types/instrumentTypes";
 
+// 빈 배열
+const EMPTY_INSTRUMENTS: InstrumentResponse[] = [];
+
 type Props = {
   category: string | "ALL";
   onChangeCategory: (v: string | "ALL") => void;
@@ -29,21 +32,22 @@ function InstFilterDropdown({
   const rootRef = useRef<HTMLDivElement>(null);
 
   const { data: categories = [] } = useQuery({
-    queryKey: ["instrumentCategories"], 
+    queryKey: ["instrumentCategories"],
     queryFn: async () => (await getInstrumentCategoriesReq()).data,
     staleTime: 10 * 60 * 1000,
   });
 
-  const { data: instResp, isFetching } = useQuery({
-    queryKey: ["instruments", category],
-    queryFn: async () => {
-      const q = keyword.trim();
+  const q = keyword.trim();
 
+  const { data: instResp, isFetching } = useQuery({
+    queryKey: ["instruments", category, category === "ALL" ? q : ""],
+    queryFn: async () => {
       // 카테고리 선택 시 - 서버는 카테고리만, 검색어는 프론트에서 필터
-      if (category !== "ALL") return (await getInstrumentsReq({ category })).data;
+      if (category !== "ALL")
+        return (await getInstrumentsReq({ category })).data;
 
       // 카테고리 없애고 검색어만 - 서버 쿼리 검색
-      if (q) return (await getInstrumentsReq({ q })).data;
+      if (q) return (await getInstrumentsReq(q ? { q } : undefined)).data;
 
       // 전체 다 입력이 없는 상태로 검색
       return (await getInstrumentsReq()).data;
@@ -52,7 +56,7 @@ function InstFilterDropdown({
   });
 
   // 데이터 없으면 빈 배열
-  const baseList = instResp ?? [];
+  const baseList = instResp ?? EMPTY_INSTRUMENTS;
 
   const instruments = useMemo(() => {
     // useMemo - 함수의 값을 저장
@@ -107,7 +111,7 @@ function InstFilterDropdown({
       {/* 카테고리 드롭다운 */}
       <select
         value={category}
-        onChange={(e) => handleChangeCategory(e.target.value as any)}
+        onChange={(e) => handleChangeCategory(e.target.value)}
         css={s.select}
       >
         <option value="ALL">악기군 전체</option>
