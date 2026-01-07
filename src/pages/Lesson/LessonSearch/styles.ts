@@ -60,6 +60,7 @@ export const card = css`
   border-radius: 14px;
   padding: 14px;
   background: #fff;
+  cursor: pointer;
 `;
 
 export const helperText = css`
