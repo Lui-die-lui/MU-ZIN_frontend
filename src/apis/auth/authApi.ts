@@ -33,3 +33,7 @@ export const signinReq = (payload: SigninPayload) =>
 export type SignupResp = ApiRespDto<string | null>;
 export const signupReq = (payload: SignupPayload) =>
   instance.post<SignupResp>("/auth/signup", payload);
+
+// 이메일 인증
+export const sendEmailCodeReq = (email: string) => 
+  instance.post("/mail/send", {email});

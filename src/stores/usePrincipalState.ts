@@ -33,6 +33,10 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
       };
     }),
 
+    // principal 재조회(앱 시작, 인증 또는 어디서나)
+    // refreshPrincipal: async () => {
+
+
   signin: async (email, password) => {
     // 1. 로그인 요청 -> ApiRespDto<string|null>
     const signinRes = await signinReq({ email, password });
