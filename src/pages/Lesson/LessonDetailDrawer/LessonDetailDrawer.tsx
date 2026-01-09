@@ -3,8 +3,9 @@ import * as s from "./styles";
 import { usePublicLessonDetail } from "../../../hooks/usePublicLessonDetail";
 import SideDrawer from "../../../components/common/SideDrawer/SideDrawer";
 import { useState } from "react";
+import ArtistHeader from "./ArtistHeader";
 
-type Props = {
+export type Props = {
   open: boolean;
   lessonId: number | null;
   onClose: () => void;
@@ -14,10 +15,10 @@ function LessonDetailDrawer({ open, lessonId, onClose }: Props) {
   const { data, isLoading, isError } = usePublicLessonDetail(id);
 
   // 이미지 깨졌을 때
-  const [imgError, setImgError] = useState(false);
+  // const [imgError, setImgError] = useState(false);
 
-  const profileImgUrl =
-    data?.artist?.profileImgUrl && !imgError ? data.artist.profileImgUrl : null;
+  // const profileImgUrl =
+  //   data?.artist?.profileImgUrl && !imgError ? data.artist.profileImgUrl : null;
   return (
     <SideDrawer open={open} onClose={onClose} title="레슨 상세" width={440}>
       {isLoading && <div css={s.stateText}>로딩중...</div>}
@@ -26,7 +27,7 @@ function LessonDetailDrawer({ open, lessonId, onClose }: Props) {
       {data && (
         <div css={s.wrap}>
           {/* 아티스트 헤더 */}
-          <div css={s.artistHeader}>
+          {/* <div css={s.artistHeader}>
             <div css={s.avatarCircle}>
               {profileImgUrl ? (
                 <img
@@ -45,7 +46,8 @@ function LessonDetailDrawer({ open, lessonId, onClose }: Props) {
             <div css={s.artistMeta}>
               <div css={s.artistName}>{data.artist.username}</div>
             </div>
-          </div>
+          </div> */}
+          <ArtistHeader artist={data.artist}/>
 
           {/* 레슨 정보 */}
           <h2 css={s.title}>{data.title}</h2>

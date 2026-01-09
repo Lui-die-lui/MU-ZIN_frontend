@@ -100,3 +100,8 @@ export const Email = styled.div`
   font-weight: 700;
   color: #374151;
 `;
+
+export const StateText = styled.div`
+  font-size: 10px;
+  color: red;
+`

@@ -1,8 +1,6 @@
 import { css } from "@emotion/react";
 
 
-
-
 export const wrap = css`
   display: flex;
   flex-direction: column;

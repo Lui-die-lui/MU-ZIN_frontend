@@ -16,7 +16,7 @@ export async function getCroppedFile(params: {
   crop: Area;
   fileName?: string; // 저장 파일명
   outputSize?: number; // 정사각형으로 리사이즈(픽셀이 들어옴)
-  mimeType?: "image/jpeg" | "image/png"; // 결과 확장자 / 인코딩 포맷
+  mimeType?: "image/jpeg" | "image/png" | "image/webp"; // 결과 확장자 / 인코딩 포맷
   quality?: number; // jpeg 퀄리티
 }): Promise<File> {
   const {
