@@ -7,3 +7,11 @@ export const patchMyUsernameReq = (username: string) =>
     "/users/me/username",
     { username }
   );
+
+// 비밀번호 변경
+export type ChangePasswordReq = {
+  currentPassword: string;
+  newPassword: string;
+};
+export const patchMyPasswordReq = (body: ChangePasswordReq) => 
+  instance.patch("/users/me/password", body);

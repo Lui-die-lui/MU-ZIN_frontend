@@ -26,6 +26,10 @@ export interface Principal {
   profileImgUrl: string | null;
   emailVerified: boolean;
   artistStatus: ArtistStatus;
+  roles: string[];
+
+  canChangePassword: boolean;
+  oauth2Provider: string | null;
 }
 
 // 상태 타입
