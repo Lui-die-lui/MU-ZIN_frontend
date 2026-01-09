@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
 import { useMutation } from "@tanstack/react-query";
 import { patchMyUsernameReq } from "../../../../apis/user/userApis";
+import { ContentItem } from "../styles";
 
 function ChangeUserSection() {
   const { principal, updatePrincipal } = usePrincipalState();
@@ -52,7 +53,7 @@ function ChangeUserSection() {
   };
 
   return (
-    <div>
+    <ContentItem>
       <p>이름</p>
       <input
         value={username}
@@ -64,7 +65,7 @@ function ChangeUserSection() {
       </button>
       {!validLen && <p>이름은 2~30자 내로 입력해주세요.</p>}
       {message && <p>{message}</p>}
-    </div>
+    </ContentItem>
   );
 }
 

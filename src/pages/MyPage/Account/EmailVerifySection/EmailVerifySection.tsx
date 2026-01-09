@@ -2,6 +2,7 @@ import React from "react";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
 import { useMutation } from "@tanstack/react-query";
 import { sendEmailCodeReq } from "../../../../apis/auth/authApi";
+import { ContentItem } from "../styles";
 
 function EmailVerifySection() {
   const { principal } = usePrincipalState();
@@ -12,7 +13,7 @@ function EmailVerifySection() {
     mutationFn: () => sendEmailCodeReq(email),
   });
   return (
-    <div>
+    <ContentItem>
       <p>이메일</p>
       <input value={email} disabled />
       <button
@@ -25,7 +26,7 @@ function EmailVerifySection() {
           ? "전송 중"
           : "인증 메일 보내기"}
       </button>
-    </div>
+    </ContentItem>
   );
 }
 
