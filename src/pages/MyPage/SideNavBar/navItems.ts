@@ -24,7 +24,7 @@ export const buildMyPageNavItems = (artistStatus: ArtistStatus): NavItem[] => {
 
   // 마지막 탭 아티스트 = 레슨 관리, 아니면 신청
   if (artistStatus === "APPROVED") {
-    items.push({ key: "artist", label: "내 레슨 관리", to: "/mypage/artist" });
+    items.push({ key: "artist", label: "레슨 생성 및 관리", to: "/mypage/artist" });
   } else {
     items.push({
       key: "artistApply",

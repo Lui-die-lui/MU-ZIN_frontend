@@ -138,6 +138,7 @@ function LessonSearchPage() {
           onChangeCategory={setDraftInstCategory}
           instIds={draftInstIds}
           onChangeInstIds={setDraftInstIds}
+          resetOnCategortChange={true}
         />
 
         <button
@@ -170,9 +171,7 @@ function LessonSearchPage() {
           );
         })}
       </div>
-      <div css={s.row}>
-        
-      </div>
+      <div css={s.row}></div>
 
       {/* 결과 */}
       {!appliedParams && (

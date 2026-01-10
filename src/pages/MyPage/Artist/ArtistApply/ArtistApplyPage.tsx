@@ -1,11 +1,77 @@
-import React from 'react'
+/** @jsxImportSource @emotion/react */
+import * as s from "./styles";
+import { useEffect } from "react";
+import { useMyArtistProfile } from "../../../../hooks/ArtistProfile/useMyArtistProfile";
+import { userArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
+import { useArtistDraftSaveMutation } from "../../../../hooks/ArtistProfile/useArtistdraftSaveMutation";
+import { useArtistSubmitMutation } from "../../../../hooks/ArtistProfile/useArtistSubmitMutation";
+import ApplyStatusBanner from "./ArtistStatusBanner";
+import ArtistProfileFields from "./ArtistProfileFields";
+import ApplyInstrumentPicker from "./ApplyInstrumentPicker";
+import SelectedInstrumentChips from "./SelectedInstrumentChips";
+import ApplyActions from "./ApplyActions";
+import { usePrincipalState } from "../../../../stores/usePrincipalState";
 
 function ArtistApplyPage() {
+  const { data: profile, isLoading, isError } = useMyArtistProfile();
+  const { principal } = usePrincipalState();
+
+  const { bio, career, majorName, instrumentIds, hydrateFormProfile } =
+    userArtistApplyFormStore();
+
+  useEffect(() => {
+    if (profile) hydrateFormProfile(profile); // 이전 작성목록 있으면 채워줌
+    // 없으면 그냥 초기값
+  }, [profile, hydrateFormProfile]);
+
+  const draftMut = useArtistDraftSaveMutation(); // 임시저장 반영
+  const submitMut = useArtistSubmitMutation();
+
+  if (isLoading) return <div css={s.state}>로딩중...</div>;
+  if (isError) return <div css={s.state}>조회 실패</div>;
+
+  // profile이 null이면 아직 작성 안함 -> status = principal에서 fallback
+  const status = profile?.artistStatus ?? principal?.artistStatus ?? "NONE";
+
+  // NONE 상태만 접근 허용
+  const locked = status !== "NONE";
+  // 담을 객체
+  const payload = { bio, career, majorName, instrumentIds };
+
+  // 간단한 제출 검증
+  const canSubmit =
+    !locked &&
+    bio.trim().length > 0 &&
+    career.trim().length > 0 &&
+    majorName.trim().length > 0 &&
+    instrumentIds.length > 0;
+
   return (
-    <div>
-      
+    <div css={s.page}>
+      <ApplyStatusBanner status={status} />
+
+      <section css={s.card}>
+        <h2 css={s.h2}>기본 정보</h2>
+        <ArtistProfileFields disabled={locked} />
+      </section>
+
+      <section css={s.card}>
+        <h2 css={s.h2}>레슨 악기</h2>
+        <ApplyInstrumentPicker disabled={locked} />
+        <SelectedInstrumentChips disabled={locked} />
+        <p css={s.hint}>* 최소 1개 이상 선택해야 제출할 수 있어요.</p>
+      </section>
+
+      <ApplyActions
+        disabledAll={locked}
+        canSubmit={canSubmit}
+        saving={draftMut.isPending}
+        submitting={submitMut.isPending}
+        onSave={() => draftMut.mutate(payload)}
+        onSubmit={() => submitMut.mutate(payload)}
+      />
     </div>
-  )
+  );
 }
 
-export default ArtistApplyPage
+export default ArtistApplyPage;

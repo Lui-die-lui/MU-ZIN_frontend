@@ -1,4 +1,4 @@
-// Artist Status enum
+// Artist Status enum - 아티스트 전환 제출 현황(제출 없을 시 none)
 export type ArtistStatus = "NONE" | "PENDING" | "APPROVED" | "REJECTED";
 
 

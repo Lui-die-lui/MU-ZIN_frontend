@@ -16,6 +16,8 @@ type Props = {
   onChangeCategory: (v: string | "ALL") => void;
   instIds: number[];
   onChangeInstIds: (v: number[]) => void;
+
+  resetOnCategortChange?: boolean; // 아티스트 전환 로직에도 써야해서
 };
 
 function InstFilterDropdown({
@@ -23,6 +25,7 @@ function InstFilterDropdown({
   onChangeCategory,
   instIds,
   onChangeInstIds,
+  resetOnCategortChange = false,
 }: Props) {
   const [open, setOpen] = useState(false);
   // 드롭다운 input 검색 문자열
@@ -82,7 +85,7 @@ function InstFilterDropdown({
 
   const handleChangeCategory = (v: string | "ALL") => {
     onChangeCategory(v);
-    onChangeInstIds([]); // 카테고리 바꾸면 악기 선택 초기화 - 정확한 카테고리 선택을 위해
+    if (resetOnCategortChange) onChangeInstIds([]); // 카테고리 바꾸면 악기 선택 초기화 - 정확한 카테고리 선택을 위해
     setKeyword("");
   };
 
