@@ -2,7 +2,6 @@
 import * as s from "./styles";
 import CommonModal from "../CommonModal/CommonModal";
 
-
 type ConfirmModlaProps = {
   open: boolean;
   title?: string;
@@ -12,7 +11,7 @@ type ConfirmModlaProps = {
   loading?: boolean;
   onConfirm: () => void;
   onClose: () => void;
-  width?: number; 
+  width?: number;
 };
 
 function ConfirmModal({
@@ -28,23 +27,24 @@ function ConfirmModal({
 }: ConfirmModlaProps) {
   if (!open) return null;
   return (
-   <CommonModal
-   open={open}
-   title={title}
-   onClose={onClose}
-   width={width}
-   footer={
-    <>
-     <button css={s.ghostBtn} onClick={onClose} disabled={loading}>
+    <CommonModal
+      open={open}
+      title={title}
+      onClose={onClose}
+      width={width}
+      footer={
+        <>
+          <button css={s.ghostBtn} onClick={onClose} disabled={loading}>
             {cancelText}
           </button>
           <button css={s.primaryBtn} onClick={onConfirm} disabled={loading}>
             {loading ? "처리중..." : confirmText}
-          </button></>
-   }>
-    <p>{message}</p>
-   </CommonModal>
-
+          </button>
+        </>
+      }
+    >
+      <p>{message}</p>
+    </CommonModal>
   );
 }
 

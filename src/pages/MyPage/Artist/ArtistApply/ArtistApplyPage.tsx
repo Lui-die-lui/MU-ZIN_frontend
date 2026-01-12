@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useMyArtistProfile } from "../../../../hooks/ArtistProfile/useMyArtistProfile";
 import { userArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
 import { useArtistDraftSaveMutation } from "../../../../hooks/ArtistProfile/useArtistdraftSaveMutation";
@@ -12,6 +12,9 @@ import SelectedInstrumentChips from "./SelectedInstrumentChips";
 import ApplyActions from "./ApplyActions";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
 import type { ArtistStatus } from "../../../../Types/auth";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import ConfirmModal from "../../../../components/common/ConfirmModal/ConfirmModal";
 
 function ArtistApplyPage() {
   const { data: profile, isLoading, isError } = useMyArtistProfile();
@@ -19,6 +22,11 @@ function ArtistApplyPage() {
 
   const { bio, career, majorName, instrumentIds, hydrateFormProfile } =
     userArtistApplyFormStore();
+
+  // 제출 시 화면 즉시 반영 및 알림 창
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const navigate = useNavigate();
+  const qc = useQueryClient();
 
   useEffect(() => {
     if (profile) hydrateFormProfile(profile); // 이전 작성목록 있으면 채워줌
@@ -57,6 +65,23 @@ function ArtistApplyPage() {
   // 담을 객체
   const payload = { bio, career, majorName, instrumentIds };
 
+  const handleConfirmSubmit = () => {
+    submitMut.mutate(payload, {
+      onSuccess: () => {
+        // 상태 동기화
+        qc.invalidateQueries({ queryKey: ["myArtistProfile"] });
+        qc.invalidateQueries({ queryKey: ["principal"] });
+
+        setConfirmOpen(false);
+        navigate("/mypage/artist/pending", { replace: true });
+      },
+      onError: () => {
+        // 실패 시 모달 닫기
+        setConfirmOpen(false);
+      },
+    });
+  };
+
   // 간단한 제출 검증
   const canSubmit =
     !locked &&
@@ -87,7 +112,16 @@ function ArtistApplyPage() {
         saving={draftMut.isPending}
         submitting={submitMut.isPending}
         onSave={() => draftMut.mutate(payload)}
-        onSubmit={() => submitMut.mutate(payload)}
+        onSubmit={() => setConfirmOpen(true)}
+      />
+
+      <ConfirmModal
+        open={confirmOpen}
+        title="제출 확인"
+        message="신청서를 제출하시겠습니까?"
+        loading={submitMut.isPending}
+        onConfirm={handleConfirmSubmit}
+        onClose={() => setConfirmOpen(false)}
       />
     </div>
   );

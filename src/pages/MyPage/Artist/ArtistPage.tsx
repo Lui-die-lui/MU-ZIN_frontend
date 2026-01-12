@@ -1,7 +1,5 @@
 
 import { usePrincipalState } from "../../../stores/usePrincipalState";
-import ArtistManagePage from "./ArtistManage/ArtistManagePage";
-import ArtistApplyPage from "./ArtistApply/ArtistApplyPage";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
