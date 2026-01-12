@@ -11,6 +11,7 @@ import ApplyInstrumentPicker from "./ApplyInstrumentPicker";
 import SelectedInstrumentChips from "./SelectedInstrumentChips";
 import ApplyActions from "./ApplyActions";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import type { ArtistStatus } from "../../../../Types/auth";
 
 function ArtistApplyPage() {
   const { data: profile, isLoading, isError } = useMyArtistProfile();
@@ -31,10 +32,28 @@ function ArtistApplyPage() {
   if (isError) return <div css={s.state}>조회 실패</div>;
 
   // profile이 null이면 아직 작성 안함 -> status = principal에서 fallback
-  const status = profile?.artistStatus ?? principal?.artistStatus ?? "NONE";
+  const rawStatus = profile?.artistStatus ?? principal?.artistStatus ?? "NONE";
+
+  // 삼항 연산 + 타입 좁히기
+  const status: ArtistStatus =
+    rawStatus === "NONE" ||
+    rawStatus === "PENDING" ||
+    rawStatus === "APPROVED" ||
+    rawStatus === "REJECTED"
+      ? rawStatus
+      : "NONE"; // 혹시 모를 예외값 방어
+
+  // 수정 가능한 상태 정의(ReadonlySet = 읽기 전용 set 타입)
+  const editableStatuses: ReadonlySet<ArtistStatus> = new Set([
+    "NONE",
+    "REJECTED",
+  ]);
+
+  // 해당 상태를 가지고 있느냐만 검증
+  const isEditable = editableStatuses.has(status);
 
   // NONE 상태만 접근 허용
-  const locked = status !== "NONE";
+  const locked = !isEditable;
   // 담을 객체
   const payload = { bio, career, majorName, instrumentIds };
 
