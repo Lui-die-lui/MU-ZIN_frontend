@@ -1,8 +1,8 @@
 import React from "react";
-import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import { usePrincipalState } from "../../../../../stores/usePrincipalState";
 import { useMutation } from "@tanstack/react-query";
-import { sendEmailCodeReq } from "../../../../apis/auth/authApi";
-import { ContentItem } from "../styles";
+import { sendEmailCodeReq } from "../../../../../apis/auth/authApi";
+import { ContentItem } from "../../styles";
 
 function EmailVerifySection() {
   const { principal } = usePrincipalState();

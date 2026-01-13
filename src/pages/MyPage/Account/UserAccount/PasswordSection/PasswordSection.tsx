@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { usePrincipalState } from "../../../../stores/usePrincipalState";
-import { ContentItem } from "../styles";
+import { usePrincipalState } from "../../../../../stores/usePrincipalState";
+import { ContentItem } from "../../styles";
 import ChangePasswordModal from "./ChangePasswordModal/ChangePasswordModal";
-import { patchMyPasswordReq } from "../../../../apis/user/userApis";
+import { patchMyPasswordReq } from "../../../../../apis/user/userApis";
 
 function PasswordSection() {
   const { principal } = usePrincipalState();

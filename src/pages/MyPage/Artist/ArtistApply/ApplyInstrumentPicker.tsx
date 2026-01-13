@@ -1,18 +1,19 @@
 import React, { useMemo, useState } from "react";
-import { userArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
+
 import { useQuery } from "@tanstack/react-query";
 import { getInstrumentsReq } from "../../../../apis/instrument/instrumentApis";
 import type { InstrumentResponse } from "../../../../Types/instrumentTypes";
 import InstFilterDropdown from "../../../Lesson/InstFilterDropdown/InstFilterDropdown";
+import { useArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
 
 // 검색에서 사용되는 드롭다운 컴포넌트랑 이어주는 어댑터
 // 객체 싱크를 도와줌
 function ApplyInstrumentPicker({ disabled }: { disabled: boolean }) {
   const [category, setCategory] = useState<"ALL" | string>("ALL");
 
-  const instIds = userArtistApplyFormStore((s) => s.instrumentIds);
-  const selected = userArtistApplyFormStore((s) => s.selectedInstruments);
-  const setSelected = userArtistApplyFormStore((s) => s.setSelectedInstruments);
+  const instIds = useArtistApplyFormStore((s) => s.instrumentIds);
+  const selected = useArtistApplyFormStore((s) => s.selectedInstruments);
+  const setSelected = useArtistApplyFormStore((s) => s.setSelectedInstruments);
 
   // 칩 이름 유지하려면 전체 악기목록을 프론트상에서 한번 불러와줘야함
   const { data: allInstruments = [] } = useQuery({

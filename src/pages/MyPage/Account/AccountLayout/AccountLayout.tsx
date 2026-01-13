@@ -6,8 +6,8 @@ function AccountLayout() {
     const isApprovedArtist = principal?.artistStatus === "APPROVED";
   return (
       <div>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <NavLink to="/mypage/account">내 정보</NavLink>
+      <div style={{ display: "flex", gap: 12, alignItems: "center"}}>
+        <NavLink to="/mypage/account" >내 정보</NavLink>
 
         {isApprovedArtist && (
           <NavLink to="/mypage/account/artist">아티스트 프로필</NavLink>

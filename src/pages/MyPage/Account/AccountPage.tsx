@@ -1,19 +1,19 @@
-import React from 'react'
-import EmailVerifySection from './EmailVerifySection/EmailVerifySection'
-import ChangeUserSection from './ChangeUsernameSection/ChangeUsernameSection'
-import EditProfileImgSection from './EditProfileImgSection/EditProfileImgSection'
-import PasswordSection from './PasswordSection/PasswordSection'
+import React from "react";
+import EmailVerifySection from "./UserAccount/EmailVerifySection/EmailVerifySection";
+import ChangeUserSection from "./UserAccount/ChangeUsernameSection/ChangeUsernameSection";
+
+import PasswordSection from "./UserAccount/PasswordSection/PasswordSection";
+import EditProfileImgSection from "./UserAccount/EditProfileImgSection/EditProfileImgSection";
 
 function AccountPage() {
   return (
     <div>
-      <EditProfileImgSection/>
-      <ChangeUserSection/>
-      <EmailVerifySection/>
+      <EditProfileImgSection />
+      <ChangeUserSection />
+      <EmailVerifySection />
       <PasswordSection />
-      
     </div>
-  )
+  );
 }
 
-export default AccountPage
+export default AccountPage;

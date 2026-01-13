@@ -2,7 +2,7 @@
 import * as s from "./styles";
 import { useEffect, useState } from "react";
 import { useMyArtistProfile } from "../../../../hooks/ArtistProfile/useMyArtistProfile";
-import { userArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
+import { useArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
 import { useArtistDraftSaveMutation } from "../../../../hooks/ArtistProfile/useArtistdraftSaveMutation";
 import { useArtistSubmitMutation } from "../../../../hooks/ArtistProfile/useArtistSubmitMutation";
 import ApplyStatusBanner from "./ArtistStatusBanner";
@@ -21,7 +21,7 @@ function ArtistApplyPage() {
   const { principal } = usePrincipalState();
 
   const { bio, career, majorName, instrumentIds, hydrateFormProfile } =
-    userArtistApplyFormStore();
+    useArtistApplyFormStore();
 
   // 제출 시 화면 즉시 반영 및 알림 창
   const [confirmOpen, setConfirmOpen] = useState(false);

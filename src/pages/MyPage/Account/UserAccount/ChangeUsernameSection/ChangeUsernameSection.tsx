@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import { usePrincipalState } from "../../../../../stores/usePrincipalState";
 import { useMutation } from "@tanstack/react-query";
-import { patchMyUsernameReq } from "../../../../apis/user/userApis";
-import { ContentItem } from "../styles";
+import { patchMyUsernameReq } from "../../../../../apis/user/userApis";
+import { ContentItem } from "../../styles";
 
 function ChangeUserSection() {
   const { principal, updatePrincipal } = usePrincipalState();
@@ -46,7 +46,14 @@ function ChangeUserSection() {
   const canSave = validLen && changed && !mut.isPending;
 
   const onSave = () => {
-    console.log("[USERNAME] onSave", { current, username, next, validLen, changed, canSave });
+    console.log("[USERNAME] onSave", {
+      current,
+      username,
+      next,
+      validLen,
+      changed,
+      canSave,
+    });
     setMessage(null);
     if (!canSave) return;
     mut.mutate(next);

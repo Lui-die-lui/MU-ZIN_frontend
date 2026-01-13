@@ -36,7 +36,7 @@ const initial: ApplyArtistPayload = {
   instrumentIds: [],
 };
 
-export const userArtistApplyFormStore = create<State>((set, get) => ({
+export const useArtistApplyFormStore = create<State>((set, get) => ({
   ...initial, // 초기 폼 값을 넣고
   selectedInstruments: [],
   hydrated: false, // 서버 값으로 채운 적 없으니 false

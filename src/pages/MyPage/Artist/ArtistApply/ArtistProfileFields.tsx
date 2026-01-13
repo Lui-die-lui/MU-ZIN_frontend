@@ -1,10 +1,10 @@
-import { userArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
+import { useArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
 
 // 기본 입력 필드들
 type Props = { disabled: boolean };
 
 export default function ArtistProfileFields({ disabled }: Props) {
-  const { bio, career, majorName, setField } = userArtistApplyFormStore();
+  const { bio, career, majorName, setField } = useArtistApplyFormStore();
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

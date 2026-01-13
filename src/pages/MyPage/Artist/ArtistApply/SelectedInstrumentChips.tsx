@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 
-import { userArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
+import { useArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
 
 function SelectedInstrumentChips({ disabled }: { disabled: boolean }) {
-  const selected = userArtistApplyFormStore((x) => x.selectedInstruments);
-  const remove = userArtistApplyFormStore((x) => x.removeInstrument);
+  const selected = useArtistApplyFormStore((x) => x.selectedInstruments);
+  const remove = useArtistApplyFormStore((x) => x.removeInstrument);
 
   if (selected.length === 0) return null;
   return (

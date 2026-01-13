@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { useEffect, useState } from "react";
 import * as s from "./styles";
-import CommonModal from "../../../../../components/common/CommonModal/CommonModal";
-import { usePrincipalState } from "../../../../../stores/usePrincipalState";
+import CommonModal from "../../../../../../components/common/CommonModal/CommonModal";
+import { usePrincipalState } from "../../../../../../stores/usePrincipalState";
 import { useNavigate } from "react-router-dom";
 type Props = {
   open: boolean;

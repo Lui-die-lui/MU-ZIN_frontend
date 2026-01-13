@@ -1,11 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import * as s from "../styles";
+import { patchMyProfileImgReq } from "../../../../../apis/myPage/myPageApis";
+import ImageCropModal from "../../../../../components/common/ImageCropModal/ImageCropModal";
+import ProfileAvatar from "../../../../../components/common/ProfileAvatar/ProfileAvatar";
+import { useProfileImageChange } from "../../../../../hooks/useProfileImageChange";
+import * as s from "../../styles";
 
 import { IoCamera } from "react-icons/io5";
-import ProfileAvatar from "../../../../components/common/ProfileAvatar/ProfileAvatar";
-import { useProfileImageChange } from "../../../../hooks/useProfileImageChange";
-import { patchMyProfileImgReq } from "../../../../apis/myPage/myPageApis";
-import ImageCropModal from "../../../../components/common/ImageCropModal/ImageCropModal";
+// import ProfileAvatar from "../../../../components/common/ProfileAvatar/ProfileAvatar";
+// import { useProfileImageChange } from "../../../../hooks/useProfileImageChange";
+// import { patchMyProfileImgReq } from "../../../../apis/myPage/myPageApis";
+// import ImageCropModal from "../../../../components/common/ImageCropModal/ImageCropModal";
 
 function EditProfileImgSection() {
   const {
