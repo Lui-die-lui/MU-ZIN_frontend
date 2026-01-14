@@ -1,9 +1,9 @@
-
 import type {
   ArtistProfileResponse,
   ArtistProfileUpsertRequest,
   SetMyInstrumentRequest,
 } from "../../Types/artistApplyTypes";
+import type { LessonStyleTagResponse } from "../../Types/lessonTypes";
 import type { ApiRespDto } from "../../Types/responseType";
 import { instance } from "../instance/instance";
 
@@ -30,5 +30,19 @@ export const updateApprovedProfileReq = (body: ArtistProfileUpsertRequest) =>
 export const setMyInstrumentReq = (body: SetMyInstrumentRequest) =>
   instance.put<ApiRespDto<ArtistProfileResponse>>(
     "/artist/profile/me/instruments",
+    body
+  );
+
+// 내 레슨 스타일 태그 조회
+export const getMyArtistStyleTagsReq = () =>
+  instance.get<ApiRespDto<LessonStyleTagResponse[]>>("/artist/me/style-tags");
+
+// 내 스타일 태그 저장(교체)
+export type ArtistStyleSetRequest = {
+  styleTagIds: number[];
+};
+export const setMyArtistStyleTagsReq = (body: ArtistStyleSetRequest) =>
+  instance.put<ApiRespDto<LessonStyleTagResponse>>(
+    "/artist/me/style-tags",
     body
   );
