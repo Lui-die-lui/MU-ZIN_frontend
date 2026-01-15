@@ -35,14 +35,14 @@ export const setMyInstrumentReq = (body: SetMyInstrumentRequest) =>
 
 // 내 레슨 스타일 태그 조회
 export const getMyArtistStyleTagsReq = () =>
-  instance.get<ApiRespDto<LessonStyleTagResponse[]>>("/artist/me/style-tags");
+  instance.get<ApiRespDto<LessonStyleTagResponse[]>>("/artist/profile/me/style-tags");
 
 // 내 스타일 태그 저장(교체)
 export type ArtistStyleSetRequest = {
   styleTagIds: number[];
 };
 export const setMyArtistStyleTagsReq = (body: ArtistStyleSetRequest) =>
-  instance.put<ApiRespDto<LessonStyleTagResponse>>(
-    "/artist/me/style-tags",
+  instance.put<ApiRespDto<LessonStyleTagResponse[]>>(
+    "/artist/profile/me/style-tags",
     body
   );
