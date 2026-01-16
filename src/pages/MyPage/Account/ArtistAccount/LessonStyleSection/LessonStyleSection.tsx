@@ -24,7 +24,7 @@ function LessonStyleSection() {
   });
 
   // 내 아티스트 스타일 태그(초기값)
-  const { data: myTags = [] } = useQuery({
+  const { data: myTags = [], isFetched: myTagsFetched } = useQuery({
     queryKey: ["artistStyleTags", "me"],
     queryFn: async () => (await getMyArtistStyleTagsReq()).data.data, // 내 레슨 스타일 태그 다 가져옴
   });
@@ -32,15 +32,16 @@ function LessonStyleSection() {
   // 드롭다운/칩 공용으로 쓰기 좋게: id 배열만 state로 관리 - 내가 고른것들
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
-  // 서버 값으로 1회만 초기 주입(db 안정성)
-  const didInitRef = useRef(false);
+  // 유저가 수정했는지
+  const touchedRef = useRef(false);
 
-  useEffect(() => {
-    // myTags가 아직 로딩 전이면 빈배열일 수도 있으니 "쿼리 결과가 한번 들어온 뒤" 주입하려면 조건 걸어도 ok
-    if (didInitRef.current) return;
-    setSelectedIds(myTags.map((t) => t.lessonStyleTagId));
-    didInitRef.current = true; // 초기 주입 완료
-  }, [myTags]);
+  // myTags 기본값 때문에 useEffect 가 너무 일찍 한 번 실행됨
+  // useEffect(() => {
+  //   // myTags가 아직 로딩 전이면 빈배열일 수도 있으니 "쿼리 결과가 한번 들어온 뒤" 주입하려면 조건 걸어도 ok
+  //   if (didInitRef.current) return;
+  //   setSelectedIds(myTags.map((t) => t.lessonStyleTagId));
+  //   didInitRef.current = true; // 초기 주입 완료
+  // }, [myTags]);
 
   // id -> tag 객체 싱크용 (칩 표시 안정화) - id만 있으면 styleName을 못 보여주니까
   // 각 태그 for문 돌려서 map으로 만듦 - 선택된 id를 태그객체로 빠르고 안전하게 변환
@@ -90,6 +91,8 @@ function LessonStyleSection() {
       // 서버가 내려준 최종 상태로 동기화
       if (updated) {
         setSelectedIds(updated.map((t) => t.lessonStyleTagId));
+
+        touchedRef.current = false; // 저장 후 다시 동기화 가능 상태
       }
       alert("스타일 태그 저장 완료");
     },
@@ -99,16 +102,29 @@ function LessonStyleSection() {
     },
   });
 
+  useEffect(() => {
+    if (!myTagsFetched) return;
+    if (touchedRef.current) return; // 유저가 바꾼 상태면 덮어쓰지 않음
+
+    setSelectedIds((myTags ?? []).map((t) => t.lessonStyleTagId));
+  }, [myTagsFetched, myTags, isDirty]);
+
   const locked = saveMutation.isPending; // 로딩 상태일때 버튼 lock
 
   // 드롭다운에서 ids 변경될 때 5개 제한 ux 처리
   const onChangeSelectedIds = (ids: number[]) => {
+    touchedRef.current = true; // 사용자가 변경함
     const unique = Array.from(new Set(ids));
     if (unique.length > MAX_STYLE_TAGS) {
       alert(`스타일 태그는 최대 ${MAX_STYLE_TAGS}개까지 선택 가능합니다.`);
       return;
     }
     setSelectedIds(unique);
+  };
+
+  const onRemoveChip = (t: LessonStyleTagResponse) => {
+    touchedRef.current = true;
+    setSelectedIds((prev) => prev.filter((id) => id !== t.lessonStyleTagId));
   };
 
   return (
@@ -138,11 +154,7 @@ function LessonStyleSection() {
           items={selectedTags}
           getKey={(t) => t.lessonStyleTagId}
           getLabel={(t) => t.styleName}
-          onRemove={(t) =>
-            setSelectedIds((prev) =>
-              prev.filter((id) => id !== t.lessonStyleTagId)
-            )
-          }
+          onRemove={onRemoveChip}
         />
       </div>
 
