@@ -41,7 +41,7 @@ export type LessonSearchResp = ApiRespDto<LessonSummary[]>;
 export interface LessonDetail extends LessonBase {
   description: string | null;
   requirementText: string | null;
-  styleTags: LessonStyleTagResponse[];
+  // styleTags: LessonStyleTagResponse[];
   createDt: string;
   updateDt: string;
   artist: ArtistSummaryResponse;
@@ -59,6 +59,14 @@ export interface LessonCreateReq {
   requirementText?: string | null;
 }
 
+// 레슨 생성 응답 타입 자체를 분리하는게 타입 깨질 걱정 없다고 함 - 백이랑 맞춤
+export interface LessonCreateResp {
+  lessonId: number;
+  title: string;
+  mode: LessonMode;
+  status: LessonStatus;
+}
+
 // 레슨 수정
 export interface LessonUpdateReq {
   title?: string | null;
@@ -74,3 +82,9 @@ export interface LessonUpdateReq {
 export interface SetLessonStylesReq {
   styleTagIds: number[];
 }
+
+// 타임슬롯 생성 타입
+export type TimeSlotCreateReq = {
+  startDts: string[];
+}
+

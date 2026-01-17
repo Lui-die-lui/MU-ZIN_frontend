@@ -1,24 +1,29 @@
-
 import type {
   LessonCreateReq,
+  LessonCreateResp,
   LessonDetail,
   LessonStyleTagResponse,
   LessonUpdateReq,
   SetLessonStylesReq,
+  TimeSlotCreateReq,
 } from "../../Types/lessonTypes";
 import type { ApiRespDto } from "../../Types/responseType";
 import { instance } from "../instance/instance";
 
 // 레슨 생성
 export const createMyLessonReq = (body: LessonCreateReq) =>
-  instance.post<ApiRespDto<LessonDetail>>("/lessons/me", body);
+  instance.post<ApiRespDto<LessonCreateResp>>("/lessons/me", body);
+
+// 타임슬롯 생성
+export const createMyTimeSlotsReq = (
+  lessonId: number,
+  body: TimeSlotCreateReq
+) =>
+  instance.post<ApiRespDto<null>>(`/lessons/me/${lessonId}/time-slots`, body);
 
 // 레슨 수정
 export const updateMyLessonReq = (lessonId: number, body: LessonUpdateReq) =>
-  instance.patch<ApiRespDto<LessonDetail>>(
-    `/lessons/me/${lessonId}`,
-    body
-  );
+  instance.patch<ApiRespDto<LessonDetail>>(`/lessons/me/${lessonId}`, body);
 
 // 삭제
 export const deleteLessonReq = (lessonId: number) =>
@@ -45,5 +50,3 @@ export const setMyLessonStyleTagsReq = (
     `/lessons/me/${lessonId}/style-tag`,
     body
   );
-
-

@@ -46,3 +46,4 @@ export const setMyArtistStyleTagsReq = (body: ArtistStyleSetRequest) =>
     "/artist/profile/me/style-tags",
     body
   );
+
