@@ -39,7 +39,7 @@ function ArtistManagePage() {
             <option value={"OLDEST"}>오래된순</option>
           </select>
 
-          <button css={s.primaryBtn} onClick={() => navigate("/mypage/lessons/new")}>
+          <button css={s.primaryBtn} onClick={() => navigate("/mypage/artist/new")}>
             레슨 만들기
           </button>
         </div>

@@ -11,6 +11,7 @@ import ArtistManagePage from "../pages/MyPage/Artist/ArtistManage/ArtistManagePa
 import AccountLayout from "../pages/MyPage/Account/AccountLayout/AccountLayout";
 import ApprovdeArtistGuard from "../pages/MyPage/Account/ApprovdeArtistGuard";
 import ArtistAccountPage from "../pages/MyPage/Account/ArtistAccountPage";
+import CreateLessonPage from "../pages/MyPage/Artist/ArtistManage/CreateLesson/CreateLessonPage";
 
 function MyPageRouter() {
   return (
@@ -38,6 +39,7 @@ function MyPageRouter() {
           <Route path="apply" element={<ArtistApplyPage />} />
           <Route path="pending" element={<ArtistPendingPage />} />
           <Route path="manage" element={<ArtistManagePage />} />
+          <Route path="new" element={<CreateLessonPage/>} />
         </Route>
       </Route>
     </Routes>

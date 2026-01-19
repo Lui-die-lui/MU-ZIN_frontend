@@ -4,8 +4,6 @@ import { usePrincipalState } from "../../stores/usePrincipalState";
 import type { ArtistStatus } from "../../Types/auth";
 import SideNavBar from "./SideNavBar/SideNavBar";
 import * as s from "./styles";
-import { Content } from "./styles";
-import { Wrap } from "./styles";
 
 
 function MyPageLayout() {

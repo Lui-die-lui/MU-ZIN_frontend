@@ -19,14 +19,14 @@ function LessonStyleSection() {
   // 드롭다운이 검색/선택을 히려면 선택지 풀이 필요하니까 그걸 한번에 받아옴
   const { data: allTags = [] } = useQuery({
     queryKey: ["lessonStyleTags"],
-    queryFn: async () => (await getLessonStyleTagsReq()).data.data, // 레슨 스타일 태그 다 가져옴
+    queryFn: async () => (await getLessonStyleTagsReq()).data.data ?? [], // 레슨 스타일 태그 다 가져옴
     staleTime: 10 * 60 * 1000,
   });
 
   // 내 아티스트 스타일 태그(초기값)
   const { data: myTags = [], isFetched: myTagsFetched } = useQuery({
     queryKey: ["artistStyleTags", "me"],
-    queryFn: async () => (await getMyArtistStyleTagsReq()).data.data, // 내 레슨 스타일 태그 다 가져옴
+    queryFn: async () => (await getMyArtistStyleTagsReq()).data.data ?? [], // 내 레슨 스타일 태그 다 가져옴
   });
 
   // 드롭다운/칩 공용으로 쓰기 좋게: id 배열만 state로 관리 - 내가 고른것들
