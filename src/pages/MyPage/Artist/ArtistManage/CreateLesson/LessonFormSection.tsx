@@ -4,6 +4,7 @@ import type {
   LessonMode,
 } from "../../../../../Types/lessonTypes";
 import { section } from "../../../../Lesson/LessonDetailDrawer/styles";
+import type { InstrumentResponse } from "../../../../../Types/instrumentTypes";
 
 type Props = {
   lessonDraft: LessonCreateReq;
@@ -13,6 +14,9 @@ type Props = {
   setPrice: (v: string) => void;
   setDescription: (v: string) => void;
   setRequirementText: (v: string) => void;
+
+  myInstruments: InstrumentResponse[];
+  setInstrumentId: (id: number) => void;
 };
 function LessonFormSection({
   lessonDraft,
@@ -22,6 +26,8 @@ function LessonFormSection({
   setPrice,
   setDescription,
   setRequirementText,
+  myInstruments,
+  setInstrumentId,
 }: Props) {
   return (
     <section style={{ display: "grid", gap: 12 }}>
@@ -32,6 +38,24 @@ function LessonFormSection({
           onChange={(e) => setTitle(e.target.value)}
           placeholder="예: 플루트 입문 수업(1)"
         />
+      </label>
+
+      <label style={{ display: "grid", gap: 6 }}>
+        <span>레슨 악기</span>
+        <select
+          value={lessonDraft.instrumentId ?? 0}
+          onChange={(e) => setInstrumentId(Number(e.target.value))}
+        >
+          <option value={0} disabled>
+            내 악기 중 선택
+          </option>
+
+          {myInstruments.map((inst) => (
+            <option key={inst.instId} value={inst.instId}>
+              {inst.instName}
+            </option>
+          ))}
+        </select>
       </label>
 
       <label style={{ display: "grid", gap: 6 }}>
@@ -76,7 +100,6 @@ function LessonFormSection({
         />
       </label>
 
-      
       <label style={{ display: "grid", gap: 6 }}>
         <span>준비물/요구사항</span>
         <textarea

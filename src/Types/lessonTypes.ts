@@ -57,6 +57,7 @@ export interface LessonCreateReq {
   price?: number | null;
   description?: string | null;
   requirementText?: string | null;
+  instrumentId: number;
 }
 
 // 레슨 생성 응답 타입 자체를 분리하는게 타입 깨질 걱정 없다고 함 - 백이랑 맞춤

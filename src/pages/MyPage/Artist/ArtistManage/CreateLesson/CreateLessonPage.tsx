@@ -5,9 +5,19 @@ import { useStartDts } from "../../../../../hooks/Lesson/useStartDts";
 import { useCreateLessonWithSlots } from "../../../../../hooks/Lesson/useCreateLessonWithSlots";
 import LessonFormSection from "./LessonFormSection";
 import TimeSlotSection from "./TimeSlotSection";
+import { useQuery } from "@tanstack/react-query";
+import { getMyArtistProfileReq } from "../../../../../apis/artist/artistApi";
+import type { InstrumentResponse } from "../../../../../Types/instrumentTypes";
 
 function CreateLessonPage() {
   const navigate = useNavigate();
+
+  const { data: profile } = useQuery({
+    queryKey: ["artistProfile", "me"],
+    queryFn: async () => (await getMyArtistProfileReq()).data.data,
+  });
+
+  const myInstruments = (profile?.instruments ?? []) as InstrumentResponse[];
 
   const {
     lessonDraft,
@@ -16,6 +26,7 @@ function CreateLessonPage() {
     setDurationMin,
     setPrice,
     setField,
+    setInstrumentId,
     reset,
   } = useLessonForm();
 
@@ -35,6 +46,8 @@ function CreateLessonPage() {
     if (!lessonDraft.durationMin || lessonDraft.durationMin <= 0)
       // 수업 시간이 입력되어있지 않으면
       return alert("수업 시간(분)을 입력하세요.");
+
+    if (!lessonDraft.instrumentId) return alert("악기를 선택하세요.");
 
     mutate(
       { lesson: lessonDraft, startDts },
@@ -58,7 +71,10 @@ function CreateLessonPage() {
         setPrice={setPrice}
         setDescription={setDescription}
         setRequirementText={setRequirementText}
+        myInstruments={myInstruments}
+        setInstrumentId={setInstrumentId}
       />
+
       <hr style={{ margin: "20px 0" }} />
       <TimeSlotSection
         startDts={startDts}
@@ -66,7 +82,7 @@ function CreateLessonPage() {
         onRemove={remove}
         onClear={clear}
       />
-      
+
       <div style={{ marginTop: 16 }}>
         <button type="button" disabled={isPending} onClick={onSubmit}>
           {isPending ? "생성 중..." : "레슨 생성"}

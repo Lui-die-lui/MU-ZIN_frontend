@@ -11,6 +11,7 @@ const defaultDraft: LessonCreateReq = {
   price: null, // 레슨 가격
   description: null, // 레슨 소개
   requirementText: null, // 레슨 필수사항 안내
+  instrumentId: 0,
 };
 
 // initial = 호출하는 쪽의 로컬 디폴트
@@ -37,6 +38,8 @@ export function useLessonForm(initial?: Partial<LessonCreateReq>) {
   const setPrice = (v: string) =>
     setField("price", v === "" ? null : Number(v));
 
+  const setInstrumentId = (v: number) => setField("instrumentId", v);
+
   const reset = () => setLessonDraft({ ...defaultDraft, ...initial });
   // 기본값으로 되돌리되, 지정한 값은 유지한 채로 초기화한다
 
@@ -47,6 +50,7 @@ export function useLessonForm(initial?: Partial<LessonCreateReq>) {
     setMode,
     setDurationMin,
     setPrice,
+    setInstrumentId,
     reset,
   };
 }
