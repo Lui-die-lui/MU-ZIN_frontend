@@ -50,3 +50,18 @@ export function addStartDtPure(prev: string[], dtLocal: string) {
 export function removeStartDtPure(prev: string[], dt: string) {
   return prev.filter((item) => item !== dt);
 }
+
+// 타임슬롯 추가 시 과거 시간 생성 불가 함수
+export function getMinLocalDateTime(minutesAhead = 1) {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() + minutesAhead);
+  d.setSeconds(0, 0);
+
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mi = String(d.getMinutes()).padStart(2, "0");
+
+  return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+}
