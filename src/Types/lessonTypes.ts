@@ -89,3 +89,26 @@ export type TimeSlotCreateReq = {
   startDts: string[];
 }
 
+// 타임슬롯 요일 별 반복 생성 
+export type LessonRecurrenceUpsertReq = {
+  enabled?: boolean; // 안보내주면 true로 처리 중
+  timezone?: string; // default Asia/Seoul
+  daysOfWeekMask?: number; // default 127
+  startTime: string; // "HH:mm"
+  endTime: string;
+  intervalMin: number; // 수업 간격(= 수업 + 쉬는시간 포함)
+  weeksAhead?: number; // default 6
+}
+
+export type LessonRecurrenceResp = {
+  ruleId: number;
+  lessonId: number;
+  enabled: boolean;
+  timezone: string;
+  daysOfWeekMask: number;
+  startTime: string;
+  endTime: string;
+  intervalMin: number;
+  weeksAhead: never;
+  materializedUntil: string | null;
+}

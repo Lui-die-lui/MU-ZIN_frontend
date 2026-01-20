@@ -1,7 +1,9 @@
+import { LessonRecurrenceUpsertReq } from "./../../Types/lessonTypes";
 import type {
   LessonCreateReq,
   LessonCreateResp,
   LessonDetail,
+  LessonRecurrenceResp,
   LessonStyleTagResponse,
   LessonUpdateReq,
   SetLessonStylesReq,
@@ -17,7 +19,7 @@ export const createMyLessonReq = (body: LessonCreateReq) =>
 // 타임슬롯 생성
 export const createMyTimeSlotsReq = (
   lessonId: number,
-  body: TimeSlotCreateReq
+  body: TimeSlotCreateReq,
 ) =>
   instance.post<ApiRespDto<null>>(`/lessons/me/${lessonId}/time-slots`, body);
 
@@ -44,9 +46,25 @@ export const getLessonStyleTagsReq = () =>
 // 스타일 태그(전체 교체)
 export const setMyLessonStyleTagsReq = (
   lessonId: number,
-  body: SetLessonStylesReq
+  body: SetLessonStylesReq,
 ) =>
   instance.put<ApiRespDto<LessonDetail>>(
     `/lessons/me/${lessonId}/style-tag`,
-    body
+    body,
+  );
+
+// 반복 규칙 조회
+export const getMyLessonRecurrenceReq = (lessonId: number) =>
+  instance.get<ApiRespDto<LessonRecurrenceResp>>(
+    `/lessons/me/${lessonId}/recurrence`,
+  );
+
+// 반복 규칙 upsert + materialize
+export const upsertMyLessonRecurrenceReq = (
+  lessonId: number,
+  body: LessonRecurrenceUpsertReq,
+) =>
+  instance.put<ApiRespDto<LessonRecurrenceResp>>(
+    `/lessons/me/${lessonId}/recurrence`,
+    body,
   );
