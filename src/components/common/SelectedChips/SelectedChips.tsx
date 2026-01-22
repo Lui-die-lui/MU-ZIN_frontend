@@ -18,8 +18,8 @@ function SelectedChips<T>({
   onRemove,
   title = "클릭 시 삭제",
 }: Props<T>) {
-    if (items.length === 0) return null;
- return (
+  if (items.length === 0) return null;
+  return (
     <div css={s.chipWrap}>
       {items.map((item) => (
         <button
@@ -31,7 +31,9 @@ function SelectedChips<T>({
           title={title}
         >
           {getLabel(item)}
-          <span css={s.chipX}>×</span>
+          <span css={s.chipX} aria-hidden="true">
+            ×
+          </span>
         </button>
       ))}
     </div>
