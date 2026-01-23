@@ -30,7 +30,7 @@ function CreateLessonPage() {
     reset,
   } = useLessonForm();
 
-  const { startDts, add, remove, clear } = useStartDts();
+  const { startDts, add, addMany, remove, clear } = useStartDts();
 
   const { mutate, isPending } = useCreateLessonWithSlots();
 
@@ -40,6 +40,9 @@ function CreateLessonPage() {
 
   const setRequirementText = (v: string) =>
     setField("requirementText", v.trim() === "" ? null : v);
+
+  const durationMinNum = Number(lessonDraft.durationMin);
+  const durationOk = Number(durationMinNum) && durationMinNum > 0;
 
   const onSubmit = () => {
     if (!lessonDraft.title.trim()) return alert("레슨명을 입력하세요.");
@@ -77,8 +80,10 @@ function CreateLessonPage() {
 
       <hr style={{ margin: "20px 0" }} />
       <TimeSlotSection
+        durationMin={durationOk ? durationMinNum : NaN}
         startDts={startDts}
         onAdd={add}
+        onAddMany={addMany}
         onRemove={remove}
         onClear={clear}
       />
