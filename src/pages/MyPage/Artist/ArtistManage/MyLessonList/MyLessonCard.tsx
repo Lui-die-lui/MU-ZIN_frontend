@@ -20,8 +20,8 @@ function MyLessonCard({ lesson, onClick }: Props) {
 
         <div css={s.cardMeta}>
           <span>{lesson.mode}</span>
-          <span>.</span>
-          <span>{lesson.description}분</span>
+          <span>|</span>
+          <span>{lesson.durationMin}분</span>
           <span>
             {lesson.price ? `${lesson.price.toLocaleString()}원` : "가격 미정"}
           </span>

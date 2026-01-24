@@ -1,41 +1,34 @@
-import React from "react";
 import type {
-  LessonCreateReq,
+  LessonFormValues,
   LessonMode,
 } from "../../../../../Types/lessonTypes";
-import { section } from "../../../../Lesson/LessonDetailDrawer/styles";
 import type { InstrumentResponse } from "../../../../../Types/instrumentTypes";
 
+
 type Props = {
-  lessonDraft: LessonCreateReq;
-  setTitle: (v: string) => void;
-  setMode: (v: LessonMode) => void;
-  setDurationMin: (v: string) => void;
-  setPrice: (v: string) => void;
-  setDescription: (v: string) => void;
-  setRequirementText: (v: string) => void;
+  value: LessonFormValues;
+  onChange: <K extends keyof LessonFormValues>(
+    key: K,
+    v: LessonFormValues[K],
+  ) => void;
 
   myInstruments: InstrumentResponse[];
-  setInstrumentId: (id: number) => void;
+  disabled?: Partial<Record<keyof LessonFormValues, boolean>>;
 };
 function LessonFormSection({
-  lessonDraft,
-  setTitle,
-  setMode,
-  setDurationMin,
-  setPrice,
-  setDescription,
-  setRequirementText,
+  value,
+  onChange,
   myInstruments,
-  setInstrumentId,
+  disabled,
 }: Props) {
   return (
     <section style={{ display: "grid", gap: 12 }}>
       <label style={{ display: "grid", gap: 6 }}>
         <span>레슨 제목</span>
         <input
-          value={lessonDraft.title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={value.title}
+          disabled={!!disabled?.title}
+          onChange={(e) => onChange("title", e.target.value)}
           placeholder="예: 플루트 입문 수업(1)"
         />
       </label>
@@ -43,8 +36,9 @@ function LessonFormSection({
       <label style={{ display: "grid", gap: 6 }}>
         <span>레슨 악기</span>
         <select
-          value={lessonDraft.instrumentId ?? 0}
-          onChange={(e) => setInstrumentId(Number(e.target.value))}
+          value={value.instrumentId ?? 0}
+          disabled={!!disabled?.instrumentId}
+          onChange={(e) => onChange("instrumentId", Number(e.target.value))}
         >
           <option value={0} disabled>
             내 악기 중 선택
@@ -61,8 +55,9 @@ function LessonFormSection({
       <label style={{ display: "grid", gap: 6 }}>
         <span>레슨 방식</span>
         <select
-          value={lessonDraft.mode}
-          onChange={(e) => setMode(e.target.value as LessonMode)}
+          value={value.mode}
+          disabled={!!disabled?.mode}
+          onChange={(e) => onChange("mode", e.target.value as LessonMode)}
         >
           <option value="ONLINE">화상 및 온라인</option>
           <option value="OFFLINE">학원 및 스튜디오(개인 공간)</option>
@@ -75,8 +70,9 @@ function LessonFormSection({
         <input
           type="number"
           min={1}
-          value={lessonDraft.durationMin}
-          onChange={(e) => setDurationMin(e.target.value)}
+          value={value.durationMin}
+          disabled={!!disabled?.durationMin}
+          onChange={(e) => onChange("durationMin", e.target.value)}
         />
       </label>
 
@@ -85,8 +81,9 @@ function LessonFormSection({
         <input
           type="number"
           min={0}
-          value={lessonDraft.price ?? ""}
-          onChange={(e) => setPrice(e.target.value)}
+          value={value.price ?? ""}
+          disabled={!!disabled?.price}
+          onChange={(e) => onChange("price", e.target.value)}
         />
       </label>
 
@@ -94,8 +91,9 @@ function LessonFormSection({
         <span>레슨 설명</span>
         <textarea
           rows={3}
-          value={lessonDraft.description ?? ""}
-          onChange={(e) => setDescription(e.target.value)}
+          value={value.description ?? ""}
+          disabled={!!disabled?.description}
+          onChange={(e) => onChange("description", e.target.value)}
           placeholder="레슨 소개 입력"
         />
       </label>
@@ -104,8 +102,9 @@ function LessonFormSection({
         <span>준비물/요구사항</span>
         <textarea
           rows={2}
-          value={lessonDraft.requirementText ?? ""}
-          onChange={(e) => setRequirementText(e.target.value)}
+          value={value.requirementText ?? ""}
+          disabled={!!disabled?.requirementText}
+          onChange={(e) => onChange("requirementText", e.target.value)}
           placeholder="예: 악기 지참 필수"
         />
       </label>

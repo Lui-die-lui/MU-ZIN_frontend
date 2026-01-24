@@ -1,9 +1,9 @@
-import { LessonRecurrenceUpsertReq } from "./../../Types/lessonTypes";
 import type {
   LessonCreateReq,
   LessonCreateResp,
   LessonDetail,
   LessonRecurrenceResp,
+  LessonRecurrenceUpsertReq,
   LessonStyleTagResponse,
   LessonUpdateReq,
   SetLessonStylesReq,

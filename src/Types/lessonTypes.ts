@@ -6,6 +6,9 @@ export type LessonMode = "ONLINE" | "OFFLINE" | "VISIT" | "REQUEST_ONLY";
 // 레슨 활성 상태
 export type LessonStatus = "ACTIVE" | "INACTIVE";
 
+// 레슨 타임 슬롯 예약 가능/예약중/불가 상태
+export type TimeSlotStatus = "OPEN" | "BOOKED" | "CLOSED";
+
 // 스타일 태그 응답
 export interface LessonStyleTagResponse {
   lessonStyleTagId: number;
@@ -77,6 +80,7 @@ export interface LessonUpdateReq {
   description?: string | null;
   requirementText?: string | null;
   status?: LessonStatus | null;
+  instrumentId?: number;
 }
 
 // 레슨 스타일 토글
@@ -87,9 +91,17 @@ export interface SetLessonStylesReq {
 // 타임슬롯 생성 타입
 export type TimeSlotCreateReq = {
   startDts: string[];
-}
+};
 
-// 타임슬롯 요일 별 반복 생성 
+// 타임슬롯 응답
+export type TimeSlotResp = {
+  timeSlotId: number;
+  startDt: string;
+  endDt: string;
+  status: TimeSlotStatus;
+};
+
+// 타임슬롯 요일 별 반복 생성
 export type LessonRecurrenceUpsertReq = {
   enabled?: boolean; // 안보내주면 true로 처리 중
   timezone?: string; // default Asia/Seoul
@@ -98,7 +110,7 @@ export type LessonRecurrenceUpsertReq = {
   endTime: string;
   intervalMin: number; // 수업 간격(= 수업 + 쉬는시간 포함)
   weeksAhead?: number; // default 6
-}
+};
 
 export type LessonRecurrenceResp = {
   ruleId: number;
@@ -111,4 +123,15 @@ export type LessonRecurrenceResp = {
   intervalMin: number;
   weeksAhead: never;
   materializedUntil: string | null;
-}
+};
+
+// 레슨 생성 및 수정 form types
+export type LessonFormValues = {
+  title: string;
+  instrumentId: number;
+  mode: LessonMode;
+  durationMin: string;
+  price: string;
+  description: string;
+  requirementText: string;
+};
