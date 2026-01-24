@@ -27,11 +27,11 @@ function RecurrenceTimeSlotInput({ durationMin, onAddMany }: Props) {
 
   const [daysOfWeek, setDaysOfWeek] = useState<boolean[]>([
     false,
-    true,
-    true,
-    true,
-    true,
-    true,
+    false,
+    false,
+    false,
+    false,
+    false,
     false,
   ]);
   const [startTime, setStartTime] = useState("10:00");
@@ -75,7 +75,6 @@ function RecurrenceTimeSlotInput({ durationMin, onAddMany }: Props) {
   ]);
 
   // 미리보기 계산이 실패했는지(throw) 사용자에게 보여줄 메시지
-  
 
   const toggleDow = (idx: number) => {
     setDaysOfWeek((prev) => prev.map((v, i) => (i === idx ? !v : v)));
@@ -189,7 +188,9 @@ function RecurrenceTimeSlotInput({ durationMin, onAddMany }: Props) {
         </button>
 
         {preview.error && (
-          <span style={{ color: "#ff6b6b", fontSize: 12 }}>{preview.error}</span>
+          <span style={{ color: "#ff6b6b", fontSize: 12 }}>
+            {preview.error}
+          </span>
         )}
       </div>
 

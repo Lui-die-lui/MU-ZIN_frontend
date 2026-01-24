@@ -30,7 +30,7 @@ export default function TimeSlotSection({
 
   const grouped = useMemo(() => groupByMonthDay(startDts), [startDts]);
 
- return (
+  return (
     <section style={{ display: "grid", gap: 12 }}>
       {/* 헤더 */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -67,7 +67,11 @@ export default function TimeSlotSection({
           <span style={{ opacity: 0.8 }}>
             선택: <b>{startDts.length}</b>개
           </span>
-          <button type="button" onClick={onClear} disabled={startDts.length === 0}>
+          <button
+            type="button"
+            onClick={onClear}
+            disabled={startDts.length === 0}
+          >
             전체 삭제
           </button>
         </div>
@@ -88,7 +92,10 @@ export default function TimeSlotSection({
           {mode === "single" ? (
             <SingleTimeslotInput onAdd={onAdd} />
           ) : (
-            <RecurrenceTimeSlotInput durationMin={durationMin} onAddMany={onAddMany} />
+            <RecurrenceTimeSlotInput
+              durationMin={durationMin}
+              onAddMany={onAddMany}
+            />
           )}
         </div>
 
@@ -101,7 +108,9 @@ export default function TimeSlotSection({
           }}
         >
           {startDts.length === 0 ? (
-            <p style={{ margin: 0, opacity: 0.7 }}>아직 추가된 타임슬롯이 없습니다.</p>
+            <p style={{ margin: 0, opacity: 0.7 }}>
+              아직 추가된 타임슬롯이 없습니다.
+            </p>
           ) : (
             <div style={{ display: "grid", gap: 12 }}>
               {Object.entries(grouped).map(([ym, days]) => (
@@ -129,7 +138,9 @@ export default function TimeSlotSection({
                           gap: 10,
                         }}
                       >
-                        <div style={{ width: 42, opacity: 0.75 }}>{Number(day)}일</div>
+                        <div style={{ width: 42, opacity: 0.75 }}>
+                          {Number(day)}일
+                        </div>
 
                         {/* 재사용 칩 */}
                         <SelectedChips

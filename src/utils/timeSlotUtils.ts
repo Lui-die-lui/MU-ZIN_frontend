@@ -189,9 +189,12 @@ export function generateRecurrenceStartDts(params: {
       // 합쳐서 "YYYY-MM-DDTHH:mm:ss" 로 만들고 결과 배열에 넣음
       out.push(toLocalDateTimeString(ymd, hm));
 
+      // 진행 시간 + 쉬는시간 = 수업진행 후 쉬는시간까지 합쳐서 timeslot chip을 생성
+      const stepMin = durationMin + intervalMin;
+
       // 다음 슬롯 시작시간으로 이동
       // 예: intervalMin=90이면 10:30 → 12:00 → 13:30
-      curMin += intervalMin;
+      curMin += stepMin;
 
       // 시작 시간이 endTime 이상이면 종료
       if (curMin >= endLimitMin) break;
