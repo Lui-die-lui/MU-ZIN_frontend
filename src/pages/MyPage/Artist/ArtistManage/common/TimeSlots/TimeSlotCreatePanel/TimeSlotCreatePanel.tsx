@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import RecurrenceTimeSlotInput from "../RecurrenceTimeSlotInput";
 import SingleTimeslotInput from "../SingleTimeslotInput";
+import RecurrenceTimeSlotInput from "../RecurrenceTimeSlotInput";
 
 type Mode = "single" | "recurrence";
 
@@ -68,7 +68,10 @@ export default function TimeSlotCreatePanel({
         {mode === "single" ? (
           <SingleTimeslotInput onAdd={onAdd} />
         ) : (
-          <RecurrenceTimeSlotInput durationMin={durationMin} onAddMany={onAddMany} />
+          <RecurrenceTimeSlotInput
+            durationMin={durationMin}
+            onAddMany={onAddMany}
+          />
         )}
       </div>
     </section>

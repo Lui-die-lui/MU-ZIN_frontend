@@ -4,7 +4,6 @@ import type {
 } from "../../../../../Types/lessonTypes";
 import type { InstrumentResponse } from "../../../../../Types/instrumentTypes";
 
-
 type Props = {
   value: LessonFormValues;
   onChange: <K extends keyof LessonFormValues>(

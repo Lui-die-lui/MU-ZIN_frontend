@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLessonForm } from "../../../../../hooks/Lesson/useLessonForm";
 import { useStartDts } from "../../../../../hooks/Lesson/useStartDts";
 import { useCreateLessonWithSlots } from "../../../../../hooks/Lesson/useCreateLessonWithSlots";
-import LessonFormSection from "./LessonFormSection";
-import TimeSlotSection from "./TimeSlotSection";
+import LessonFormSection from "../common/LessonFormSection";
 import { useQuery } from "@tanstack/react-query";
 import { getMyArtistProfileReq } from "../../../../../apis/artist/artistApi";
 import type { InstrumentResponse } from "../../../../../Types/instrumentTypes";
@@ -12,8 +11,9 @@ import type {
   LessonCreateReq,
   LessonFormValues,
 } from "../../../../../Types/lessonTypes";
-import TimeSlotCreatePanel from "./TimeSlots/TimeSlotCreatePanel/TimeSlotCreatePanel";
-import TimeSlotSelectedList from "./TimeSlots/TimeSlotSelectedList/TimeSlotSelectedList";
+
+import TimeSlotSelectedList from "../common/TimeSlots/TimeSlotSelectedList/TimeSlotSelectedList";
+import TimeSlotCreatePanel from "../common/TimeSlots/TimeSlotCreatePanel/TimeSlotCreatePanel";
 
 // 변환 함수 - form 재사용을 위해서
 const toCreateReq = (v: LessonFormValues): LessonCreateReq => ({

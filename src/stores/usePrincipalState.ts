@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Principal, PrincipalState } from "../Types/auth";
+import type { Principal } from "../Types/auth";
 import { queryClient } from "../configs/queryClient";
 import { getPrincipalReq, signinReq } from "../apis/auth/authApi";
 
@@ -22,7 +22,7 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
 
   setPrincipal: (p) => set({ principal: p, isAuthenticated: !!p }),
 
-  // 업데이트 
+  // 업데이트
   updatePrincipal: (patch) =>
     set((state) => {
       if (!state.principal) return state; // 로그인 전이면 변경 불가
@@ -33,9 +33,8 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
       };
     }),
 
-    // principal 재조회(앱 시작, 인증 또는 어디서나)
-    // refreshPrincipal: async () => {
-
+  // principal 재조회(앱 시작, 인증 또는 어디서나)
+  // refreshPrincipal: async () => {
 
   signin: async (email, password) => {
     // 1. 로그인 요청 -> ApiRespDto<string|null>

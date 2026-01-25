@@ -121,11 +121,11 @@ export type LessonRecurrenceResp = {
   startTime: string;
   endTime: string;
   intervalMin: number;
-  weeksAhead: never;
+  weeksAhead: number;
   materializedUntil: string | null;
 };
 
-// 레슨 생성 및 수정 form types
+// 레슨 생성 및 수정 입력 form types
 export type LessonFormValues = {
   title: string;
   instrumentId: number;
@@ -135,3 +135,24 @@ export type LessonFormValues = {
   description: string;
   requirementText: string;
 };
+
+// edit(=update)시 원래 내 Detail값 set 해줄 수 있도록 (관리용)
+// 공개에서 쓰는 것과 관리에서 쓰는 것을 같은 타입으로 강제하지 말것.
+export interface MyLessonDetail {
+  lessonId: number;
+  title: string;
+  price: number | null;
+  durationMin: number;
+  mode: LessonMode;
+  status: LessonStatus;
+
+  description: string | null;
+  requirementText: string | null;
+
+  createDt: string;
+  updateDt: string;
+
+  instrumentId: number;
+}
+
+export type MyLessonDetailResp = ApiRespDto<MyLessonDetail>;

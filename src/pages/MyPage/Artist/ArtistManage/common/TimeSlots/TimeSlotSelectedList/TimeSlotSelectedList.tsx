@@ -23,7 +23,11 @@ export default function TimeSlotSelectedList({
           <span style={{ opacity: 0.8 }}>
             선택: <b>{startDts.length}</b>개
           </span>
-          <button type="button" onClick={onClear} disabled={startDts.length === 0}>
+          <button
+            type="button"
+            onClick={onClear}
+            disabled={startDts.length === 0}
+          >
             전체 삭제
           </button>
         </div>
@@ -37,7 +41,9 @@ export default function TimeSlotSelectedList({
         }}
       >
         {startDts.length === 0 ? (
-          <p style={{ margin: 0, opacity: 0.7 }}>아직 추가된 타임슬롯이 없습니다.</p>
+          <p style={{ margin: 0, opacity: 0.7 }}>
+            아직 추가된 타임슬롯이 없습니다.
+          </p>
         ) : (
           <div style={{ display: "grid", gap: 12 }}>
             {Object.entries(grouped).map(([ym, days]) => (
@@ -57,9 +63,15 @@ export default function TimeSlotSelectedList({
                   {Object.entries(days).map(([day, dts]) => (
                     <div
                       key={`${ym}-${day}`}
-                      style={{ display: "flex", alignItems: "flex-start", gap: 10 }}
+                      style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 10,
+                      }}
                     >
-                      <div style={{ width: 42, opacity: 0.75 }}>{Number(day)}일</div>
+                      <div style={{ width: 42, opacity: 0.75 }}>
+                        {Number(day)}일
+                      </div>
 
                       <SelectedChips
                         items={dts}
