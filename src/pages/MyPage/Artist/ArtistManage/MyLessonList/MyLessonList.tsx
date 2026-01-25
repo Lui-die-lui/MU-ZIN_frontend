@@ -3,6 +3,7 @@ import * as s from "./styles";
 import React from "react";
 import type { LessonSummary } from "../../../../../Types/lessonTypes";
 import MyLessonCard from "./MyLessonCard";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   loading: boolean;
@@ -10,6 +11,7 @@ type Props = {
   onClickLesson: (lessonId: number) => void;
 };
 function MyLessonList({ loading, lesson, onClickLesson }: Props) {
+  const navigate = useNavigate();
   if (loading) {
     return (
       <div css={s.list}>
@@ -29,11 +31,11 @@ function MyLessonList({ loading, lesson, onClickLesson }: Props) {
   }
   return (
     <div css={s.list}>
-      {lesson.map((l) => (
+      {lesson.map((lesson) => (
         <MyLessonCard
-          key={l.lessonId}
-          lesson={l}
-          onClick={() => onClickLesson(l.lessonId)}
+          key={lesson.lessonId}
+          lesson={lesson}
+          onClick={() => navigate(`/mypage/artist/manage/${lesson.lessonId}`)}
         />
       ))}
     </div>

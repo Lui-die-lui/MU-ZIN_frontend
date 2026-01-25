@@ -50,7 +50,7 @@ function ArtistManagePage() {
         loading={isLoading}
         lesson={lessons}
         onClickLesson={(lessonId) =>
-          navigate(`/mypage/lessons/${lessonId}/edit`)
+          navigate(`/mypage/artist/manage/${lessonId}`)
         }
       />
     </div>

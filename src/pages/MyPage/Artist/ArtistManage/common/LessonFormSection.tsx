@@ -12,7 +12,7 @@ type Props = {
   ) => void;
 
   myInstruments: InstrumentResponse[];
-  disabled?: Partial<Record<keyof LessonFormValues, boolean>>;
+  disabled?: Partial<Record<keyof LessonFormValues, boolean>>; // 타입 맞춰줘야함(Map으로)
 };
 function LessonFormSection({
   value,

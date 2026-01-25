@@ -1,4 +1,3 @@
-
 import { Route, Routes } from "react-router-dom";
 import MyPageLayout from "../pages/MyPage/MyPageLayout";
 import HomePage from "../pages/MyPage/Home/HomePage";
@@ -12,6 +11,7 @@ import AccountLayout from "../pages/MyPage/Account/AccountLayout/AccountLayout";
 import ApprovdeArtistGuard from "../pages/MyPage/Account/ApprovdeArtistGuard";
 import ArtistAccountPage from "../pages/MyPage/Account/ArtistAccountPage";
 import CreateLessonPage from "../pages/MyPage/Artist/ArtistManage/CreateLesson/CreateLessonPage";
+import EditLessonPage from "../pages/MyPage/Artist/ArtistManage/EditLesson/EditLessonPage";
 
 function MyPageRouter() {
   return (
@@ -39,7 +39,8 @@ function MyPageRouter() {
           <Route path="apply" element={<ArtistApplyPage />} />
           <Route path="pending" element={<ArtistPendingPage />} />
           <Route path="manage" element={<ArtistManagePage />} />
-          <Route path="new" element={<CreateLessonPage/>} />
+          <Route path="manage/:lessonId" element={<EditLessonPage />} />
+          <Route path="new" element={<CreateLessonPage />} />
         </Route>
       </Route>
     </Routes>
