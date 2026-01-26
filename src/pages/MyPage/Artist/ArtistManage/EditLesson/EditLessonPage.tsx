@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyArtistProfileReq } from "../../../../../apis/artist/artistApi";
 import type { InstrumentResponse } from "../../../../../Types/instrumentTypes";
 import {
+  useDeleteMyTimeSlot,
   useMyLessonDetail,
   useMyRecurrence,
   useMyTimeSlots,
@@ -52,9 +53,10 @@ function EditLessonPage() {
   // recurrence 읽기
   const recurrenceQ = useMyRecurrence(lessonId);
 
+  const serverSlots = slotsQ.data ?? [];
+
   const hasBooked = useMemo(() => {
-    const slots = slotsQ.data ?? [];
-    return slots.some((s) => s.status === "BOOKED"); // booked 상태인 타임슬롯이 있는지 체크
+    return serverSlots.some((s) => s.status === "BOOKED"); // booked 상태인 타임슬롯이 있는지 체크
   }, [slotsQ.data]);
 
   // 폼, 추가슬롯 로컬 상태
@@ -69,6 +71,8 @@ function EditLessonPage() {
     const n = Number(lessonDraft.durationMin);
     return Number.isFinite(n) ? n : NaN;
   }, [lessonDraft.durationMin]);
+
+  const deleteSlotMutate = useDeleteMyTimeSlot(lessonId, from, to);
 
   // submit
   const onSubmit = () => {
@@ -87,7 +91,6 @@ function EditLessonPage() {
     });
 
     const recurrencePatch: LessonRecurrenceUpsertReq | undefined = undefined;
-
 
     mutate(
       {
@@ -131,11 +134,13 @@ function EditLessonPage() {
       {/* 타임슬롯 섹션(추가 예정분만 관리) */}
       <EditLessonTimeSlotSection
         durationMin={durationMinNum}
-        startDts={startDts}
+        serverSlots={slotsQ.data ?? []}
+        draftStartDts={startDts}
         onAdd={add}
         onAddMany={addMany}
-        onRemove={remove}
-        onClear={clear}
+        onRemoveServer={(timeSlotId) => deleteSlotMutate.mutate(timeSlotId)}
+        onRemoveDraft={(dt) => remove(dt)}
+        onClearDraft={() => clear()}
       />
 
       <div style={{ marginTop: 16, display: "flex", gap: 8 }}>
