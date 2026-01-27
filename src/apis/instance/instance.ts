@@ -5,7 +5,9 @@ export const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    
   },
+  
 });
 
 // 요청 인터셉터 설정 - 모든 요청마다 헤더에 jwt를 자동으로 붙여줌

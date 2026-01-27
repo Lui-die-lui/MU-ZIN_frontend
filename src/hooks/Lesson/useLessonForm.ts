@@ -11,7 +11,7 @@ const defaultDraft: LessonFormValues = {
   price: "", // 레슨 가격
   description: "", // 레슨 소개
   requirementText: "", // 레슨 필수사항 안내
-  instrumentId: 0,
+  instId: 0,
 };
 
 // initial = 호출하는 쪽의 로컬 디폴트
@@ -43,7 +43,7 @@ export function useLessonForm(initial?: Partial<LessonFormValues>) {
   const setPrice = (v: string) => setField("price", v);
   const setDescription = (v: string) => setField("description", v);
   const setRequirementText = (v: string) => setField("requirementText", v);
-  const setInstrumentId = (v: number) => setField("instrumentId", v);
+  const setInstrumentId = (v: number) => setField("instId", v);
 
   const reset = () =>
     setLessonDraft({ ...defaultDraft, ...initialRef.current });

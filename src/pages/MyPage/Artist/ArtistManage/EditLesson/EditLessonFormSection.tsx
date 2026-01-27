@@ -11,7 +11,7 @@ type DisabledMap = Partial<Record<keyof LessonFormValues, boolean>>;
 // 서버 MyLessonDetail -> 폼값
 const toFormValues = (d: MyLessonDetail): LessonFormValues => ({
   title: d.title ?? "",
-  instrumentId: d.instrumentId ?? 0,
+  instId: d.instId ?? 0, 
   mode: d.mode,
   durationMin: String(d.durationMin ?? ""),
   price: d.price == null ? "" : String(d.price),
@@ -44,7 +44,17 @@ function EditLessonFormSection({
 
   useEffect(() => {
     if (hydratedRef.current) return;
-    setAll(toFormValues(detail));
+    // setAll(toFormValues(detail));
+
+    const next = toFormValues(detail);
+    console.log(
+      "HYDRATE instId:",
+      next.instId,
+      "detail:",
+      detail.instId,
+    );
+    setAll(next);
+
     hydratedRef.current = true;
   }, [detail, setAll]);
 
@@ -55,7 +65,7 @@ function EditLessonFormSection({
       mode: true,
       durationMin: true,
       price: true,
-      instrumentId: true,
+      instId: true,
     };
   }, [hasBooked]);
 

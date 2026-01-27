@@ -80,14 +80,25 @@ function RecurrenceTimeSlotInput({ durationMin, onAddMany }: Props) {
     setDaysOfWeek((prev) => prev.map((v, i) => (i === idx ? !v : v)));
   };
 
-  const handleAdd = () => {
-    if (!durationOk) return;
-    if (preview.dts.length === 0) {
-      alert(preview.error || "생성할 슬롯이 없습니다.");
-      return;
-    }
-    onAddMany(preview.dts);
-  };
+//   const handleAdd = () => {
+//     if (!durationOk) return;
+//     if (preview.dts.length === 0) {
+//       alert(preview.error || "생성할 슬롯이 없습니다.");
+//       return;
+//     }
+//   };
+const handleAdd = () => {
+  if (!durationOk) return;
+  if (preview.dts.length === 0) {
+    alert(preview.error || "생성할 슬롯이 없습니다.");
+    return;
+  }
+  const normalized = preview.dts.map((s) =>
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(s) ? `${s}:00` : s,
+  ); // "YYYY-MM-DDTHH:mm:ss" 로 비교 전송 되어야하는데 아니어서 터졌었음
+
+  onAddMany(normalized);
+};
 
   return (
     <section style={{ display: "grid", gap: 10 }}>

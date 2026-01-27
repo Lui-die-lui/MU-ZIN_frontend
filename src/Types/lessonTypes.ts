@@ -60,7 +60,7 @@ export interface LessonCreateReq {
   price?: number | null;
   description?: string | null;
   requirementText?: string | null;
-  instrumentId: number;
+  instId: number;
 }
 
 // 레슨 생성 응답 타입 자체를 분리하는게 타입 깨질 걱정 없다고 함 - 백이랑 맞춤
@@ -80,7 +80,7 @@ export interface LessonUpdateReq {
   description?: string | null;
   requirementText?: string | null;
   status?: LessonStatus | null;
-  instrumentId?: number;
+  instId?: number;
 }
 
 // 레슨 스타일 토글
@@ -128,7 +128,7 @@ export type LessonRecurrenceResp = {
 // 레슨 생성 및 수정 입력 form types
 export type LessonFormValues = {
   title: string;
-  instrumentId: number;
+  instId: number;
   mode: LessonMode;
   durationMin: string;
   price: string;
@@ -152,7 +152,7 @@ export interface MyLessonDetail {
   createDt: string;
   updateDt: string;
 
-  instrumentId: number;
+  instId: number;
 }
 
 export type MyLessonDetailResp = ApiRespDto<MyLessonDetail>;

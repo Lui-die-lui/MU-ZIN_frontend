@@ -19,6 +19,7 @@ export default function TimeSlotCreatePanel({
 
   const title = useMemo(() => {
     return mode === "single" ? "단일 타임슬롯 추가" : "반복 일정 타임슬롯 생성";
+    
   }, [mode]);
 
   return (
@@ -42,7 +43,7 @@ export default function TimeSlotCreatePanel({
           </button>
           <button
             type="button"
-            onClick={() => setMode("recurrence")}
+            onClick={() => setMode("recurrence") }
             style={{
               padding: "6px 10px",
               borderRadius: 999,
@@ -50,6 +51,7 @@ export default function TimeSlotCreatePanel({
               opacity: mode === "recurrence" ? 1 : 0.5,
             }}
           >
+            
             반복
           </button>
         </div>

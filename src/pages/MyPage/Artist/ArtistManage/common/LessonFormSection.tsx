@@ -35,16 +35,16 @@ function LessonFormSection({
       <label style={{ display: "grid", gap: 6 }}>
         <span>레슨 악기</span>
         <select
-          value={value.instrumentId ?? 0}
-          disabled={!!disabled?.instrumentId}
-          onChange={(e) => onChange("instrumentId", Number(e.target.value))}
+          value={value.instId ?? 0 ? String(value.instId) : ""}
+          disabled={!!disabled?.instId}
+          onChange={(e) => onChange("instId", Number(e.target.value))}
         >
-          <option value={0} disabled>
+          <option value="" disabled>
             내 악기 중 선택
           </option>
 
           {myInstruments.map((inst) => (
-            <option key={inst.instId} value={inst.instId}>
+            <option key={inst.instId} value={String(inst.instId)}>
               {inst.instName}
             </option>
           ))}

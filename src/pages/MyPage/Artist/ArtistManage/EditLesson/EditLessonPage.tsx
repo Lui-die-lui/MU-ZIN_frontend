@@ -77,19 +77,20 @@ function EditLessonPage() {
   // submit
   const onSubmit = () => {
     if (!detailQ.data) return;
+    console.log("DETAIL RAW", detailQ.data);
     if (!lessonDraft.title.trim()) return alert("레슨명을 입력하세요.");
 
     const dm = Number(lessonDraft.durationMin);
     if (!Number.isFinite(dm) || dm <= 0)
       return alert("수업 시간(분)을 입력하세요.");
-    if (!lessonDraft.instrumentId) return alert("악기를 선택하세요.");
+    if (!lessonDraft.instId) return alert("악기를 선택하세요.");
 
     const patch: LessonUpdateReq = buildLessonUpdatePatch({
       original: detailQ.data,
       draft: lessonDraft,
       coreEditable: !hasBooked,
     });
-
+ 
     const recurrencePatch: LessonRecurrenceUpsertReq | undefined = undefined;
 
     mutate(

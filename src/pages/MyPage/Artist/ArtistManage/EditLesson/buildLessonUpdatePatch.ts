@@ -39,8 +39,8 @@ export function buildLessonUpdatePatch(params: {
     }
   }
 
-  if (draft.instrumentId !== original.instrumentId) {
-    patch.instrumentId = draft.instrumentId;
+  if (draft.instId !== original.instId) {
+    patch.instId = draft.instId;
   }
 
   // 예약되어있어도 바꿀 수 있는 fields

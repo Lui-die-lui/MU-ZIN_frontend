@@ -128,6 +128,7 @@ export function useMyRecurrence(lessonId: number) {
     queryFn: () =>
       getMyLessonRecurrenceReq(lessonId).then((resp) => resp.data.data),
     enabled: Number.isFinite(lessonId) && lessonId > 0,
+    retry: false,
   });
 }
 

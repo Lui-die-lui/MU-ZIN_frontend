@@ -23,7 +23,7 @@ const toCreateReq = (v: LessonFormValues): LessonCreateReq => ({
   price: v.price.trim() === "" ? null : Number(v.price),
   description: v.description.trim() === "" ? null : v.description,
   requirementText: v.requirementText.trim() === "" ? null : v.requirementText,
-  instrumentId: v.instrumentId,
+  instId: v.instId,
 });
 
 function CreateLessonPage() {
@@ -59,7 +59,7 @@ function CreateLessonPage() {
       // 수업 시간이 입력되어있지 않으면
       return alert("수업 시간(분)을 입력하세요.");
 
-    if (!lessonDraft.instrumentId) return alert("악기를 선택하세요.");
+    if (!lessonDraft.instId) return alert("악기를 선택하세요.");
 
     mutate(
       { lesson: toCreateReq(lessonDraft), startDts },
@@ -68,6 +68,10 @@ function CreateLessonPage() {
           reset();
           clear();
           navigate("/mypage/artist/manage");
+        },
+        onError: (err: any) => {
+          console.log(err.response?.status);
+          console.log(err.response?.data);
         },
       },
     );
