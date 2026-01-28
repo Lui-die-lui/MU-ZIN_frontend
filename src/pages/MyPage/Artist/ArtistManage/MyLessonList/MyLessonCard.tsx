@@ -1,21 +1,57 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
-import type { LessonSummary } from "../../../../../Types/lessonTypes";
+import type {
+  LessonStatus,
+  LessonSummary,
+} from "../../../../../Types/lessonTypes";
+import { IOSSwitch } from "../../../../../components/common/StatusToggleSwitch/IOSSwitch";
 
 type Props = {
   lesson: LessonSummary;
-  onClick: () => void;
+  status?: LessonStatus;
+  onClick: () => void; // 상세 진입
+  onToggleStatus?: (next: LessonStatus) => void; // 목록에서 토글가능
+  isToggling: boolean;
 };
 
-function MyLessonCard({ lesson, onClick }: Props) {
+function MyLessonCard({ lesson, status, onClick, onToggleStatus, isToggling }: Props) {
+  const effectiveStatus = status ?? lesson.status;
+  const checked = effectiveStatus === "ACTIVE";
+
   return (
-    <button type="button" css={s.card} onClick={onClick}>
+    <div
+      css={s.card}
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onClick();
+      }}
+    >
       <div css={s.cardTop}>
         <div css={s.cardTitleRow}>
           <strong css={s.cardTitle}>{lesson.title}</strong>
-          <span css={s.badge(lesson.status)}>
-            {lesson.status === "ACTIVE" ? "활성" : "비활성"}
-          </span>
+
+          <div css={s.rightActions}>
+            {onToggleStatus && (
+              <div
+                css={s.statusControl}
+                onClick={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+              >
+                <IOSSwitch
+                  checked={checked}
+                  disabled={isToggling}
+                  onChange={(_e, nextChecked) => {
+                    onToggleStatus(nextChecked ? "ACTIVE" : "INACTIVE");
+                  }}
+                />
+                <span css={s.badge(checked)}>
+                  {checked ? "활성" : "비활성"}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
         <div css={s.cardMeta}>
@@ -27,7 +63,7 @@ function MyLessonCard({ lesson, onClick }: Props) {
           </span>
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 

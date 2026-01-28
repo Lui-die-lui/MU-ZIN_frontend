@@ -3,11 +3,13 @@ import {
   createMyTimeSlotsReq,
   getMyLessonDetailReq,
   getMyLessonRecurrenceReq,
+  getMyLessonsReq,
   updateMyLessonReq,
   upsertMyLessonRecurrenceReq,
 } from "../../apis/lesson/lessonApis";
 import type {
   LessonRecurrenceUpsertReq,
+  LessonSummary,
   LessonUpdateReq,
   TimeSlotCreateReq,
 } from "../../Types/lessonTypes";
@@ -150,6 +152,49 @@ export function useUpsertMyRecurrence(
       qc.invalidateQueries({
         queryKey: lessonKeys.myTimeSlots(lessonId, from, to),
       });
+    },
+  });
+}
+
+// 해당 토글은 서버 반영이 바로 되도록 함 - 다른 유저에게도 즉시 영향이 가야하는 부분이기 때문에
+export function useToggleMyLessonStatus(
+  lessonId: number,
+  opts?: { from?: string; to?: string },
+) {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (nextStatus: "ACTIVE" | "INACTIVE") =>
+      updateMyLessonReq(lessonId, { status: nextStatus }).then(
+        (resp) => resp.data.data,
+      ),
+
+    onSuccess: () => {
+      // 내 레슨 디테일/리스트 최신화
+      qc.invalidateQueries({ queryKey: lessonKeys.myDetail(lessonId) });
+      qc.invalidateQueries({ queryKey: lessonKeys.myList() });
+
+      // 상태 변경 시 슬롯 UI 바로 반영(해당 레슨 타임슬롯 전부 비활성화)
+      // timeSlot 관련해서 비활성화 로직이 따로 있음
+      const from = opts?.from;
+      const to = opts?.to;
+      if (from && to) {
+        qc.invalidateQueries({
+          queryKey: lessonKeys.myTimeSlots(lessonId, from, to),
+        });
+      }
+    },
+  });
+}
+
+// 내 레슨 목록을 가져오는 규칙 고정(any 방지)
+// 캐시에 저장되는 데이터 형태를 LessonSummary로 통일(아니면 any 들어가게 됨)
+export function useMyLessonList() {
+  return useQuery({
+    queryKey: lessonKeys.myList(),
+    queryFn: async (): Promise<LessonSummary[]> => {
+      const resp = await getMyLessonsReq();
+      return resp.data.data; // 배열만 캐시 저장
     },
   });
 }
