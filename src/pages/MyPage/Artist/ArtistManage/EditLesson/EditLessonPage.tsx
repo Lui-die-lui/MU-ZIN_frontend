@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getMyArtistProfileReq } from "../../../../../apis/artist/artistApi";
 import type { InstrumentResponse } from "../../../../../Types/instrumentTypes";
 import {
+  useDeleteMyLesson,
   useDeleteMyTimeSlot,
   useMyLessonDetail,
   useMyRecurrence,
@@ -53,6 +54,23 @@ function EditLessonPage() {
   // recurrence 읽기
   const recurrenceQ = useMyRecurrence(lessonId);
 
+  // 레슨 삭제
+  const deleteLessonMut = useDeleteMyLesson(lessonId);
+
+  const onDeleteLesson = () => {
+    {
+      if (hasBooked)
+        return alert("예약된(BOOKED) 슬롯이 있는 레슨은 삭제할 수 없어요.");
+
+      if (!confirm("레슨을 삭제할까요?")) return;
+
+      deleteLessonMut.mutate(undefined, {
+        onSuccess: () => navigate("/mypage/artist/manage"),
+        onError: () => alert("삭제 실패. 잠시 후 다시 시도해주세요."),
+      });
+    }
+  };
+
   const serverSlots = slotsQ.data ?? [];
 
   const hasBooked = useMemo(() => {
@@ -90,7 +108,7 @@ function EditLessonPage() {
       draft: lessonDraft,
       coreEditable: !hasBooked,
     });
- 
+
     const recurrencePatch: LessonRecurrenceUpsertReq | undefined = undefined;
 
     mutate(
@@ -154,6 +172,16 @@ function EditLessonPage() {
           disabled={isPending}
         >
           취소
+        </button>
+
+        {/* 레슨 삭제 버튼 */}
+        <button
+          type="button"
+          onClick={onDeleteLesson}
+          disabled={isPending || deleteLessonMut.isPending || hasBooked}
+          style={{ marginLeft: "auto" }}
+        >
+          {deleteLessonMut.isPending ? "삭제 중..." : "레슨 삭제"}
         </button>
       </div>
 

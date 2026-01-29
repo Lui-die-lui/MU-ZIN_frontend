@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createMyTimeSlotsReq,
+  deleteLessonReq,
   getMyLessonDetailReq,
   getMyLessonRecurrenceReq,
   getMyLessonsReq,
@@ -19,7 +20,6 @@ import {
   getMyTimeSlotsReq,
   openMyTimeSlotsReq,
 } from "../../apis/lesson/timeSlotApis";
-import type { LessonSort } from "../../stores/myLessonUiState";
 
 // lesson Query key 통일
 export const lessonKeys = {
@@ -30,7 +30,8 @@ export const lessonKeys = {
   //   ["lessons", "me", lessonId, "recurrence"] as const,
   // myList: (sort: LessonSort) => ["lessons", sort] as const,
   myList: () => ["lessons", "me", "list"] as const,
-  myDetail: (lessonId: number) => ["lessons", "me", "detail", lessonId] as const,
+  myDetail: (lessonId: number) =>
+    ["lessons", "me", "detail", lessonId] as const,
   myTimeSlots: (lessonId: number, from: string, to: string) =>
     ["lessons", "me", "detail", lessonId, "time-slots", from, to] as const,
   myRecurrence: (lessonId: number) =>
@@ -58,6 +59,29 @@ export function useUpdateMyLesson(lessonId: number) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: lessonKeys.myDetail(lessonId) });
       qc.invalidateQueries({ queryKey: lessonKeys.myList() });
+    },
+  });
+}
+
+export function useDeleteMyLesson(lessonId: number) {
+  const qc = useQueryClient();
+
+  // 제네릭 내부 - 성공, 실패, mutate로 넘길 인자(void 가 number가 됨)
+  return useMutation<null, unknown, void>({
+    mutationFn: async () => {
+      const resp = await deleteLessonReq(lessonId);
+      return resp.data.data;
+    },
+
+    onSuccess: () => {
+      // 목록 갱신
+      qc.invalidateQueries({ queryKey: ["myLessons"] });
+
+      // 해당 레슨 detail 하위 캐시 정리
+      qc.removeQueries({
+        queryKey: ["lessons", "me", "detail", lessonId],
+        exact: false,
+      });
     },
   });
 }
