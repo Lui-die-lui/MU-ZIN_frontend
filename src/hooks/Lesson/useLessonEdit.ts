@@ -19,15 +19,22 @@ import {
   getMyTimeSlotsReq,
   openMyTimeSlotsReq,
 } from "../../apis/lesson/timeSlotApis";
+import type { LessonSort } from "../../stores/myLessonUiState";
 
 // lesson Query key 통일
 export const lessonKeys = {
-  myDetail: (lessonId: number) => ["lessons", "me", lessonId] as const,
+  // myDetail: (lessonId: number) => ["lessons", lessonId] as const,
+  // myTimeSlots: (lessonId: number, from: string, to: string) =>
+  //   ["lessons", "me", lessonId, "time-slots", from, to] as const,
+  // myRecurrence: (lessonId: number) =>
+  //   ["lessons", "me", lessonId, "recurrence"] as const,
+  // myList: (sort: LessonSort) => ["lessons", sort] as const,
+  myList: () => ["lessons", "me", "list"] as const,
+  myDetail: (lessonId: number) => ["lessons", "me", "detail", lessonId] as const,
   myTimeSlots: (lessonId: number, from: string, to: string) =>
-    ["lessons", "me", lessonId, "time-slots", from, to] as const,
+    ["lessons", "me", "detail", lessonId, "time-slots", from, to] as const,
   myRecurrence: (lessonId: number) =>
-    ["lessons", "me", lessonId, "recurrence"] as const,
-  myList: () => ["lessons", "me"] as const,
+    ["lessons", "me", "detail", lessonId, "recurrence"] as const,
 };
 
 // 레슨 수정 페이지 접근 시 기존 레슨 데이터를 서버에서 가져와서 폼 기본 값으로 채움

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type LessonSort = "LATEST" | "OLDEST";
+export type LessonSort = "LATEST" | "OLDEST";
 
 type MyLessonsUiState = {
   sort: LessonSort;

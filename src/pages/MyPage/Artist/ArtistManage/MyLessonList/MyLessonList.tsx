@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import { updateMyLessonReq } from "../../../../../apis/lesson/lessonApis";
 import { lessonKeys } from "../../../../../hooks/Lesson/useLessonEdit";
 import MyLessonCard from "./MyLessonCard";
+import { useMyLessonUiStore } from "../../../../../stores/myLessonUiState";
 
 type Props = {
   loading: boolean;
@@ -18,12 +19,18 @@ type Props = {
   onClickLesson: (LessonId: number) => void;
 };
 
+type MyListData = LessonSummary[];
+
 // 토글시 넘겨줄 변수 목록들
 type ToggleVars = { lessonId: number; next: LessonStatus };
 
 function MyLessonList({ loading, lesson }: Props) {
   const navigate = useNavigate();
   const qc = useQueryClient();
+
+  const { sort } = useMyLessonUiStore();
+
+  const myListKey = ["myLessons", sort] as const;
 
   // 어떤 레슨이 토글 중인지
   const [togglingLessonId, setTogglingLessonId] = useState<number | null>(null);
@@ -67,9 +74,28 @@ function MyLessonList({ loading, lesson }: Props) {
       await updateMyLessonReq(lessonId, { status: next });
     },
 
-    onMutate: ({ lessonId }) => {
+    onMutate: async ({ lessonId, next }) => {
+      console.log("cache now:", qc.getQueryData(lessonKeys.myList()));
+
       // 시작 - 토글 중 표시만
       setTogglingLessonId(lessonId);
+
+      // 진행중인 fetch 취소(레이스 방지)
+      await qc.cancelQueries({ queryKey: myListKey });
+
+      // 롤백용 스냅샷
+      const prev = qc.getQueryData<MyListData>(myListKey);
+
+      // 목록 캐시를 즉시 업데이트(어디 갔다와도 유지되게)
+      qc.setQueryData<MyListData>(myListKey, (old) =>
+        old
+          ? old.map((l) =>
+              l.lessonId === lessonId ? { ...l, status: next } : l,
+            )
+          : old,
+      );
+
+      return { prev };
     },
 
     onError: (_err, { lessonId }) => {
@@ -85,7 +111,7 @@ function MyLessonList({ loading, lesson }: Props) {
       setTogglingLessonId(null);
 
       // 내 목록 + 해당 디테일은 서버기준으로 동기화
-      qc.invalidateQueries({ queryKey: lessonKeys.myList() });
+      qc.invalidateQueries({ queryKey: myListKey });
       if (vars) {
         qc.invalidateQueries({ queryKey: lessonKeys.myDetail(vars.lessonId) });
       }
@@ -93,6 +119,7 @@ function MyLessonList({ loading, lesson }: Props) {
       qc.invalidateQueries({ queryKey: ["lessons"] });
     },
   });
+
   if (loading) {
     return (
       <div css={s.list}>

@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import * as s from "./styles";
 import { IOSSwitch } from "../../../../../components/common/StatusToggleSwitch/IOSSwitch";
 
 type Props = {
