@@ -84,6 +84,13 @@ export function ymdToStartOfDay(ymd: string) {
   return `${ymd}T00:00:00`;
 }
 
-export function ymdToendOfDay(ymd: string) {
+export function ymdToEndOfDay(ymd: string) {
   return `${ymd}T23:59:59`;
+}
+
+// YYYY-MM-DD 까지 자름
+export function pickYmdFromLocalDateTime(ldt?: string) {
+  if (!ldt) return "";
+  // "YYYY-MM-DDTHH:mm:ss" 또는 "YYYY-MM-DD HH:mm:ss" 둘 다 방어
+  return ldt.split("T")[0].split(" ")[0];
 }

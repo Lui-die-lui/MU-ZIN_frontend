@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import * as s from "./styles";
 import { createPortal } from "react-dom";
 
@@ -9,7 +9,7 @@ type SideDrawerProps = {
   width?: number;
   anchor?: "right" | "left";
   title?: string;
-  children: React.ReactNode; // 리액트가 화면에 구성할 수 있는 모든 요소
+  children: ReactNode; // 리액트가 화면에 구성할 수 있는 모든 요소
 
   variant?: "modal" | "persistent";
 };
