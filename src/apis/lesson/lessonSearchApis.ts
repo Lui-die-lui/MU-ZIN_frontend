@@ -12,6 +12,8 @@ export type LessonSearchParams = {
   styleTagIds?: number[];
   instIds?: number[];
   instCategory?: string;
+  from?: string;
+  to?: string;
 };
 
 // params로 검색 조건을 받음 - 나중에 확장될 예정
@@ -35,6 +37,9 @@ export const searchLessonReq = (params: LessonSearchParams) => {
   if (params.instIds?.length) {
     params.instIds.forEach((id) => qs.append("instIds", String(id)));
   }
+
+  if (params.from) qs.set("from", params.from);
+  if (params.to) qs.set("to", params.to);
 
   //쿼리 파라미터가 하나라도 있으면 형태 만들어서 호출
   // : 없으면 그냥 전체 호출(나중에는 유저 본인 지역(부산이면 부산)붙일 예정)

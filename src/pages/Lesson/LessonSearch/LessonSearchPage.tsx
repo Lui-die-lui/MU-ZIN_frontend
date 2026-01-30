@@ -11,6 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "../../../hooks/useIsMobile";
 import LessonDetailDrawer from "../LessonDetailDrawer/LessonDetailDrawer";
 import InstFilterDropdown from "../InstFilterDropdown/InstFilterDropdown";
+import {
+  EMPTY_OPEN_SLOT_FILTER,
+  type OpenSlotFilter,
+} from "../../../Types/searchForTimeTypes";
+import SearchTimeFilter from "./SearchTimeFilter/SearchTimeFilter";
 
 function LessonSearchPage() {
   const navigate = useNavigate();
@@ -23,10 +28,13 @@ function LessonSearchPage() {
   const [draftKeyword, setDraftKeyword] = useState("");
   const [draftMode, setDraftMode] = useState<LessonMode | "ALL">("ALL");
   const [draftTagIds, setDraftTagIds] = useState<number[]>([]);
+  const [draftTime, setDraftTime] = useState<OpenSlotFilter>(
+    EMPTY_OPEN_SLOT_FILTER,
+  );
 
   //악기 카테고리
   const [draftInstCategory, setDraftInstCategory] = useState<string | "ALL">(
-    "ALL"
+    "ALL",
   );
   const [draftInstIds, setDraftInstIds] = useState<number[]>([]);
 
@@ -37,6 +45,7 @@ function LessonSearchPage() {
     styleTagIds?: number[];
     instIds?: number[];
     instCategory?: string;
+    time?: OpenSlotFilter;
   }>(null);
 
   // 태그 목록(chip UI)
@@ -53,6 +62,8 @@ function LessonSearchPage() {
       keyword: applied.keyword,
       mode: applied.mode,
       styleTagIds: applied.styleTagIds,
+      from: applied.time?.from,
+      to: applied.time?.to,
     };
   }, [applied]);
 
@@ -71,7 +82,7 @@ function LessonSearchPage() {
 
   const toggleTag = (id: number) => {
     setDraftTagIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
@@ -83,6 +94,7 @@ function LessonSearchPage() {
       styleTagIds: draftTagIds.length ? draftTagIds : undefined,
       instIds: draftInstIds.length ? draftInstIds : undefined,
       instCategory: draftInstCategory === "ALL" ? undefined : draftInstCategory,
+      time: draftTime,
     });
   };
 
@@ -155,6 +167,8 @@ function LessonSearchPage() {
           검색
         </button>
       </div>
+
+      <SearchTimeFilter value={draftTime} onChange={setDraftTime} />
 
       {/* 스타일 태그 필터 */}
       <div css={s.row}>

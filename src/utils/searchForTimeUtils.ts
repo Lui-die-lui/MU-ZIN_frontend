@@ -94,3 +94,8 @@ export function pickYmdFromLocalDateTime(ldt?: string) {
   // "YYYY-MM-DDTHH:mm:ss" 또는 "YYYY-MM-DD HH:mm:ss" 둘 다 방어
   return ldt.split("T")[0].split(" ")[0];
 }
+
+// 같은 값 중복 막음 + 배열에 있으면 제거 없으면 추가
+export function toggleArr<T>(arr: T[], v: T) {
+  return arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
+}
