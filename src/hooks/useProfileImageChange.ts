@@ -4,6 +4,7 @@ import { useFirebaseUpload } from "./useFirebaseUpload";
 import type { Area } from "react-easy-crop";
 import { getCroppedFile } from "../utils/imageUtils";
 
+
 // 업로드되는 파일 확장자 및 허용 파일 크기
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE_MB = 5;
@@ -85,7 +86,12 @@ export function useProfileImageChange(options: Options = {}) {
   }, [imageSrc]);
 
   const confirmCrop = async (croppedAreaPixels: Area) => {
+
     if (!principal?.userId) return;
+    // if (!uid) {
+    //   setErrorMsg("로그인이 필요합니다.");
+    //   return;
+    // }
 
     try {
       const croppedFile = await getCroppedFile({
@@ -98,7 +104,8 @@ export function useProfileImageChange(options: Options = {}) {
 
       const url = await uploadFile(
         croppedFile,
-        `${uploadPathPrefix}/${principal.userId}`
+        `${uploadPathPrefix}/${principal.userId}`,
+        // `${uploadPathPrefix}/${uid}`,
       );
       // 저장
       await options.afterUpload?.(url);
@@ -108,7 +115,7 @@ export function useProfileImageChange(options: Options = {}) {
     } catch (error: unknown) {
       console.error(error);
       setErrorMsg(
-        error instanceof Error ? error.message : "프로필 이미지 저장 실패"
+        error instanceof Error ? error.message : "프로필 이미지 저장 실패",
       );
     }
   };

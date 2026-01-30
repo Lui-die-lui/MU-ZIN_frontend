@@ -47,12 +47,7 @@ function EditLessonFormSection({
     // setAll(toFormValues(detail));
 
     const next = toFormValues(detail);
-    console.log(
-      "HYDRATE instId:",
-      next.instId,
-      "detail:",
-      detail.instId,
-    );
+   
     setAll(next);
 
     hydratedRef.current = true;
