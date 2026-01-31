@@ -40,9 +40,9 @@ export const searchLessonReq = (params: LessonSearchParams) => {
     params.styleTagIds.forEach((id) => qs.append("styleTagIds", String(id)));
   }
 
-if (params.instCategory) {
-  qs.set("instrumentCategory", params.instCategory); 
-}
+  if (params.instCategory) {
+    qs.set("instrumentCategory", params.instCategory);
+  }
 
   if (params.instIds?.length) {
     params.instIds.forEach((id) => qs.append("instIds", String(id)));
@@ -52,14 +52,13 @@ if (params.instCategory) {
   if (params.to) qs.set("to", params.to);
 
   if (params.daysOfWeek?.length) {
-    params.daysOfWeek.forEach((d) => qs.append("daysOfWeek", String(d)));
+    qs.set("daysOfWeek", params.daysOfWeek.join(","));
   }
-
   if (params.timeParts?.length) {
-    params.timeParts.forEach((p) => qs.append("timeParts", p));
+    qs.set("timeParts", params.timeParts.join(","));
   }
   console.log("search params =>", params);
-console.log("instCategory =>", params.instCategory);
+  console.log("instCategory =>", params.instCategory);
 
   //쿼리 파라미터가 하나라도 있으면 형태 만들어서 호출
   // : 없으면 그냥 전체 호출(나중에는 유저 본인 지역(부산이면 부산)붙일 예정)
