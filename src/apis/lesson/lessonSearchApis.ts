@@ -1,9 +1,14 @@
+import {
+  INST_CATEGORY_VALUE_BY_LABEL,
+  type InstrumentCategory,
+} from "../../Types/instrumentTypes";
 import type {
   LessonDetail,
   LessonMode,
   LessonSummary,
 } from "../../Types/lessonTypes";
 import type { ApiRespDto } from "../../Types/responseType";
+import type { TimePart, Weekday } from "../../Types/searchForTimeTypes";
 import { instance } from "../instance/instance";
 
 export type LessonSearchParams = {
@@ -11,9 +16,12 @@ export type LessonSearchParams = {
   mode?: LessonMode;
   styleTagIds?: number[];
   instIds?: number[];
-  instCategory?: string;
+  instCategory?: InstrumentCategory;
   from?: string;
   to?: string;
+
+  daysOfWeek?: Weekday[]; // 1~ 7(월~일)
+  timeParts?: TimePart[];
 };
 
 // params로 검색 조건을 받음 - 나중에 확장될 예정
@@ -32,7 +40,9 @@ export const searchLessonReq = (params: LessonSearchParams) => {
     params.styleTagIds.forEach((id) => qs.append("styleTagIds", String(id)));
   }
 
-  if (params.instCategory) qs.set("instCategory", params.instCategory);
+if (params.instCategory) {
+  qs.set("instrumentCategory", params.instCategory); 
+}
 
   if (params.instIds?.length) {
     params.instIds.forEach((id) => qs.append("instIds", String(id)));
@@ -41,9 +51,20 @@ export const searchLessonReq = (params: LessonSearchParams) => {
   if (params.from) qs.set("from", params.from);
   if (params.to) qs.set("to", params.to);
 
+  if (params.daysOfWeek?.length) {
+    params.daysOfWeek.forEach((d) => qs.append("daysOfWeek", String(d)));
+  }
+
+  if (params.timeParts?.length) {
+    params.timeParts.forEach((p) => qs.append("timeParts", p));
+  }
+  console.log("search params =>", params);
+console.log("instCategory =>", params.instCategory);
+
   //쿼리 파라미터가 하나라도 있으면 형태 만들어서 호출
   // : 없으면 그냥 전체 호출(나중에는 유저 본인 지역(부산이면 부산)붙일 예정)
   const url = qs.toString() ? `/lessons?${qs.toString()}` : "/lessons";
+  console.log("LESSON SEARCH URL =>", url);
   return instance.get<ApiRespDto<LessonSummary[]>>(url);
 };
 

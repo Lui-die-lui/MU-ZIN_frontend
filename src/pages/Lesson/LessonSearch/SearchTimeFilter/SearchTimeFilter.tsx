@@ -82,7 +82,7 @@ function SearchTimeFilter({ value, onChange, disabled = false }: Props) {
         </div>
 
         {/* 시간대 */}
-        <div css={s.low}>
+        <div css={s.row}>
           <div css={s.label}>시간</div>
           <ToggleChips<TimePart>
             options={TIME_PART_OPTIONS}

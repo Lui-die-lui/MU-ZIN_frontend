@@ -16,6 +16,7 @@ import {
   type OpenSlotFilter,
 } from "../../../Types/searchForTimeTypes";
 import SearchTimeFilter from "./SearchTimeFilter/SearchTimeFilter";
+import type { InstrumentCategory } from "../../../Types/instrumentTypes";
 
 function LessonSearchPage() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ function LessonSearchPage() {
   );
 
   //악기 카테고리
-  const [draftInstCategory, setDraftInstCategory] = useState<string | "ALL">(
+  const [draftInstCategory, setDraftInstCategory] = useState<InstrumentCategory | "ALL">(
     "ALL",
   );
   const [draftInstIds, setDraftInstIds] = useState<number[]>([]);
@@ -44,7 +45,7 @@ function LessonSearchPage() {
     mode?: LessonMode;
     styleTagIds?: number[];
     instIds?: number[];
-    instCategory?: string;
+    instCategory?: InstrumentCategory;
     time?: OpenSlotFilter;
   }>(null);
 
@@ -62,8 +63,15 @@ function LessonSearchPage() {
       keyword: applied.keyword,
       mode: applied.mode,
       styleTagIds: applied.styleTagIds,
+
+      instIds: applied.instIds,
+      instCategory: applied.instCategory,
+
       from: applied.time?.from,
       to: applied.time?.to,
+
+      daysOfWeek: applied.time?.daysOfWeek,
+      timeParts: applied.time?.timeParts,
     };
   }, [applied]);
 
@@ -88,6 +96,9 @@ function LessonSearchPage() {
 
   // 검색
   const onSearch = () => {
+    console.log("SEARCH CLICKED");
+    console.log("draftInstCategory =", draftInstCategory);
+console.log("draftInstIds =", draftInstIds);
     setApplied({
       keyword: draftKeyword.trim() || undefined,
       mode: draftMode === "ALL" ? undefined : draftMode,

@@ -6,14 +6,18 @@ import {
   getInstrumentCategoriesReq,
   getInstrumentsReq,
 } from "../../../apis/instrument/instrumentApis";
-import type { InstrumentResponse } from "../../../Types/instrumentTypes";
+import {
+  INST_CATEGORY_LABEL,
+  type InstrumentCategory,
+  type InstrumentResponse,
+} from "../../../Types/instrumentTypes";
 
 // 빈 배열
 const EMPTY_INSTRUMENTS: InstrumentResponse[] = [];
 
 type Props = {
-  category: string | "ALL";
-  onChangeCategory: (v: string | "ALL") => void;
+  category: InstrumentCategory | "ALL";
+  onChangeCategory: (v: InstrumentCategory | "ALL") => void;
   instIds: number[];
   onChangeInstIds: (v: number[]) => void;
 
@@ -36,7 +40,8 @@ function InstFilterDropdown({
 
   const { data: categories = [] } = useQuery({
     queryKey: ["instrumentCategories"],
-    queryFn: async () => (await getInstrumentCategoriesReq()).data,
+    queryFn: async () =>
+      (await getInstrumentCategoriesReq()).data as InstrumentCategory[], // emum으로 타입 확정시키기
     staleTime: 10 * 60 * 1000,
   });
 
@@ -77,13 +82,14 @@ function InstFilterDropdown({
 
   const toggle = (id: number) => {
     onChangeInstIds(
-      instIds.includes(id) ? instIds.filter((x) => x !== id) : [...instIds, id]
+      instIds.includes(id) ? instIds.filter((x) => x !== id) : [...instIds, id],
     );
   };
 
   const clear = () => onChangeInstIds([]);
 
-  const handleChangeCategory = (v: string | "ALL") => {
+  const handleChangeCategory = (v: InstrumentCategory | "ALL") => {
+      console.log("category select raw =", v);
     onChangeCategory(v);
     if (resetOnCategortChange) onChangeInstIds([]); // 카테고리 바꾸면 악기 선택 초기화 - 정확한 카테고리 선택을 위해
     setKeyword("");
@@ -114,13 +120,15 @@ function InstFilterDropdown({
       {/* 카테고리 드롭다운 */}
       <select
         value={category}
-        onChange={(e) => handleChangeCategory(e.target.value)}
+        onChange={(e) =>
+          handleChangeCategory(e.target.value as InstrumentCategory | "ALL")
+        }
         css={s.select}
       >
         <option value="ALL">악기군 전체</option>
         {categories.map((c) => (
           <option key={c} value={c}>
-            {c}
+            {INST_CATEGORY_LABEL[c]}
           </option>
         ))}
       </select>
