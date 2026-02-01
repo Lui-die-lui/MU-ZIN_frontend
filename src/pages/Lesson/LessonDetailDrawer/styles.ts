@@ -71,3 +71,10 @@ export const stateText = css`
   padding: 8px 2px;
   color: #667;
 `;
+
+
+// 탭(아코디언)양 옆 패딩 무시
+export const bleedX = (px = 14) => css`
+  margin-left: -${px}px;
+  margin-right: -${px}px;
+`;

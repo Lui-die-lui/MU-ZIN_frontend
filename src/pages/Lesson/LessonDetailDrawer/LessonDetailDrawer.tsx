@@ -2,8 +2,14 @@
 import * as s from "./styles";
 import { usePublicLessonDetail } from "../../../hooks/usePublicLessonDetail";
 import SideDrawer from "../../../components/common/SideDrawer/SideDrawer";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ArtistHeader from "./ArtistHeader";
+import DetailTimeFilterPanel from "./DetailTimeFilterPanel/DetailTimeFilterPanel";
+import Accordion from "../../../components/common/Accordion/Accordion";
+import {
+  EMPTY_OPEN_SLOT_FILTER,
+  type OpenSlotFilter,
+} from "../../../Types/searchForTimeTypes";
 
 export type Props = {
   open: boolean;
@@ -14,11 +20,38 @@ function LessonDetailDrawer({ open, lessonId, onClose }: Props) {
   const id = lessonId ?? 0;
   const { data, isLoading, isError } = usePublicLessonDetail(id);
 
-  // 이미지 깨졌을 때
-  // const [imgError, setImgError] = useState(false);
+  // 적용된 필터
+  const [appliedTime, setAppliedTime] = useState<OpenSlotFilter | null>(
+    EMPTY_OPEN_SLOT_FILTER,
+  );
 
-  // const profileImgUrl =
-  //   data?.artist?.profileImgUrl && !imgError ? data.artist.profileImgUrl : null;
+  // 아코디언 open 상태
+  const [openIds, setOpenIds] = useState<string[]>([]);
+
+  // 레슨이 바뀌면 필터/아코디언 상태도 초기화
+  useEffect(() => {
+    setAppliedTime(null);
+    setOpenIds([]);
+  }, [lessonId]);
+
+  const accordionItems = useMemo(
+    () => [
+      {
+        id: "time-filter",
+        title: "시간/요일/기간",
+        content: (
+          <DetailTimeFilterPanel
+            initial={appliedTime}
+            onApply={(next) => {
+              setAppliedTime(next); // next: OpenSlotFilter | null
+              // setOpenIds([]);         // 적용 후 자동으로 접고 싶으면 이거 켜도 됨
+            }}
+          />
+        ),
+      },
+    ],
+    [appliedTime],
+  );
   return (
     <SideDrawer open={open} onClose={onClose} title="레슨 상세" width={440}>
       {isLoading && <div css={s.stateText}>로딩중...</div>}
@@ -26,28 +59,7 @@ function LessonDetailDrawer({ open, lessonId, onClose }: Props) {
 
       {data && (
         <div css={s.wrap}>
-          {/* 아티스트 헤더 */}
-          {/* <div css={s.artistHeader}>
-            <div css={s.avatarCircle}>
-              {profileImgUrl ? (
-                <img
-                  src={profileImgUrl}
-                  alt={`${data.artist.username} 프로필`}
-                  css={s.avatarImg}
-                  onError={() => setImgError(true)}
-                />
-              ) : (
-                <div css={s.avatarFallback}>
-                  {data.artist.username?.[0]?.toUpperCase() ?? "?"}
-                </div>
-              )}
-            </div>
-
-            <div css={s.artistMeta}>
-              <div css={s.artistName}>{data.artist.username}</div>
-            </div>
-          </div> */}
-          <ArtistHeader artist={data.artist}/>
+          <ArtistHeader artist={data.artist} />
 
           {/* 레슨 정보 */}
           <h2 css={s.title}>{data.title}</h2>
@@ -61,6 +73,14 @@ function LessonDetailDrawer({ open, lessonId, onClose }: Props) {
           {data.requirementText && (
             <div css={s.section}>{data.requirementText}</div>
           )}
+          <div css={s.bleedX(14)}>
+            <Accordion
+              items={accordionItems}
+              allowMultiple={false}
+              openIds={openIds}
+              onChangeOpenIds={setOpenIds}
+            />
+          </div>
         </div>
       )}
     </SideDrawer>
