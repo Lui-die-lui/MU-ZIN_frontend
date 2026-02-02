@@ -7,6 +7,7 @@ type Props<T extends string | number> = {
   getLabel: (v: T) => string;
   onToggle: (v: T) => void;
   disabled?: boolean;
+  isDisabled?: (v: T) => boolean;
 };
 
 function ToggleChips<T extends string | number>({
@@ -15,18 +16,20 @@ function ToggleChips<T extends string | number>({
   getLabel,
   onToggle,
   disabled = false,
+  isDisabled,
 }: Props<T>) {
   return (
     <div css={s.row}>
       {options.map((v) => {
         const active = selected.includes(v);
+        const itemDisabled = disabled || (isDisabled?.(v) ?? false);
         return (
           <button
             key={String(v)}
             type="button"
             css={s.chip(active)}
             onClick={() => onToggle(v)}
-            disabled={disabled}
+            disabled={itemDisabled}
           >
             {getLabel(v)}
           </button>

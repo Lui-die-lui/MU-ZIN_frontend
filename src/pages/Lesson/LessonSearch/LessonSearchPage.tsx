@@ -17,6 +17,7 @@ import {
 } from "../../../Types/searchForTimeTypes";
 import SearchTimeFilter from "./SearchTimeFilter/SearchTimeFilter";
 import type { InstrumentCategory } from "../../../Types/instrumentTypes";
+import { hasTimeFilter } from "./SearchTimeFilter/hasTimeFilter";
 
 function LessonSearchPage() {
   const navigate = useNavigate();
@@ -34,9 +35,9 @@ function LessonSearchPage() {
   );
 
   //악기 카테고리
-  const [draftInstCategory, setDraftInstCategory] = useState<InstrumentCategory | "ALL">(
-    "ALL",
-  );
+  const [draftInstCategory, setDraftInstCategory] = useState<
+    InstrumentCategory | "ALL"
+  >("ALL");
   const [draftInstIds, setDraftInstIds] = useState<number[]>([]);
 
   // 검색버튼 눌러서 확정된 조건
@@ -59,6 +60,10 @@ function LessonSearchPage() {
 
   const appliedParams = useMemo(() => {
     if (!applied) return null;
+
+    const t = applied.time;
+
+    // 빈배열/빈 문자열ㅇ이면 꼬일 가능성때문에 연산자 사용
     return {
       keyword: applied.keyword,
       mode: applied.mode,
@@ -67,11 +72,11 @@ function LessonSearchPage() {
       instIds: applied.instIds,
       instCategory: applied.instCategory,
 
-      from: applied.time?.from,
-      to: applied.time?.to,
+      from: t?.from?.trim() || undefined,
+      to: t?.to?.trim() || undefined,
 
-      daysOfWeek: applied.time?.daysOfWeek,
-      timeParts: applied.time?.timeParts,
+      daysOfWeek: t?.daysOfWeek?.length ? t.daysOfWeek : undefined,
+      timeParts: t?.timeParts?.length ? t.timeParts : undefined,
     };
   }, [applied]);
 
@@ -96,18 +101,20 @@ function LessonSearchPage() {
 
   // 검색
   const onSearch = () => {
-    console.log("SEARCH CLICKED");
-    console.log("draftInstCategory =", draftInstCategory);
-console.log("draftInstIds =", draftInstIds);
     setApplied({
       keyword: draftKeyword.trim() || undefined,
       mode: draftMode === "ALL" ? undefined : draftMode,
       styleTagIds: draftTagIds.length ? draftTagIds : undefined,
       instIds: draftInstIds.length ? draftInstIds : undefined,
       instCategory: draftInstCategory === "ALL" ? undefined : draftInstCategory,
-      time: draftTime,
+      time: hasTimeFilter(draftTime) ? draftTime : undefined,
     });
   };
+
+  const initialOpenSlotFilter = useMemo<OpenSlotFilter | null>(() => {
+    // onSearch에서 필터 없으면 undefined라서 null로 떨어짐
+    return applied?.time ?? null;
+  }, [applied]);
 
   // 레슨 클릭 시
   const onClickLesson = (lessonId: number) => {
@@ -271,7 +278,12 @@ console.log("draftInstIds =", draftInstIds);
           </div>
         </>
       )}
-      <LessonDetailDrawer open={open} lessonId={selectedId} onClose={close} />
+      <LessonDetailDrawer
+        open={open}
+        lessonId={selectedId}
+        onClose={close}
+        initialOpenSlotFilter={initialOpenSlotFilter}
+      />
     </div>
   );
 }

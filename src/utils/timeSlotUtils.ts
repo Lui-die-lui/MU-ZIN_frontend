@@ -218,3 +218,4 @@ export function toDowMask(daysOfWeek: boolean[]) {
   if (daysOfWeek[0]) mask |= 64;
   return mask;
 }
+

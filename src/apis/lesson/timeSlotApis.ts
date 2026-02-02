@@ -1,13 +1,21 @@
 import type { TimeSlotResp } from "../../Types/lessonTypes";
 import type { ApiRespDto } from "../../Types/responseType";
+import type { TimePart } from "../../Types/searchForTimeTypes";
 import { instance } from "../instance/instance";
+
+export type OpenTimeSlotsParams = {
+  from?: string;
+  to?: string;
+  daysOfWeek?: number[]; // 1~7
+  timeParts?: TimePart[]; // "MORNING" | ...
+};
 
 // 타임슬롯 상태 및 조회 관련 api
 
 // 유저용 타임슬롯 조회
 export const getOpenTimeSlotsReq = (
   lessonId: number,
-  params: { from: string; to: string },
+  params: OpenTimeSlotsParams,
 ) =>
   instance.get<ApiRespDto<TimeSlotResp[]>>(`/lessons/${lessonId}/time-slots`, {
     params,
@@ -32,4 +40,6 @@ export const openMyTimeSlotsReq = (timeSlotId: number) =>
   instance.patch<ApiRespDto<null>>(`/lessons/me/time-slots/${timeSlotId}/open`);
 
 export const closeMyTimeSlotsReq = (timeSlotId: number) =>
-  instance.patch<ApiRespDto<null>>(`/lessons/me/time-slots/${timeSlotId}/close`);
+  instance.patch<ApiRespDto<null>>(
+    `/lessons/me/time-slots/${timeSlotId}/close`,
+  );

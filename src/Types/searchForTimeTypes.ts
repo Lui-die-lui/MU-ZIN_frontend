@@ -34,3 +34,15 @@ export const EMPTY_OPEN_SLOT_FILTER: OpenSlotFilter = {
   timeParts: [],
   daysOfWeek: [],
 };
+
+// 객체로 들어와도 지원되는 MnD -> 예약 타임슬롯시 필요함
+export type MonthDayGrouped<T> = Record<string, Record<string, T[]>>;
+
+// 타임슬롯 상태 타입
+export type SlotItem = {
+  timeSlotId: number;
+  startDt: string;
+  state?: "OPEN" | "CLOSED" | "BOOKED";
+  active?: boolean;
+};
+
