@@ -13,13 +13,27 @@ export type OpenTimeSlotsParams = {
 // 타임슬롯 상태 및 조회 관련 api
 
 // 유저용 타임슬롯 조회
-export const getOpenTimeSlotsReq = (
-  lessonId: number,
-  params: OpenTimeSlotsParams,
-) =>
-  instance.get<ApiRespDto<TimeSlotResp[]>>(`/lessons/${lessonId}/time-slots`, {
-    params,
+// export const getOpenTimeSlotsReq = (
+//   lessonId: number,
+//   params: OpenTimeSlotsParams,
+// ) => 
+//   instance.get<ApiRespDto<TimeSlotResp[]>>(`/lessons/${lessonId}/time-slots`, {
+//     params,
+//   });
+export const getOpenTimeSlotsReq = (lessonId: number, params: OpenTimeSlotsParams) => {
+  const sp = new URLSearchParams();
+  // url 직렬화 문제 터질수도 있어서 해당 로직 사용
+
+  if (params.from) sp.append("from", params.from);
+  if (params.to) sp.append("to", params.to);
+
+  params.daysOfWeek?.forEach((d) => sp.append("daysOfWeek", String(d)));
+  params.timeParts?.forEach((tp) => sp.append("timeParts", tp));
+
+  return instance.get<ApiRespDto<TimeSlotResp[]>>(`/lessons/${lessonId}/time-slots`, {
+    params: sp,
   });
+};
 
 // 아티스트용 타임슬롯 전체 조회
 export const getMyTimeSlotsReq = (
