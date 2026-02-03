@@ -11,24 +11,16 @@ import DetailTimeFilterPanel from "../DetailTimeFilterPanel/DetailTimeFilterPane
 
 type Props = {
   lessonId: number;
-  initialOpenSlotFilter: OpenSlotFilter | null;
+  // initialOpenSlotFilter: OpenSlotFilter | null;
+  filter:OpenSlotFilter | null;
   onClickReserve: (timeSlotId: number) => void; // 예약버튼 누를 시 전환 트리거
 };
 
 function LessonTimeSlotSection({
   lessonId,
-  initialOpenSlotFilter,
+  filter,
   onClickReserve,
 }: Props) {
-  // 검색에서 적용된 필터
-  const [applied, setApplied] = useState<OpenSlotFilter | null>(
-    initialOpenSlotFilter,
-  );
-
-  // lessonId 변경/초기값 변경 시 동기화
-  useEffect(() => {
-    setApplied(initialOpenSlotFilter);
-  }, [lessonId, initialOpenSlotFilter]);
 
   // 칩 단일 선택 상태
   const [selectedId, setSelectedId] = useState<number | null>(null);
@@ -36,45 +28,33 @@ function LessonTimeSlotSection({
   // 필터가 바뀌면 선택은 풀어주는게 UX 안전(다른 목록이니까)
   useEffect(() => {
     setSelectedId(null);
-  }, [applied]);
+  }, [filter]);
 
   // 슬롯을 보여줄지 결정
-  const shouldShowSlots = !!applied && hasTimeFilter(applied);
+  const shouldShowSlots = hasTimeFilter(filter);
 
   // 요청 파라미터 정리
   const params = useMemo(() => {
-    if (!applied) return null;
+    if (!filter) return {};
     return {
-      from: applied.from?.trim() || undefined,
-      to: applied.to?.trim() || undefined,
-      daysOfWeek: applied.daysOfWeek?.length ? applied.daysOfWeek : undefined,
-      timeParts: applied.timeParts?.length ? applied.timeParts : undefined,
+      from: filter.from?.trim() || undefined,
+      to: filter.to?.trim() || undefined,
+      daysOfWeek: filter.daysOfWeek?.length ? filter.daysOfWeek : undefined,
+      timeParts: filter.timeParts?.length ? filter.timeParts : undefined,
     };
-  }, [applied]);
+  }, [filter]);
 
   // openSlots 조회(레슨 검색 시간 필터 존재할 때)
   const { data, isFetching, isError } = useQuery({
     queryKey: ["lessonOpenSlots", lessonId, params],
     queryFn: async () => (await getOpenTimeSlotsReq(lessonId, params!)).data,
-    enabled: shouldShowSlots && !!params,
+    enabled: shouldShowSlots,
   });
 
   const slots = data?.data ?? [];
-  return (
+
+ return (
     <section css={s.wrap}>
-      <div css={s.header}>
-        <h3 css={s.title}>타임슬롯</h3>
-      </div>
-
-      {/* 시간 필터 패널 */}
-      <div css={s.panelBox}>
-        <DetailTimeFilterPanel
-          initial={applied}
-          onApply={(v) => setApplied(v)} // v가 null이면 “시간필터 제거”
-        />
-      </div>
-
-      {/* 결과 영역 */}
       {!shouldShowSlots ? (
         <div css={s.emptyBox}>
           <div css={s.emptyTitle}>레슨 시간을 검색해주세요</div>
@@ -93,7 +73,6 @@ function LessonTimeSlotSection({
                 slots={slots}
                 selectedId={selectedId}
                 onChangeSelectedId={setSelectedId}
-                // OPEN만 내려오면 없어도 되지만 추후 대비로 남겨도 OK
                 isDisabled={(s) => s.state === "BOOKED" || s.active === false}
                 emptyText="조건에 맞는 타임슬롯이 없어요."
               />

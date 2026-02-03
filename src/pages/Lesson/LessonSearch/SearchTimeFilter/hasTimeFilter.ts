@@ -9,7 +9,9 @@ import {
 // 들어온 값을 normalize 해줌
 const norm = (v?: string | null) => (v ?? "").trim();
 
-export const hasTimeFilter = (f: OpenSlotFilter) => {
+export const hasTimeFilter = (f: OpenSlotFilter | null) => {
+  if (!f) return false;
+  
   // 요일 / 시간대
   const hasDays = (f.daysOfWeek?.length ?? 0) > 0;
   const hasParts = (f.timeParts?.length ?? 0) > 0;
