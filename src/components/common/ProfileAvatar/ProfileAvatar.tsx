@@ -17,7 +17,7 @@ function ProfileAvatar({
   // 이미지 깨졌을 때
   const [imgError, setImgError] = useState(false);
 
-  // src가 바뀌면 에ㅅ러 상태 초기화 (다른 사람/다른 이미지로 바뀔 때 중요함)
+  // src가 바뀌면 에러 상태 초기화 (다른 사람/다른 이미지로 바뀔 때 중요함)
   useEffect(() => {
     setImgError(false);
   }, [src]);
