@@ -117,7 +117,9 @@ function NavBar() {
             {/* 알림 */}
             <s.IconBtn onClick={notiMenu.onOpen} aria-label="notifications">
               <PiBellSimpleThin />
-              {unread > 0 && <s.Badge>{unread > 99 ? "99+" : unread}</s.Badge>}
+              {unread > 0 && <s.Badge>
+                {unread > 99 ? "99+" : unread}
+                </s.Badge>}
             </s.IconBtn>
 
             <Menu

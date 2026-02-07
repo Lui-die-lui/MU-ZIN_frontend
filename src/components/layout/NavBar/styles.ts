@@ -116,16 +116,16 @@ export const IconBtn = styled.button`
 
 export const Badge = styled.div`
   position: absolute;
-  top: 6px;
-  right: 6px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
+  top: 5px;
+  right: 5px;
+  min-width: 14px;
+  height: 14px;
+  /* padding: 0 4px; */
   border-radius: 999px;
   background: #ef4444;
   color: white;
-  font-size: 11px;
-  line-height: 16px;
+  font-size: 9px;
+  line-height: 14px;
   text-align: center;
 `;
 
