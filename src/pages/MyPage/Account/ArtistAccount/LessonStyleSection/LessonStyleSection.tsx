@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import * as s from "./styles";
+
 import { getLessonStyleTagsReq } from "../../../../../apis/lesson/lessonApis";
 import {
   getMyArtistStyleTagsReq,
@@ -47,14 +46,6 @@ function LessonStyleSection() {
 
   // 유저가 수정했는지
   const touchedRef = useRef(false);
-
-  // myTags 기본값 때문에 useEffect 가 너무 일찍 한 번 실행됨
-  // useEffect(() => {
-  //   // myTags가 아직 로딩 전이면 빈배열일 수도 있으니 "쿼리 결과가 한번 들어온 뒤" 주입하려면 조건 걸어도 ok
-  //   if (didInitRef.current) return;
-  //   setSelectedIds(myTags.map((t) => t.lessonStyleTagId));
-  //   didInitRef.current = true; // 초기 주입 완료
-  // }, [myTags]);
 
   // id -> tag 객체 싱크용 (칩 표시 안정화) - id만 있으면 styleName을 못 보여주니까
   // 각 태그 for문 돌려서 map으로 만듦 - 선택된 id를 태그객체로 빠르고 안전하게 변환
