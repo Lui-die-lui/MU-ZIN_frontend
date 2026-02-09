@@ -6,6 +6,7 @@ import {
   type OpenSlotFilter,
 } from "../../../../Types/searchForTimeTypes";
 import SearchTimeFilter from "../../LessonSearch/SearchTimeFilter/SearchTimeFilter";
+import { hasTimeFilter } from "../../LessonSearch/SearchTimeFilter/hasTimeFilter";
 
 type Props = {
   // 드로어(사이드 패널)가 검색 페이지에서 넘어온 조건을 가지고 시작 가능하게
@@ -36,7 +37,7 @@ function DetailTimeFilterPanel({ initial, onApply }: Props) {
 
   const apply = () => {
     // draft (기본 상태 일반 값 설정해둠)
-    onApply(draft);
+    onApply(hasTimeFilter(draft) ? draft : null);
   };
 
   return (

@@ -20,7 +20,7 @@ export type OpenTimeSlotsParams = {
 //   instance.get<ApiRespDto<TimeSlotResp[]>>(`/lessons/${lessonId}/time-slots`, {
 //     params,
 //   });
-export const getOpenTimeSlotsReq = (lessonId: number, params: OpenTimeSlotsParams) => {
+export const getOpenTimeSlotsReq = (lessonId: number, params: OpenTimeSlotsParams = {}) => {
   const sp = new URLSearchParams();
   // url 직렬화 문제 터질수도 있어서 해당 로직 사용
 

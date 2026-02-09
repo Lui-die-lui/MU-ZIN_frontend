@@ -17,16 +17,29 @@ function LessonStyleSection() {
   const qc = useQueryClient();
 
   // 드롭다운이 검색/선택을 히려면 선택지 풀이 필요하니까 그걸 한번에 받아옴
-  const { data: allTags = [] } = useQuery({
-    queryKey: ["lessonStyleTags"],
-    queryFn: async () => (await getLessonStyleTagsReq()).data.data ?? [], // 레슨 스타일 태그 다 가져옴
+  // 계속 배열 깨져서 not iterable 오류 뜸
+  const { data: allTags = [], isLoading: allTagsLoading } = useQuery({
+    queryKey: ["lessonStyleTags", "v2"],
+    queryFn: async () => {
+      const arr = (await getLessonStyleTagsReq()).data.data;
+      return Array.isArray(arr) ? arr : [];
+    },
     staleTime: 10 * 60 * 1000,
+    placeholderData: [], // 로딩 중에도 무조건 배열
   });
 
   // 내 아티스트 스타일 태그(초기값)
-  const { data: myTags = [], isFetched: myTagsFetched } = useQuery({
-    queryKey: ["artistStyleTags", "me"],
-    queryFn: async () => (await getMyArtistStyleTagsReq()).data.data ?? [], // 내 레슨 스타일 태그 다 가져옴
+  const {
+    data: myTags = [],
+    isLoading: myTagsLoading,
+    isFetched: myTagsFetched,
+  } = useQuery({
+    queryKey: ["artistStyleTags", "me", "v2"],
+    queryFn: async () => {
+      const arr = (await getMyArtistStyleTagsReq()).data.data;
+      return Array.isArray(arr) ? arr : [];
+    },
+    placeholderData: [],
   });
 
   // 드롭다운/칩 공용으로 쓰기 좋게: id 배열만 state로 관리 - 내가 고른것들
@@ -78,7 +91,7 @@ function LessonStyleSection() {
       // 백엔드에서 5개 제한 걸어놓긴 했는데 프론트에서도 ux로 막아주면 좋을듯
       if (selectedIds.length > MAX_STYLE_TAGS) {
         throw new Error(
-          `스타일 태그는 최대 ${MAX_STYLE_TAGS}개까지 선택 가능합니다.`
+          `스타일 태그는 최대 ${MAX_STYLE_TAGS}개까지 선택 가능합니다.`,
         );
       }
       return (await setMyArtistStyleTagsReq({ styleTagIds: selectedIds })).data
@@ -107,7 +120,7 @@ function LessonStyleSection() {
     if (touchedRef.current) return; // 유저가 바꾼 상태면 덮어쓰지 않음
 
     setSelectedIds((myTags ?? []).map((t) => t.lessonStyleTagId));
-  }, [myTagsFetched, myTags, isDirty]);
+  }, [myTagsFetched, myTags]);
 
   const locked = saveMutation.isPending; // 로딩 상태일때 버튼 lock
 
@@ -141,7 +154,7 @@ function LessonStyleSection() {
         selectedCountLabel={(n) => `스타일 ${n}개 선택됨`}
         searchPlaceholder="스타일 검색 (예:체계적)"
         items={allTags}
-        isLoading={false}
+        isLoading={allTagsLoading || myTagsLoading}
         getId={(t) => t.lessonStyleTagId}
         getLabel={(t) => t.styleName}
         selectedIds={selectedIds}
