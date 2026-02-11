@@ -1,9 +1,12 @@
 import { css } from "@emotion/react";
 
-
 export const wrap = css`
   display: flex;
   flex-direction: column;
+`;
+
+export const header = css`
+  padding: 14px;
 `;
 
 export const artistHeader = css`
@@ -33,7 +36,6 @@ export const avatarCircle = css`
   display: grid;
   place-items: center;
 `;
-
 
 export const avatarImg = css`
   width: 100%;
@@ -67,14 +69,25 @@ export const section = css`
   line-height: 1.5;
 `;
 
+export const body = css`
+  overflow: auto;
+    overflow-x: visible;
+  padding: 0 14px 14px;
+`;
+
 export const stateText = css`
   padding: 8px 2px;
   color: #667;
 `;
 
-
 // 탭(아코디언)양 옆 패딩 무시
 export const bleedX = (px = 14) => css`
   margin-left: -${px}px;
   margin-right: -${px}px;
+`;
+
+export const footer = css`
+  border-top: 1px solid #eee;
+  padding: 12px 14px;
+  background: #fff;
 `;

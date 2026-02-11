@@ -38,7 +38,7 @@ export function tabToStatus(
 // ===============================
 export type ReservationCreateReq = {
   timeSlotId: number;
-  requestMsg: string;
+  requestMsg: string | null;
 };
 
 export type ReservationResp = {

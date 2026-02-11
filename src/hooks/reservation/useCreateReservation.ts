@@ -5,8 +5,12 @@ import type {
 } from "../../Types/reservationType";
 import { createReservationReq } from "../../apis/reservation/reservationApis";
 import { timeSlotKeys } from "../Lesson/timeSlotKyes";
+import type { OpenTimeSlotsParams } from "../../apis/lesson/timeSlotApis";
 
-export function useCreateReservation(lessonId: number, params?: unknown) {
+export function useCreateReservation(
+  lessonId: number,
+  params?: OpenTimeSlotsParams,
+) {
   const qc = useQueryClient();
 
   return useMutation({
