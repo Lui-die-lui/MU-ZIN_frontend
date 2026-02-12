@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 export const section = css`
   display: grid;
   gap: 12px;
+  margin-top: 20px;
 `;
 
 export const requestBox = css`

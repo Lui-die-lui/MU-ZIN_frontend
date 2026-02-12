@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
-import { reserveBtn } from "../LessonTimeSlotSection/styles";
 import { baseBtn } from "../RequestReservationView/styles";
 
 export const section = css`
   display: grid;
   gap: 12px;
+  margin-top: 20px;
 `;
 
 export const successBox = css`
