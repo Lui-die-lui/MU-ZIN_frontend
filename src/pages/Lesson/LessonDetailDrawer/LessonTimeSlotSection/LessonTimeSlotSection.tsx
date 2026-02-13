@@ -7,6 +7,8 @@ import { hasTimeFilter } from "../../LessonSearch/SearchTimeFilter/hasTimeFilter
 import { useQuery } from "@tanstack/react-query";
 import { getOpenTimeSlotsReq } from "../../../../apis/lesson/timeSlotApis";
 import TimeSlotPickerGrouped from "../../../../components/common/TimeSlotPickerGrouped/TimeSlotPickerGroped";
+import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 type Props = {
   lessonId: number;
@@ -16,6 +18,9 @@ type Props = {
 };
 
 function LessonTimeSlotSection({ lessonId, filter, onClickReserve }: Props) {
+  const isAuthenticated = usePrincipalState((s) => s.isAuthenticated);
+  const navigate = useNavigate();
+  const location = useLocation();
   // 칩 단일 선택 상태
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -29,8 +34,12 @@ function LessonTimeSlotSection({ lessonId, filter, onClickReserve }: Props) {
     return {
       from: effectiveFilter.from?.trim() || undefined,
       to: effectiveFilter.to?.trim() || undefined,
-      daysOfWeek: effectiveFilter.daysOfWeek?.length ? effectiveFilter.daysOfWeek : undefined,
-      timeParts: effectiveFilter.timeParts?.length ? effectiveFilter.timeParts : undefined,
+      daysOfWeek: effectiveFilter.daysOfWeek?.length
+        ? effectiveFilter.daysOfWeek
+        : undefined,
+      timeParts: effectiveFilter.timeParts?.length
+        ? effectiveFilter.timeParts
+        : undefined,
     };
   }, [effectiveFilter]);
 
@@ -48,6 +57,15 @@ function LessonTimeSlotSection({ lessonId, filter, onClickReserve }: Props) {
     queryFn: async () => (await getOpenTimeSlotsReq(lessonId, params)).data,
     enabled: !!lessonId,
   });
+
+  const handleReserveClick = () => {
+    if (!selectedId) return;
+    if (!isAuthenticated) {
+      alert("로그인 후 예약 가능합니다.");
+      navigate("/signin", { state: { from: location }, replace: false });
+    }
+    onClickReserve(selectedId);
+  };
 
   const slots = data?.data ?? [];
 
@@ -81,7 +99,7 @@ function LessonTimeSlotSection({ lessonId, filter, onClickReserve }: Props) {
                 type="button"
                 css={s.reserveBtn}
                 disabled={selectedId == null}
-                onClick={() => onClickReserve(selectedId!)}
+                onClick={handleReserveClick}
               >
                 예약하기
               </button>

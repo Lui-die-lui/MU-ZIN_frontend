@@ -12,11 +12,18 @@ import ApprovdeArtistGuard from "../pages/MyPage/Account/ApprovdeArtistGuard";
 import ArtistAccountPage from "../pages/MyPage/Account/ArtistAccountPage";
 import CreateLessonPage from "../pages/MyPage/Artist/ArtistManage/CreateLesson/CreateLessonPage";
 import EditLessonPage from "../pages/MyPage/Artist/ArtistManage/EditLesson/EditLessonPage";
+import ProtectedRoute from "../components/auth/protectedRoute";
 
 function MyPageRouter() {
   return (
     <Routes>
-      <Route element={<MyPageLayout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <MyPageLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<HomePage />} />
         <Route path="reservations" element={<ReservationsPage />} />
 
