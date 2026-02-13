@@ -27,7 +27,7 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
   const shouldOpenReservations = useMemo(() => {
     return (
       loc.pathname.startsWith("/mypage/reservations") ||
-      loc.pathname.startsWith("/mypage/artist/request")
+      loc.pathname.startsWith("/mypage/reservations/request")
     );
   }, [loc.pathname]);
 
@@ -49,24 +49,28 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
     );
   };
 
-  // 일반 메뉴는 기존처럼 NavLink로 렌더
-  const renderLeaf = (item: NavItem) => {
-    const end = item.to === "/mypage" || item.to === "/mypage/artist"; 
-    // 상위 artist는 정확히 일치할 때만 active 이것도 안됨
-
-    return (
-      <s.Item key={item.key}>
-        <s.LinkItem to={item.to!} end={end}>
-          <span>{item.label}</span>
-          {!!item.badgeCount && item.badgeCount > 0 && (
-            <s.Badge aria-label={`${item.label} 알림 ${item.badgeCount}개`}>
-              {item.badgeCount}
-            </s.Badge>
-          )}
-        </s.LinkItem>
-      </s.Item>
-    );
+  // 일반 유저 예약관리 선택 시 내 예약으로 바로 이동 
+  const goOrToggle = (parent: NavItem) => {
+    const children = parent.children ?? [];
+    if (children.length === 1 && children[0].to) {
+      navigate(children[0].to);
+    }
+    toggle(parent.key);
   };
+
+  // 일반 메뉴는 기존처럼 NavLink로 렌더
+  const renderLeaf = (item: NavItem) => (
+    <s.Item key={item.key}>
+      <s.LinkItem to={item.to!} end={item.to === "/mypage"}>
+        <span>{item.label}</span>
+        {!!item.badgeCount && item.badgeCount > 0 && (
+          <s.Badge aria-label={`${item.label} 알림 ${item.badgeCount}개`}>
+            {item.badgeCount}
+          </s.Badge>
+        )}
+      </s.LinkItem>
+    </s.Item>
+  );
 
   return (
     <s.Aside>
@@ -86,7 +90,7 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
           return (
             <s.Item key={item.key}>
               {/* 부모 클릭하면 펼침 */}
-              <s.ParentButton type="button" onClick={() => toggle(item.key)}>
+              <s.ParentButton type="button" onClick={() => goOrToggle(item)}>
                 <span>{item.label}</span>
 
                 {!!item.badgeCount && item.badgeCount > 0 && (
@@ -104,7 +108,10 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
                 <s.ChildNav>
                   {item.children!.map((child) => (
                     <s.Item key={child.key}>
-                      <s.ChildLinkItem to={child.to!} end={false}>
+                      <s.ChildLinkItem
+                        to={child.to!}
+                        end={child.to === "/mypage/reservations"}
+                      >
                         <span>{child.label}</span>
                         {!!badgeMap?.[child.key] && badgeMap[child.key] > 0 && (
                           <s.Badge

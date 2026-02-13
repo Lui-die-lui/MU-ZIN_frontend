@@ -12,9 +12,9 @@ import ApprovdeArtistGuard from "../pages/MyPage/Account/ApprovdeArtistGuard";
 import ArtistAccountPage from "../pages/MyPage/Account/ArtistAccountPage";
 import CreateLessonPage from "../pages/MyPage/Artist/ArtistManage/CreateLesson/CreateLessonPage";
 import EditLessonPage from "../pages/MyPage/Artist/ArtistManage/EditLesson/EditLessonPage";
-import ProtectedRoute from "../components/auth/protectedRoute";
-import MyReservationPage from "../pages/MyPage/Reservations/MyReservation/MyReservationsPage";
+
 import MyReservationsPage from "../pages/MyPage/Reservations/MyReservation/MyReservationsPage";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 function MyPageRouter() {
   return (
@@ -32,7 +32,7 @@ function MyPageRouter() {
 
         {/* 요청 관리 - 아티스트만 접근 가능 */}
         <Route
-          path="artist/requests"
+          path="reservations/requests"
           element={
             <ApprovdeArtistGuard>
               <ReservationsPage />

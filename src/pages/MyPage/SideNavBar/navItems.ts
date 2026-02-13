@@ -28,7 +28,7 @@ export const buildMyPageNavItems = (artistStatus: ArtistStatus): NavItem[] => {
               {
                 key: "artistRequests",
                 label: "요청 관리",
-                to: "/mypage/artist/requests",
+                to: "/mypage/reservations/requests",
               },
             ]
           : []),

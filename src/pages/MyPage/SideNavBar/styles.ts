@@ -89,7 +89,6 @@ export const Badge = styled.span`
   font-weight: 700;
 `;
 
-
 export const ParentButton = styled.button`
   width: 100%;
   display: flex;
@@ -103,7 +102,7 @@ export const ParentButton = styled.button`
   cursor: pointer;
   border-radius: 12px;
 
-   color: #374151;
+  color: #374151;
   font-size: 14px;
   font-weight: 600;
 
@@ -113,7 +112,7 @@ export const ParentButton = styled.button`
 `;
 
 export const Chevron = styled.span`
-  font-size: 12px;
+  font-size: 15px;
   opacity: 0.7;
   transform: rotate(0deg);
   transition: transform 0.15s ease;
@@ -128,6 +127,8 @@ export const ChildNav = styled.ul`
   padding: 0 0 0 10px;
   display: grid;
   gap: 6px;
+  font-size: 12px;
+  list-style: none;
 `;
 
 export const ChildLinkItem = styled(NavLink)`
@@ -138,6 +139,7 @@ export const ChildLinkItem = styled(NavLink)`
   padding: 10px 12px;
   border-radius: 10px;
   text-decoration: none;
+
   color: inherit;
 
   &:hover {
