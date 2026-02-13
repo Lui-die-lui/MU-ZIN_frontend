@@ -1,15 +1,29 @@
-import React, { useState } from "react";
-import { replace, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import type { AuthRedirectState } from "../../../../Types/routerState";
 
 function SigninForm() {
   const navigate = useNavigate();
+  const loc = useLocation();
+
+  const state = loc.state as AuthRedirectState | null;
+  const fromPath = state?.from?.pathname ?? "/";
+
+  // 로그인 되어있으면 로그인 화면 접근 불가
+  const isAuthenticated = usePrincipalState((s) => s.isAuthenticated);
   const signin = usePrincipalState((s) => s.signin);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    useEffect(() => {
+    if (isAuthenticated) {
+      navigate(fromPath, { replace: true });
+    }
+  }, [isAuthenticated]);
 
   // 제출
   const onSubmit = async () => {
@@ -26,7 +40,7 @@ function SigninForm() {
     // 로그인 시작
     try {
       await signin(email, password);
-      navigate("/", { replace: true });
+      navigate(fromPath, { replace: true });
     } catch (e) {
       setErrorMsg(e instanceof Error ? e.message : "로그인에 실패했습니다.");
       setPassword(""); // 비번만 지워줌
@@ -38,6 +52,7 @@ function SigninForm() {
   const signupOnClick = () => {
     navigate("/signup", { replace: true });
   };
+
 
   return (
     <div

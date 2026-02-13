@@ -88,3 +88,64 @@ export const Badge = styled.span`
   font-size: 12px;
   font-weight: 700;
 `;
+
+
+export const ParentButton = styled.button`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 12px;
+
+   color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+
+  &:hover {
+    background: #f6f6f6;
+  }
+`;
+
+export const Chevron = styled.span`
+  font-size: 12px;
+  opacity: 0.7;
+  transform: rotate(0deg);
+  transition: transform 0.15s ease;
+
+  &[data-open="true"] {
+    transform: rotate(180deg);
+  }
+`;
+
+export const ChildNav = styled.ul`
+  margin: 6px 0 0;
+  padding: 0 0 0 10px;
+  display: grid;
+  gap: 6px;
+`;
+
+export const ChildLinkItem = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    background: #f6f6f6;
+  }
+
+  &.active {
+    background: #111;
+    color: #fff;
+  }
+`;
