@@ -1,3 +1,4 @@
+import { label } from './../pages/Lesson/LessonSearch/SearchTimeFilter/styles';
 import { label } from "./../pages/MyPage/Account/UserAccount/PasswordSection/ChangePasswordModal/styles";
 import type { TimeSlotResp } from "./lessonTypes";
 export type ReservationStatus =
@@ -59,8 +60,8 @@ export type ReservationResp = {
 // 기간 지정
 export type ArtistReservationListFilter = {
   tab: ArtistReservationTab; // 탭 기반으로 받아줌
-  from?: string;
-  to?: string;
+  from?: string; // ymd
+  to?: string; // ymd
 };
 
 // 아티스트 예약 리스트(카드) 타입
@@ -108,3 +109,13 @@ export type ArtistCancelReq = {
   reason: string;
   reopenSlot: boolean;
 };
+
+// 아티스트 예약 관리 탭 queryKey 파라미터 
+export type ArtistReservationKeyParams = {
+  tab: ArtistReservationTab;
+  status?: ReservationStatus;
+  from?: string;
+  to?: string;
+}
+
+

@@ -28,11 +28,15 @@ export const cancelMyReservationReq = (reservationId: number) =>
   instance.patch<ApiRespDto<null>>(`/reservations/me/${reservationId}/cancel`);
 
 // 아티스트 예약 목록(status 없으면 전체 반환)
-export const getArtistReservationListReq = (status?: ReservationStatus) =>
+export const getArtistReservationListReq = (params: {
+  status?: ReservationStatus;
+  from?: string;
+  to?: string;
+}) =>
   instance.get<ApiRespDto<ArtistReservationSummaryResp[]>>(
     "/reservations/artist",
     {
-      params: status ? { status } : undefined,
+      params,
     },
   );
 

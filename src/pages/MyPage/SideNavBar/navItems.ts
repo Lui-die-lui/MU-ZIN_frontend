@@ -1,7 +1,6 @@
 // 사용자 상태에 따라 사이드 네비게이션바가 바뀌기 때문에
 
 import type { ArtistStatus } from "../../../Types/auth";
-import { label } from "../Account/UserAccount/PasswordSection/ChangePasswordModal/styles";
 
 export type NavItem = {
   key: string;

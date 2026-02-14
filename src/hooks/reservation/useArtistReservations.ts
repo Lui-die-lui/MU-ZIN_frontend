@@ -4,15 +4,18 @@ import {
   rejectReservationReq,
 } from "../../apis/reservation/reservationApis";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { ReservationStatus } from "../../Types/reservationType";
+import type { ArtistReservationListFilter, ReservationStatus } from "../../Types/reservationType";
 import { reservationKeys } from "./reservationKeys";
 import { getArtistReservationListReq } from "../../apis/reservation/reservationApis";
+import { buildArtistReservationParams } from "../../utils/filters/buildArtistReservationParams";
 
 // 아티스트가 가진 예약 리스트 불러옴
-export function useArtistReservationList(status?: ReservationStatus) {
+export function useArtistReservationList(filter: ArtistReservationListFilter) {
+  const params = buildArtistReservationParams(filter);
+
   return useQuery({
-    queryKey: reservationKeys.artistList(status),
-    queryFn: async () => (await getArtistReservationListReq(status)).data,
+    queryKey: reservationKeys.artistList({tab: filter.tab, ...params}),
+    queryFn: async () => (await getArtistReservationListReq(params)).data,
   });
 }
 
@@ -25,13 +28,13 @@ export function useArtistReservationDetail(reservationId: number) {
   });
 }
 
-export function useConfirmReservation(status?: ReservationStatus) {
+export function useConfirmReservation() {
   const qc = useQueryClient();
 
   return useMutation({
     mutationFn: (reservationId: number) => confirmReservationReq(reservationId),
     onSuccess: (_res, reservationId) => {
-      qc.invalidateQueries({ queryKey: reservationKeys.artistList(status) }); // 리스트 내 상태 변경
+      // qc.invalidateQueries({ queryKey: reservationKeys.artistList(status) }); // 리스트 내 상태 변경
       qc.invalidateQueries({
         queryKey: reservationKeys.artistDetail(reservationId),
       }); // 상세 상태 변경
@@ -40,13 +43,13 @@ export function useConfirmReservation(status?: ReservationStatus) {
   });
 }
 
-export function useRejectReservation(status?: ReservationStatus) {
+export function useRejectReservation() {
   const qc = useQueryClient();
 
   return useMutation({
     mutationFn: (reservationId: number) => rejectReservationReq(reservationId),
     onSuccess: (_res, reservationId) => {
-      qc.invalidateQueries({ queryKey: reservationKeys.artistList(status) });
+      qc.invalidateQueries({ queryKey: reservationKeys.artist() });
       qc.invalidateQueries({
         queryKey: reservationKeys.artistDetail(reservationId),
       });
