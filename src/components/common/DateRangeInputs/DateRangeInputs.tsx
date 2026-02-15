@@ -14,8 +14,8 @@ type Props = {
 };
 
 function DateRangeInputs({ from, to, onChange, disabled = false }: Props) {
-  const fromYmd = pickYmdFromLocalDateTime(from);
-  const toYmd = pickYmdFromLocalDateTime(to);
+  const fromYmd = pickYmdFromLocalDateTime(from) ?? "";
+  const toYmd = pickYmdFromLocalDateTime(to) ?? "";
   return (
     <div css={s.wrap}>
       <input
