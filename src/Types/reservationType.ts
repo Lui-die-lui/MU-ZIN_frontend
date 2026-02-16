@@ -32,6 +32,27 @@ export function tabToStatus(
   }
 }
 
+// 예약 관리 날짜 기준 정의(드롭다운 사용) - 요청일 기준 or 레슨일(요청된 타임슬롯) 기준
+export type ArtistReservationDateBasis = "REQUESTED_DT" | "LESSON_DT";
+
+export const DATE_BASIS_LABEL: Record<ArtistReservationDateBasis, string> = {
+  REQUESTED_DT: "요청일",
+  LESSON_DT: "레슨일",
+};
+
+export type DateRange = { from: string; to: string };
+// draft: 사용자가 UI에서 만지고 있는 값
+// applied = 검색버튼 누른 후 서버에 보내길 값
+export type ReservationSerchDraft = {
+  basis: ArtistReservationDateBasis;
+  range: DateRange;
+};
+
+export type ReservationSearchApplied = ReservationSerchDraft & {
+  //  검색 버튼이 눌렸다 표시용
+  stamp: number;
+}
+
 // ===============================
 //  유저
 // ===============================
@@ -60,6 +81,7 @@ export type ArtistReservationListFilter = {
   tab: ArtistReservationTab; // 탭 기반으로 받아줌
   from?: string; // LocalDateTime string (YYYY-MM-DDTHH:mm:ss)
   to?: string; // LocalDateTime string
+  stamp?: number; // queryKey 트리거용
 };
 
 // 아티스트 예약 리스트(카드) 타입
