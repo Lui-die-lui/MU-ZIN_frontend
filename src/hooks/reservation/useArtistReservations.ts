@@ -12,10 +12,16 @@ import { buildArtistReservationParams } from "../../utils/filters/buildArtistRes
 // 아티스트가 가진 예약 리스트 불러옴
 export function useArtistReservationList(filter: ArtistReservationListFilter) {
   const params = buildArtistReservationParams(filter);
-console.log("artist reservation params", params);
   return useQuery({
     queryKey: reservationKeys.artistList({tab: filter.tab, ...params}),
     queryFn: async () => (await getArtistReservationListReq(params)).data.data,
+//     queryFn: async () => {
+//   const res = await getArtistReservationListReq(params);
+//   console.log("artist list raw axios:", res);
+//   console.log("artist list res.data:", res.data);
+//   console.log("artist list res.data.data:", (res.data as any)?.data);
+//   return (res.data as any).data; // 일단 임시
+// },
   });
 }
 

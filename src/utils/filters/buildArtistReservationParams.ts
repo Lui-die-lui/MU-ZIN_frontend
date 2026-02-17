@@ -4,13 +4,9 @@ import type {
   ArtistReservationListFilter,
   ReservationStatus,
 } from "../../Types/reservationType";
-import { ymdToEndOfDay, ymdToStartOfDay } from "../searchForTimeUtils";
-import { todayYmd } from "../timeSlotUtils";
 
 type Params = {
   status?: ReservationStatus;
-  from?: string;
-  to?: string;
 };
 
 /*
@@ -22,25 +18,8 @@ from/to = (선택) YYYY-MM-DD 형태
 export function buildArtistReservationParams(
   filter: ArtistReservationListFilter,
 ): Params {
-  const { tab, from, to } = filter;
+  const { tab } = filter;
 
-  // status
-  // let status: ReservationStatus | undefined;
-  // switch (tab) {
-  //   case "requested":
-  //     status = "REQUESTED";
-  //     break;
-  //   case "confirmed":
-  //     status = "CONFIRMED";
-  //     break;
-  //   case "canceled":
-  //     status = undefined; // 이거 REJECTED까지 묶어야해서 훅에서 계산
-  //     break;
-  //   case "today": // 이건 아래에서 정의
-  //   case "all":
-  //   default:
-  //     status = undefined;
-  // }
   let status: ReservationStatus | undefined;
   switch (tab) {
     case "requested":
@@ -65,19 +44,19 @@ export function buildArtistReservationParams(
 
   // 현재 정책이랑 부딪히는 부분이 있어서 수정
   // 요청/전체만 요청일 기준 기간 필터를 서버로 보냄 
-  const allowRequestDateRange = tab === "requested" || tab === "all";
+  // const allowRequestDateRange = tab === "requested" || tab === "all";
 
-  // from/to 둘 다 있을때만 기간 필터 적용
-  if (allowRequestDateRange && from && to) {
-    return {
-      // status,
-      // from: ymdToStartOfDay(from),
-      // to: ymdToStartOfDay(to),
-      status,
-      from,
-      to,
-    };
-  }
+  // // from/to 둘 다 있을때만 기간 필터 적용
+  // if (allowRequestDateRange && from && to) {
+  //   return {
+  //     // status,
+  //     // from: ymdToStartOfDay(from),
+  //     // to: ymdToStartOfDay(to),
+  //     status,
+  //     from,
+  //     to,
+  //   };
+  // }
 
   return { status };
 }
