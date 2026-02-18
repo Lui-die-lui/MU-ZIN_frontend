@@ -120,7 +120,7 @@ function MyReservationsPage() {
         <div css={s.list}>
           {viewItems.map((item) => (
             <ReservationCard
-              key={item.reservationId}
+              key={item.lessonTitle}
               item={item}
               // 유저 페이지 액션: 예) 취소 버튼(REQUESTED/CONFIRMED에서 가능) 등
               rightActions={null}

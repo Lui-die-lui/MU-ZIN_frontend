@@ -67,6 +67,7 @@ export type ReservationResp = {
   confirmedDt: string | null;
   canceledDt: string | null;
   lessonId: number;
+  lessonTitle: string;
   timeSlot: TimeSlotResp;
 };
 
