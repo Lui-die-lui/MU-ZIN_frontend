@@ -5,6 +5,24 @@ import type {
   SearchDraft,
 } from "../Types/reservationType";
 
+// Artist
+export const ARTIST_TAB_ITEMS = [
+  { key: "requested", label: "요청" },
+  { key: "confirmed", label: "확정" },
+  { key: "canceled", label: "취소/거절" },
+  { key: "today", label: "오늘" },
+  { key: "all", label: "전체" },
+] as const;
+
+// default user
+export const MY_TAB_ITEMS = [
+  { key: "requested", label: "요청" },
+  { key: "confirmed", label: "확정" },
+  { key: "canceled", label: "취소/거절" },
+  { key: "today", label: "오늘" },
+  { key: "all", label: "전체" },
+] as const;
+
 export const DEFAULT_DATE_RANGE: DateRange = {
   from: undefined,
   to: undefined,

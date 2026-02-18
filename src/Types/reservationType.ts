@@ -1,3 +1,5 @@
+import { tab } from "./../components/common/MypageTabBar/styles";
+import { page } from "./../pages/MyPage/Reservations/pageStyles";
 import type { SortOrder } from "./commonTypes";
 import type { TimeSlotResp } from "./lessonTypes";
 export type ReservationStatus =
@@ -8,7 +10,7 @@ export type ReservationStatus =
   | "COMPLETED";
 
 // 예약 관리 상단 탭
-export type ArtistReservationTab =
+export type ReservationTab =
   | "all"
   | "requested"
   | "confirmed"
@@ -19,7 +21,7 @@ export type ArtistReservationTab =
 export type DateBasis = "REQUESTED_DT" | "LESSON_DT";
 
 export function tabToStatus(
-  tab: ArtistReservationTab,
+  tab: ReservationTab,
 ): ReservationStatus | undefined {
   switch (tab) {
     case "requested":
@@ -74,7 +76,7 @@ export type ReservationResp = {
 
 // 기간 지정
 export type ArtistReservationListFilter = {
-  tab: ArtistReservationTab; // 탭 기반으로 받아줌
+  tab: ReservationTab; // 탭 기반으로 받아줌
   // from?: string; // LocalDateTime string (YYYY-MM-DDTHH:mm:ss)
   // to?: string; // LocalDateTime string
   // stamp?: number; // queryKey 트리거용
@@ -128,9 +130,7 @@ export type ArtistCancelReq = {
 };
 
 // 아티스트 예약 관리 탭 queryKey 파라미터
-export type ArtistReservationKeyParams = {
-  tab: ArtistReservationTab;
+export type ReservationKeyParams = {
+  tab: ReservationTab;
   status?: ReservationStatus;
-  // from?: string;
-  // to?: string;
 };
