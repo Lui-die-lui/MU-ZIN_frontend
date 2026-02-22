@@ -1,5 +1,4 @@
 import {
-  INST_CATEGORY_VALUE_BY_LABEL,
   type InstrumentCategory,
 } from "../../Types/instrumentTypes";
 import type {

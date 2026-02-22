@@ -7,16 +7,6 @@ import {
 import { instance } from "../instance/instance";
 import type { ApiRespDto } from "../../Types/responseType";
 
-// Principal
-// export const getPrincipalReq = async () => {
-//   try {
-//     const response = await instance.get("/auth/principal");
-//     return response.data;
-//   } catch (error) {
-//     console.error("principal 요청 실패 : ", error);
-//     throw error;
-//   }
-// };
 
 // ApiRespDto 사용한 Principal
 export type PrincipalResp = ApiRespDto<Principal>;

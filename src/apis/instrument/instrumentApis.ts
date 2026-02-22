@@ -1,5 +1,4 @@
 import type { InstrumentResponse } from "../../Types/instrumentTypes";
-import type { ApiRespDto } from "../../Types/responseType";
 import { instance } from "../instance/instance";
 
 // 레슨 악기 카테고리 가져오기
