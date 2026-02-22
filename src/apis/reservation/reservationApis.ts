@@ -61,13 +61,9 @@ export const rejectReservationReq = (reservationId: number) =>
 // 아티스트 확정된 예약 취소 (바디 없이도 호출 가능)
 export const cancelByArtistReq = (
   reservationId: number,
-  body?: ArtistCancelReq,
+  body: ArtistCancelReq,
 ) =>
-  body
-    ? instance.patch<ApiRespDto<null>>(
-        `/reservations/artist/${reservationId}/cancel-by-artist`,
-        body,
-      )
-    : instance.patch<ApiRespDto<null>>(
-        `/reservations/artist/${reservationId}/cancel-by-artist`,
-      );
+  instance.patch<ApiRespDto<null>>(
+    `/reservations/artist/${reservationId}/cancel-by-artist`,
+    body,
+  );

@@ -1,10 +1,16 @@
+import { body } from "./../../pages/Lesson/LessonDetailDrawer/styles";
 import {
+  cancelByArtistReq,
   confirmReservationReq,
   getArtistReservationReq,
   rejectReservationReq,
 } from "../../apis/reservation/reservationApis";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { ArtistReservationListFilter, ReservationStatus } from "../../Types/reservationType";
+import type {
+  ArtistCancelReq,
+  ArtistReservationListFilter,
+  ReservationStatus,
+} from "../../Types/reservationType";
 import { reservationKeys } from "./reservationKeys";
 import { getArtistReservationListReq } from "../../apis/reservation/reservationApis";
 import { buildArtistReservationParams } from "../../utils/filters/buildArtistReservationParams";
@@ -13,7 +19,7 @@ import { buildArtistReservationParams } from "../../utils/filters/buildArtistRes
 export function useArtistReservationList(filter: ArtistReservationListFilter) {
   const params = buildArtistReservationParams(filter);
   return useQuery({
-    queryKey: reservationKeys.artistList({tab: filter.tab, ...params}),
+    queryKey: reservationKeys.artistList({ tab: filter.tab, ...params }),
     queryFn: async () => (await getArtistReservationListReq(params)).data.data,
   });
 }
@@ -52,6 +58,33 @@ export function useRejectReservation() {
       qc.invalidateQueries({
         queryKey: reservationKeys.artistDetail(reservationId),
       });
+    },
+  });
+}
+
+type Vars = {
+  reservationId: number;
+  body: ArtistCancelReq;
+};
+
+export function useCancelByArtistReservation() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ reservationId, body }: Vars) => {
+      const res = await cancelByArtistReq(reservationId, body);
+      const { status, message } = res.data;
+      if (status !== "success") throw new Error(message || "예약 취소 실패");
+      return res.data;
+    },
+
+    onSuccess: (_res, vars) => {
+      qc.invalidateQueries({ queryKey: reservationKeys.artist() });
+      qc.invalidateQueries({
+        queryKey: reservationKeys.artistDetail(vars.reservationId),
+      });
+
+      // 나중에 timeSlotKeys 쪽 lessonId도 invalidate 해주기 - reopen 때문에
     },
   });
 }
