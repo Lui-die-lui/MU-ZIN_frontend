@@ -1,13 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "../pageStyles";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type {
   DateBasis,
   ReservationTab,
   SearchApplied,
   SearchDraft,
 } from "../../../../Types/reservationType";
-import { DATE_BASIS_OPTIONS, DEFAULT_SEARCH_DRAFT, MY_TAB_ITEMS, SORT_OPTIONS } from "../../../../constants/reservations";
+import {
+  DATE_BASIS_OPTIONS,
+  DEFAULT_SEARCH_DRAFT,
+  MY_TAB_ITEMS,
+  SORT_OPTIONS,
+} from "../../../../constants/reservations";
 import {
   makeReservationSearchApplied,
   makeSortComparator,
@@ -17,6 +22,8 @@ import { pickYmdFromLocalDateTime } from "../../../../utils/searchForTimeUtils";
 import ReservationCard from "../ReservationCard/ReservationCard";
 import DateRangeSearchBar from "../DateSearchBar/DateRangeSearchBar";
 import MypageTabBar from "../../../../components/common/MypageTabBar/MypageTabBar";
+import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailModal";
+import { useArtistReservationDetail } from "../../../../hooks/reservation/useArtistReservations";
 
 function MyReservationsPage() {
   const [tab, setTab] = useState<ReservationTab>("today");
@@ -25,6 +32,20 @@ function MyReservationsPage() {
   const [applied, setApplied] = useState<SearchApplied>(
     makeReservationSearchApplied(DEFAULT_SEARCH_DRAFT),
   );
+
+  // 모달 상태
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const openDetail = (reservationId: number) => {
+    setSelectedId(reservationId);
+    setDetailOpen(true);
+  };
+
+  const closeDetail = () => {
+    setDetailOpen(false);
+    setSelectedId(null);
+  };
 
   // tab 바꿀 시 기본 상태로 set 해줌
   const onChangeTab = (next: ReservationTab) => {
@@ -39,6 +60,9 @@ function MyReservationsPage() {
 
   // 유저 예약 목록 가져오기
   const { data = [], isLoading, isFetching } = useMyReservationList(tab);
+
+  // 유저 예약 상세(선택된 id로) - 현재 아티스트 디테일이랑 동일하게 받아오고있음
+  const { data: detail } = useArtistReservationDetail(selectedId);
 
   const viewItems = useMemo(() => {
     let items = [...data];
@@ -117,19 +141,36 @@ function MyReservationsPage() {
           <div css={s.emptyTitle}>예약이 없습니다.</div>
         </div>
       ) : (
-        <div css={s.list}>
-          {viewItems.map((item) => (
-            <ReservationCard
-              key={item.lessonTitle}
-              item={item}
-              // 유저 페이지 액션: 예) 취소 버튼(REQUESTED/CONFIRMED에서 가능) 등
-              rightActions={null}
-            />
-          ))}
+         <div css={s.list}>
+          {viewItems.map((item) => {
+            const rightActions = (
+              <button
+                css={s.actionBtn("primary")}
+                type="button"
+                onClick={() => openDetail(item.reservationId)}
+              >
+                자세히 보기
+              </button>
+            );
+            
+            return (
+              <ReservationCard
+                key={item.reservationId}
+                item={item}
+                rightActions={rightActions}
+              />
+            );
+          })}
         </div>
       )}
+      <ReservationDetailModal
+        open={detailOpen}
+        onClose={closeDetail}
+        reservation={detail ?? null}
+        viewerMode="USER"
+      />
     </div>
-  );;
+  );
 }
 
 export default MyReservationsPage;

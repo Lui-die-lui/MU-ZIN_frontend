@@ -9,7 +9,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   ArtistCancelReq,
   ArtistReservationListFilter,
-  ReservationStatus,
 } from "../../Types/reservationType";
 import { reservationKeys } from "./reservationKeys";
 import { getArtistReservationListReq } from "../../apis/reservation/reservationApis";
@@ -25,11 +24,18 @@ export function useArtistReservationList(filter: ArtistReservationListFilter) {
 }
 
 // 아티스트 예약 상세
-export function useArtistReservationDetail(reservationId: number) {
+export function useArtistReservationDetail(reservationId: number | null) {
   return useQuery({
-    queryKey: reservationKeys.artistDetail(reservationId ?? 0),
-    queryFn: async () => (await getArtistReservationReq(reservationId!)).data,
-    enabled: !!reservationId, // 예약 아이디 무조건 있을것
+    queryKey: reservationId
+      ? reservationKeys.artistDetail(reservationId)
+      : ([...reservationKeys.artist(), "detail", "disabled"] as const),
+    queryFn: async () => {
+      const res = await getArtistReservationReq(reservationId!);
+      const { status, message, data } = res.data; // ApiRespDto 분해
+      if (status !== "success") throw new Error(message || "상세 조회 실패");
+      return data; // ArtistReservationDetailResp 반환
+    },
+    enabled: !!reservationId,
   });
 }
 

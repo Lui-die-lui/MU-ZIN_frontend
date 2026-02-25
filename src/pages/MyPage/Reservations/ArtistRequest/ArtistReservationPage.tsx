@@ -9,6 +9,7 @@ import type {
 } from "../../../../Types/reservationType";
 import * as s from "../pageStyles";
 import {
+  useArtistReservationDetail,
   useArtistReservationList,
   useConfirmReservation,
   useRejectReservation,
@@ -17,18 +18,37 @@ import ReservationCard from "../ReservationCard/ReservationCard";
 import MypageTabBar from "../../../../components/common/MypageTabBar/MypageTabBar";
 import { todayYmd } from "../../../../utils/timeSlotUtils";
 import { pickYmdFromLocalDateTime } from "../../../../utils/searchForTimeUtils";
-import { makeReservationSearchApplied, makeSortComparator } from "../../../../utils/reservationUtils";
+import {
+  makeReservationSearchApplied,
+  makeSortComparator,
+} from "../../../../utils/reservationUtils";
 import {
   ARTIST_TAB_ITEMS,
   DATE_BASIS_OPTIONS,
   DEFAULT_SEARCH_DRAFT,
   SORT_OPTIONS,
-
 } from "../../../../constants/reservations";
 import DateRangeSearchBar from "../DateSearchBar/DateRangeSearchBar";
-
+import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailModal";
 
 function ArtistReservationPage() {
+  // 모달 상태
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const openDetail = (reservationId: number) => {
+    setSelectedId(reservationId);
+    setDetailOpen(true);
+  };
+
+  const closeDetail = () => {
+    setDetailOpen(false);
+    setSelectedId(null);
+  };
+
+  // 모달이 열렸을 때만 상세 호출
+  const { data: detail } = useArtistReservationDetail(selectedId);
 
   // 탭은 즉시 반영(탭 누르면 refetch)
   const [tab, setTab] = useState<ReservationTab>("requested");
@@ -121,7 +141,11 @@ function ArtistReservationPage() {
   return (
     <div css={s.page}>
       {/*  Tabs: 탭 바꾸면 refetch + 검색 초기화 */}
-      <MypageTabBar value={tab} items={ARTIST_TAB_ITEMS} onChange={onChangeTab} />
+      <MypageTabBar
+        value={tab}
+        items={ARTIST_TAB_ITEMS}
+        onChange={onChangeTab}
+      />
 
       {/* (추가) 요청일/레슨일 드롭다운 */}
       <DateRangeSearchBar
@@ -141,28 +165,16 @@ function ArtistReservationPage() {
       ) : (
         <div css={s.list}>
           {viewItems.map((item) => {
-            const isPendingAction = confirmMut.isPending || rejectMut.isPending;
-
-            const rightActions =
-              item.status === "REQUESTED" ? (
-                <>
-                  <button
-                    css={s.actionBtn("primary")}
-                    disabled={isPendingAction}
-                    onClick={() => confirmMut.mutate(item.reservationId)}
-                  >
-                    수락
-                  </button>
-                  <button
-                    css={s.actionBtn("danger")}
-                    disabled={isPendingAction}
-                    onClick={() => rejectMut.mutate(item.reservationId)}
-                  >
-                    거절
-                  </button>
-                </>
-              ) : null;
-
+            const rightActions = (
+              <button
+                css={s.actionBtn("primary")}
+                type="button"
+                onClick={() => openDetail(item.reservationId)}
+              >
+                자세히 보기
+              </button>
+            );
+            
             return (
               <ReservationCard
                 key={item.reservationId}
@@ -173,6 +185,12 @@ function ArtistReservationPage() {
           })}
         </div>
       )}
+      <ReservationDetailModal
+        open={detailOpen}
+        onClose={closeDetail}
+        reservation={detail ?? null}
+        viewerMode="ARTIST"
+      />
     </div>
   );
 }

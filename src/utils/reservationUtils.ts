@@ -30,3 +30,11 @@ export function makeSortComparator<T>(
     return (ta - tb) * dir; // 음수면 앞, 양수면 뒤
   };
 }
+
+// 모달에 사용할 취소 가능 계산(프론트 UX용, 최종 판정은 서버)
+export function calcCanCancel(startIso: string, limitHours: number) {
+  const start = new Date(startIso).getTime();
+  const now = Date.now();
+  const diffMs = start - now; 
+  return diffMs > limitHours * 60 * 60 * 1000; // 하루?
+}

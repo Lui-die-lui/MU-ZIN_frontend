@@ -22,5 +22,8 @@ export const reservationKeys = {
     ] as const,
 
   artistDetail: (reservationId: number) =>
-    [...reservationKeys.artist(), "detail", reservationId] as const,
+    [
+      ...reservationKeys.artist(), "detail"
+      // "artistReservationDetail"
+      , reservationId] as const,
 };
