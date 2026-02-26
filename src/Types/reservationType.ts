@@ -119,6 +119,9 @@ export type ArtistReservationDetailResp = {
 
   timeSlot: TimeSlotResp;
 
+  artistUserId: number;
+  artistDisplayName: string;
+
   requesterUserId: number;
   requesterUsername: string;
 

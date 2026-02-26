@@ -20,6 +20,7 @@ import ActionsFooter from "./ActionsFooter/ActionsFooter";
 import CommonModal from "../../../../components/common/CommonModal/CommonModal";
 import { pickYmdFromLocalDateTime } from "../../../../utils/searchForTimeUtils";
 import type { ViewerMode } from "../../../../Types/myPageTypes";
+import { formatKRW } from "../../../../utils/myPageUtils";
 
 type Props = {
   open: boolean;
@@ -149,9 +150,10 @@ function ReservationDetailModal({
     >
       <div css={s.body}>
         <Row label="레슨" value={reservation.lessonTitle} />
-        <Row label="요청자" value={reservation.requesterUsername} />
+        <Row label={viewerMode === "USER" ? "아티스트" : "요청자"} value={viewerMode === "USER" ? reservation.artistDisplayName : reservation.requesterUsername} />
+        {/* 일반 유저 탭에서는 요청자가 아닌 아티스트 명을 보여줘야함 */}
         <Row label="상태" value={reservation.status} />
-
+        <Row label="가격" value={formatKRW(reservation.priceAtBooking)} />
         <Row
           label="요청일"
           value={pickYmdFromLocalDateTime(reservation.requestedDt)}
@@ -184,6 +186,7 @@ function ReservationDetailModal({
           </div>
         </div>
 
+        {/* 요청사항 안보임 */}
         {reservation.requestedMsg && (
           <div css={s.block}>
             <div css={s.blockTitle}>요청사항</div>
