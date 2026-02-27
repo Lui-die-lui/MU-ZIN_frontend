@@ -16,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCreateReservation } from "../../../hooks/reservation/useCreateReservation";
 import ReservationSuccessView from "./ReservationSuccessView/ReservationSuccessView";
 import RequestReservationView from "./RequestReservationView/RequestReservationView";
+import { formatKRW } from "../../../utils/myPageUtils";
 
 export type Props = {
   open: boolean;
@@ -103,7 +104,7 @@ function LessonDetailDrawer({
           <h2 css={s.title}>{data.title}</h2>
 
           <div css={s.metaRow}>
-            <div>가격: {data.price ?? "문의"}</div>
+            <div>가격: {formatKRW(data.price) ?? "문의"}</div>
             <div>시간: {data.durationMin}분</div>
           </div>
 

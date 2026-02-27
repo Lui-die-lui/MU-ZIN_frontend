@@ -18,6 +18,7 @@ import {
 import SearchTimeFilter from "./SearchTimeFilter/SearchTimeFilter";
 import type { InstrumentCategory } from "../../../Types/instrumentTypes";
 import { hasTimeFilter } from "./SearchTimeFilter/hasTimeFilter";
+import { formatKRW } from "../../../utils/myPageUtils";
 
 function LessonSearchPage() {
   const navigate = useNavigate();
@@ -271,7 +272,7 @@ function LessonSearchPage() {
                   `}
                 >
                   {l.mode} · {l.durationMin}분 ·{" "}
-                  {l.price ? `${l.price.toLocaleString()}원` : "가격 협의"}
+                  {l.price ? `${formatKRW(l.price)}` : "가격 협의"}
                 </div>
               </div>
             ))}
