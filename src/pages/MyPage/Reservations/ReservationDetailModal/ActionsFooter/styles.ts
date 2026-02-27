@@ -4,6 +4,7 @@ export const footer = css`
   display: flex;
   justify-content: space-between;
   gap: 8px;
+  padding: 15px 9px;
 `;
 
 export const right = css`
@@ -39,6 +40,6 @@ export const primary = css`
 export const danger = css`
   ${btnBase};
   border: none;
-  background: #ef4444;
+  background: #d84646;
   color: #fff;
 `;

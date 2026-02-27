@@ -29,13 +29,13 @@ export const Header = styled.div`
   align-items: center;
   justify-content: space-between; */
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 `;
 
 // props 내 제목
 export const Title = styled.h3`
-  margin: 0;
-  font-size: 14px;
+  margin: 10px;
+  font-size: 15px;
   font-weight: 900;
 `;
 
@@ -43,6 +43,7 @@ export const Title = styled.h3`
 export const CloseBtn = styled.button`
   width: 36px;
   height: 36px;
+  font-size: 15px;
   border-radius: 50px;
   border: 1px solid #e5e7eb;
   background: #fff;

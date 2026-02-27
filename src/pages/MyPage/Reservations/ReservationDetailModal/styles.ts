@@ -4,6 +4,7 @@ export const body = css`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 25px;
 `;
 
 export const row = css`
@@ -33,7 +34,8 @@ export const block = css`
 export const blockTitle = css`
   font-weight: 800;
   font-size: 13px;
-  margin-bottom: 6px;
+  /* margin-bottom: 6px; */
+  margin: 10px;
 `;
 
 export const blockText = css`

@@ -78,6 +78,8 @@ function ActionsFooter({
         {/* 3) 확정 상태(양쪽): 레슨 취소 */}
         {isConfirmed && (
           <button
+            type="button"
+            css={s.danger}
             onClick={onLessonCancel}
             disabled={busy || !onLessonCancel || !canLessonCancel}
             title={

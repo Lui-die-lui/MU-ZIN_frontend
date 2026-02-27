@@ -150,7 +150,14 @@ function ReservationDetailModal({
     >
       <div css={s.body}>
         <Row label="레슨" value={reservation.lessonTitle} />
-        <Row label={viewerMode === "USER" ? "아티스트" : "요청자"} value={viewerMode === "USER" ? reservation.artistDisplayName : reservation.requesterUsername} />
+        <Row
+          label={viewerMode === "USER" ? "아티스트" : "요청자"}
+          value={
+            viewerMode === "USER"
+              ? reservation.artistDisplayName
+              : reservation.requesterUsername
+          }
+        />
         {/* 일반 유저 탭에서는 요청자가 아닌 아티스트 명을 보여줘야함 */}
         <Row label="상태" value={reservation.status} />
         <Row label="가격" value={formatKRW(reservation.priceAtBooking)} />
@@ -175,14 +182,10 @@ function ReservationDetailModal({
           <div css={s.blockTitle}>레슨 일정</div>
           <div css={s.blockText}>
             시작:{" "}
-            {reservation.timeSlot?.startDt
-              ? pickYmdFromLocalDateTime(reservation.timeSlot.startDt)
-              : "-"}
+            {reservation.timeSlot?.startDt ? reservation.timeSlot.startDt : "-"}
             <br />
             종료:{" "}
-            {reservation.timeSlot?.endDt
-              ? pickYmdFromLocalDateTime(reservation.timeSlot.endDt)
-              : "-"}
+            {reservation.timeSlot?.endDt ? reservation.timeSlot.endDt : "-"}
           </div>
         </div>
 
