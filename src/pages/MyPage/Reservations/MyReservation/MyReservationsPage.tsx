@@ -25,6 +25,7 @@ import MypageTabBar from "../../../../components/common/MypageTabBar/MypageTabBa
 import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailModal";
 import { useArtistReservationDetail } from "../../../../hooks/reservation/useArtistReservations";
 import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
+import { todayYmd } from "../../../../utils/timeSlotUtils";
 
 function MyReservationsPage() {
   const [tab, setTab] = useState<ReservationTab>("today");
@@ -69,7 +70,7 @@ function MyReservationsPage() {
     let items = [...data];
 
     // 유저 기준 tab 필터
-    if (tab === "today") {
+    if (tab === "requested") {
       items = items.filter((r) => r.status === "REQUESTED");
     }
     if (tab === "confirmed") {
@@ -79,6 +80,15 @@ function MyReservationsPage() {
     if (tab === "canceled") {
       items = items.filter(
         (r) => r.status === "CANCELED" || r.status === "REJECTED",
+      );
+    }
+
+    if (tab === "today") {
+      const ymd = todayYmd();
+      items = items.filter(
+        (r) =>
+          r.status === "CONFIRMED" &&
+          pickYmdFromLocalDateTime(r.timeSlot.startDt) === ymd,
       );
     }
 
@@ -144,7 +154,6 @@ function MyReservationsPage() {
       ) : (
         <div css={s.list}>
           {viewItems.map((item) => {
-
             return (
               <ReservationCard
                 key={item.reservationId}
