@@ -29,8 +29,8 @@ import {
   SORT_OPTIONS,
 } from "../../../../constants/reservations";
 import DateRangeSearchBar from "../DateSearchBar/DateRangeSearchBar";
-import { usePrincipalState } from "../../../../stores/usePrincipalState";
 import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailModal";
+import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
 
 function ArtistReservationPage() {
   // 모달 상태
@@ -165,21 +165,13 @@ function ArtistReservationPage() {
       ) : (
         <div css={s.list}>
           {viewItems.map((item) => {
-            const rightActions = (
-              <button
-                css={s.actionBtn("primary")}
-                type="button"
-                onClick={() => openDetail(item.reservationId)}
-              >
-                자세히 보기
-              </button>
-            );
-            
+
             return (
               <ReservationCard
                 key={item.reservationId}
                 item={item}
-                rightActions={rightActions}
+                onClick={() => openDetail(item.reservationId)}
+                rightActions={<StatusBadge status={item.status} />}
               />
             );
           })}

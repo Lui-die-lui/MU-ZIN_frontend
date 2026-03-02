@@ -24,6 +24,7 @@ import DateRangeSearchBar from "../DateSearchBar/DateRangeSearchBar";
 import MypageTabBar from "../../../../components/common/MypageTabBar/MypageTabBar";
 import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailModal";
 import { useArtistReservationDetail } from "../../../../hooks/reservation/useArtistReservations";
+import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
 
 function MyReservationsPage() {
   const [tab, setTab] = useState<ReservationTab>("today");
@@ -141,23 +142,19 @@ function MyReservationsPage() {
           <div css={s.emptyTitle}>예약이 없습니다.</div>
         </div>
       ) : (
-         <div css={s.list}>
+        <div css={s.list}>
           {viewItems.map((item) => {
-            const rightActions = (
-              <button
-                css={s.actionBtn("primary")}
-                type="button"
-                onClick={() => openDetail(item.reservationId)}
-              >
-                자세히 보기
-              </button>
-            );
-            
+
             return (
               <ReservationCard
                 key={item.reservationId}
                 item={item}
-                rightActions={rightActions}
+                onClick={() => openDetail(item.reservationId)}
+                rightActions={
+                  <StatusBadge
+                    status={item.status}
+                  />
+                }
               />
             );
           })}
