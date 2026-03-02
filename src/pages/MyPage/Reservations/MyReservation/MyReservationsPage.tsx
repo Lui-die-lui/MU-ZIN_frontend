@@ -153,6 +153,7 @@ function MyReservationsPage() {
                 rightActions={
                   <StatusBadge
                     status={item.status}
+                    onClick={() => openDetail(item.reservationId)}
                   />
                 }
               />

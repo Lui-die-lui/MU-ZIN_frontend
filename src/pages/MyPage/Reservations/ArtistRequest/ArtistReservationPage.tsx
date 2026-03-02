@@ -165,13 +165,17 @@ function ArtistReservationPage() {
       ) : (
         <div css={s.list}>
           {viewItems.map((item) => {
-
             return (
               <ReservationCard
                 key={item.reservationId}
                 item={item}
                 onClick={() => openDetail(item.reservationId)}
-                rightActions={<StatusBadge status={item.status} />}
+                rightActions={
+                  <StatusBadge
+                    status={item.status}
+                    onClick={() => openDetail(item.reservationId)}
+                  />
+                }
               />
             );
           })}
