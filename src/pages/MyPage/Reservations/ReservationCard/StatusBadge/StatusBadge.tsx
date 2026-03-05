@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 import type { ReservationStatus } from "../../../../../Types/reservationType";
-import { RESERVATION_STATUS_META } from "./BadgeUi";
+import { RESERVATION_STATUS_META } from "./badgeUi";
 
 type Props = {
   status: ReservationStatus;

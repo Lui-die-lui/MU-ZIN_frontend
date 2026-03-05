@@ -1,4 +1,3 @@
-import { list } from "./../pages/MyPage/Home/NotificationSummary/styles";
 import type { InstrumentResponse } from "./../Types/instrumentTypes";
 import { create } from "zustand";
 import type {
@@ -19,7 +18,7 @@ type State = ApplyArtistPayload & {
   // setInstrumentIds: (v: number[]) => void 이런걸 줄여줌
   setField: <K extends keyof ApplyArtistPayload>(
     key: K,
-    value: ApplyArtistPayload[K] // 해당 키에 맞는 타입만 들어갈 수 있어서 안전
+    value: ApplyArtistPayload[K], // 해당 키에 맞는 타입만 들어갈 수 있어서 안전
   ) => void;
 
   setSelectedInstruments: (list: InstrumentResponse[]) => void; // 선택한 악기 담은 배열
@@ -71,10 +70,10 @@ export const useArtistApplyFormStore = create<State>((set, get) => ({
       majorName: p.majorName ?? "",
       selectedInstruments: p.instruments ?? [], // 객체로 저장
       instrumentIds: (p.instruments ?? []).map((i) => i.instId), // ids도 저장
-      // 검색창에 딸려있는 악기 컴포넌트 재 사용하려는데 
+      // 검색창에 딸려있는 악기 컴포넌트 재 사용하려는데
       // 상위 카테고리를 바꾸면 선택한 악기들이 다 지워짐
       // 검색창에서는 한가지 악기만 선택 가능하게 해놨기 때문...
-      // 그래서 ui로 보여줄 고른 악기도 저장해주고, 서버에 보낼 악기도 저장해주는중 
+      // 그래서 ui로 보여줄 고른 악기도 저장해주고, 서버에 보낼 악기도 저장해주는중
       hydrated: true, // 초기 채움 끝으로 표시
     });
     // 서버 프로필을 폼 초기값으로 딱 1번만 채우는 함수 - db를 계속 조회하는걸 막음

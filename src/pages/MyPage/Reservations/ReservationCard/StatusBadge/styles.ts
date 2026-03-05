@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import type { StatusTone } from "./BadgeUi";
+import type { StatusTone } from "./badgeUi";
 
 
 const toneVars: Record<StatusTone, { bg: string; fg: string; bd: string }> = {

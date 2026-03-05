@@ -1,14 +1,4 @@
 // 악기 카테고리 enum
-// export type InstrumentCategory = string;
-// export type InstrumentCategory =
-//   | "WOODWIND"
-//   | "BRASS"
-//   | "STRINGS"
-//   | "KEYBOARD"
-//   | "PERCUSSION"
-//   | "KOREAN_TRADITIONAL"
-//   | "VOCAL"
-//   | "ETC";
 export const INSTRUMENT_CATEGORIES = [
   "WOODWIND",
   "BRASS",
