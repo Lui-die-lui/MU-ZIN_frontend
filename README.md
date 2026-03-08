@@ -1,73 +1,111 @@
-# React + TypeScript + Vite
+# MUZIN
+클래식 악기 레슨 시장의 가격·일정·운영 방식의 불투명성으로 발생하는 마찰 비용을 줄이기 위해 기획한 레슨 예약 플랫폼
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- 단순 요청/상담 중심 연결이 아닌, 아티스트가 레슨을 구조적으로 등록하고 수강자가 가격과 가능 시간, 레슨 스타일을 기준으로 탐색·예약할 수 있도록 설계
 
-Currently, two official plugins are available:
+- 또한 예약 이후에도 상태와 일정을 명확하게 관리할 수 있도록 하며, 수강자와 아티스트 모두가 더 예측 가능한 방식으로 레슨을 운영할 수 있는 구조가 목표
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+## 1. 문제 정의
+클래식 악기 레슨은 수요가 존재함에도 불구하고 다음과 같은 이유로 시작 단계에서 이탈이 쉽게 발생
+- 가격이 공개되지 않아 비교와 판단이 어렵다.
+- 가능한 시간과 진행 방식이 명확하지 않아 상담/DM 의존도가 높다.
+- 수강자는 “얼마인지, 언제 가능한지, 어떤 레슨인지”를 확인하기까지 많은 마찰 비용을 겪는다.
+- 아티스트 역시 자신을 효과적으로 소개하고, 레슨을 체계적으로 운영할 수 있는 구조가 부족하다.
+---
+## 2. 해결 방식
+MUZIN은 레슨을 상담 중심의 요청형 서비스가 아니라, **예약 가능한 상품 구조** 로 전환하는 방향으로 설계
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+#### 핵심 접근 방식
+- 아티스트가 레슨을 구조적으로 등록할 수 있어야 한다.
+- 수강자는 가격과 시간을 기준으로 레슨을 탐색하고 비교할 수 있어야 한다.
+- 예약 이후에도 상태와 일정이 명확하게 관리되어야 한다.
+- 운영 과정에서 발생하는 누락과 반복 커뮤니케이션을 줄일 수 있어야 한다.
+--- 
 
-## Expanding the ESLint configuration
+## 3. 핵심 사용자 흐름
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 아티스트
+아티스트 인증 신청 → 레슨 등록 → 타임슬롯 생성 → 예약 요청 확인 → 확정/취소/완료 등 상태 관리
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 수강자
+레슨 탐색 → 가격/설명/가능 시간 확인 → 예약 요청 → 예약 상태 확인 → 알림/채팅을 통한 후속 커뮤니케이션
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 4. 주요 기능
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- 아티스트 인증
+- 레슨 등록 및 수정
+- 타임슬롯 기반 예약
+- 예약 상태 관리
+- 알림 기능
+- 채팅 기능
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 5. 설계 원칙
+### 가격을 숨기지 않는다
+수강자가 시작 전부터 가격을 비교하고 판단할 수 있어야 탐색 비용이 줄어든다
+
+### 시간을 명확하게 보여준다
+가능 시간을 타임 슬롯 기반으로 제시해 상담/조율 중심의 불필요한 왕복 커뮤니케이션을 줄인다
+
+### 상태를 운영 도구처럼 관리한다
+예약은 요청 이후의 흐름까지 중요하기 때문에, 확정·취소·완료 등의 상태를 명확하게 관리하는 구조가 중요
+
+### 사용자 경험과 운영 경험을 함께 고려한다
+수강자의 탐색 편의뿐 아니라, 아티스트가 실제로 레슨을 운영할 때 발생하는 누락과 반복 업무도 줄일 수 있도록 설계한다
+
+### 현재 진행 상태
+현재 MUZIN은 개인 프로젝트 진행중이며, 다음과 같은 영역을 중심으로 구조를 설계하고 구현하고 있습니다.
+
+- 아티스트 인증 흐름
+- 레슨 등록 및 관리
+- 타임슬롯 생성 및 예약 구조
+- 예약 상태 관리
+- 알림 및 채팅 구조 설계
+
+기능 구현과 함께, 각 흐름이 사용자와 운영 관점에서 자연스럽게 이어지는지 반복적으로 점검하며 개선하고 있습니다.
+
+---
+## 7. 구현 과정에서 중요하게 본 점
+
+이 프로젝트에서는 단순히 기능을 추가하는 것보다, 아래 기준을 먼저 확인하며 설계하고 있습니다.
+
+- 이 기능이 실제로 사용자의 마찰 비용을 줄이는가
+- 예약 흐름에서 상태가 명확하게 보이는가
+- 운영 과정에서 누락되거나 꼬일 가능성이 없는가
+- 나중에 기능이 늘어나더라도 구조적으로 확장 가능한가
+
+---
+
+## 8. 기술 스택
+
+### Frontend
+React, TypeScript, React Query, Zustand, Emotion
+
+### Backend
+Spring Boot, Spring Security, JPA, JWT, OAuth2
+
+### Database
+PostgreSQL
+
+### Tools
+Figma, GitHub, Postman, Notion
+
+---
+
+## 9. 앞으로의 개선 방향
+
+- 예약 상세 UX 개선
+- 카카오 맵 API를 이용한 위치 기반 탐색 
+- 아티스트 관리 화면 고도화
+- 알림 기능의 실시간화
+- 채팅과 예약 흐름의 연결 강화
+- 리뷰 및 후속 운영 기능 설계
+
+---
+## 10. 프로젝트를 통해 배우고 있는 점
+MUZIN은 단순한 기능 구현 프로젝트가 아니라, 문제를 어떻게 정의하고 어떤 흐름으로 풀어낼지를 계속 검증하는 프로젝트입니다.
+이 과정을 통해 기능을 많이 만드는 것보다. **무엇을 왜 먼저 해결해야 하는지**, 그리고 **사용자 경험과 운영 구조를 어떻게 함께 설계해야 하는지**를 더 중요하게 보고 있습니다. 
