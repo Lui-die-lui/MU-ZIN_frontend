@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import * as s from "../../styles";
 import { useEffect, useState } from "react";
 import { usePrincipalState } from "../../../../../stores/usePrincipalState";
 import { useMutation } from "@tanstack/react-query";
@@ -64,10 +66,11 @@ function ChangeUserSection() {
       <p>이름</p>
       <input
         value={username}
+        css={s.input}
         onChange={(e) => setUsername(e.target.value)}
         // placeholder={current}
       />
-      <button onClick={onSave} disabled={!canSave}>
+      <button css={s.reserveBtn} onClick={onSave} disabled={!canSave}>
         {mut.isPending ? "저장중" : "저장"}
       </button>
       {!validLen && <p>이름은 2~30자 내로 입력해주세요.</p>}

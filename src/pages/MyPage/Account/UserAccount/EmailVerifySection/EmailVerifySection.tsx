@@ -1,4 +1,5 @@
-import React from "react";
+/** @jsxImportSource @emotion/react */
+import * as s from "../../styles";
 import { usePrincipalState } from "../../../../../stores/usePrincipalState";
 import { useMutation } from "@tanstack/react-query";
 import { sendEmailCodeReq } from "../../../../../apis/auth/authApi";
@@ -15,9 +16,10 @@ function EmailVerifySection() {
   return (
     <ContentItem>
       <p>이메일</p>
-      <input value={email} disabled />
+      <input value={email} css={s.input} disabled />
       <button
         onClick={() => sendMut.mutate()}
+        css={s.reserveBtn}
         disabled={!email || sendMut.isPending || isVerified}
       >
         {isVerified

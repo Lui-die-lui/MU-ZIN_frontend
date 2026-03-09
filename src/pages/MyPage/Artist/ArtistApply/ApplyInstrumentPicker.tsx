@@ -2,14 +2,14 @@ import React, { useMemo, useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import { getInstrumentsReq } from "../../../../apis/instrument/instrumentApis";
-import type { InstrumentResponse } from "../../../../Types/instrumentTypes";
+import type { InstrumentCategory, InstrumentResponse } from "../../../../Types/instrumentTypes";
 import InstFilterDropdown from "../../../Lesson/InstFilterDropdown/InstFilterDropdown";
 import { useArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
 
 // 검색에서 사용되는 드롭다운 컴포넌트랑 이어주는 어댑터
 // 객체 싱크를 도와줌
 function ApplyInstrumentPicker({ disabled }: { disabled: boolean }) {
-  const [category, setCategory] = useState<"ALL" | string>("ALL");
+  const [category, setCategory] = useState<"ALL" | InstrumentCategory>("ALL");
 
   const instIds = useArtistApplyFormStore((s) => s.instrumentIds);
   const selected = useArtistApplyFormStore((s) => s.selectedInstruments);
