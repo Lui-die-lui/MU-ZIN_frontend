@@ -1,3 +1,5 @@
+/** @jsxImportSource @emotion/react */
+import * as s from "../../styles";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useMemo, useRef } from "react";
 import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
@@ -92,8 +94,8 @@ function InstrumentSection() {
       <SelectedInstrumentChips disabled={locked} />
 
       <button
-        style={{ marginTop: 12 }}
         disabled={saveMutation.isPending || !isDirty}
+        css={s.reserveBtn}
         onClick={() => saveMutation.mutate()}
       >
         {saveMutation.isPending ? "저장중..." : "악기 저장"}

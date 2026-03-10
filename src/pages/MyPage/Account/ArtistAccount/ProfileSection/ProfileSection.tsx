@@ -1,4 +1,5 @@
-import React from "react";
+/** @jsxImportSource @emotion/react */
+import * as s from "../../styles";
 import useArtistAccount from "../../../../../hooks/ArtistProfile/useArtistAccount";
 
 function ProfileSection() {
@@ -26,20 +27,28 @@ function ProfileSection() {
       <div>
         <label>전공(승인 후 변경 불가)</label>
         {/* 이거 꼭 인풋으로 넣어야하나 그럼...? */}
-        <input value={profile.majorName ?? ""} readOnly />
+        <input value={profile.majorName ?? ""} css={s.input} readOnly />
       </div>
 
       <div>
         <label>소개</label>
-        <textarea value={bio} onChange={(e) => setBio(e.target.value)} />
+        <textarea
+          value={bio}
+          css={s.textarea}
+          onChange={(e) => setBio(e.target.value)}
+        />
       </div>
 
       <div>
         <label>경력</label>
-        <textarea value={career} onChange={(e) => setCareer(e.target.value)} />
+        <textarea
+          value={career}
+          css={s.textarea}
+          onChange={(e) => setCareer(e.target.value)}
+        />
       </div>
 
-      <button disabled={!isDirty || isSaving} onClick={save}>
+      <button disabled={!isDirty || isSaving} css={s.reserveBtn} onClick={save}>
         {isSaving ? "저장중..." : "저장"}
       </button>
     </section>

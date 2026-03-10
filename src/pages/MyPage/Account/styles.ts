@@ -2,16 +2,15 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
 export const SubContainer = styled.div`
-display: flex;
-justify-content: space-between;
-`
+  display: flex;
+  justify-content: space-between;
+`;
 
 export const ContentItem = styled.div`
-display: flex;
+  display: flex;
   align-items: center; /* 아이콘-글자 수직 정렬 */
-  gap: 8px;            /* 아이콘-글자 간격 */
-
-`
+  gap: 8px; /* 아이콘-글자 간격 */
+`;
 
 export const input = css`
   height: 34px;
@@ -33,4 +32,17 @@ export const reserveBtn = css`
     opacity: 0.35;
     cursor: not-allowed;
   }
+`;
+
+export const textarea = css`
+  resize: none;
+  min-height: 120px;
+  max-height: 300px;
+  min-width: 300px;
+  max-width: 630px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  background: #fff;
 `;
