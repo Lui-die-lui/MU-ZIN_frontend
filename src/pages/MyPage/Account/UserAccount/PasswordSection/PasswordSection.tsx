@@ -2,32 +2,24 @@
 import * as s from "../../styles";
 import { useState } from "react";
 import { usePrincipalState } from "../../../../../stores/usePrincipalState";
-import { ContentItem } from "../../styles";
+import { RiLockPasswordFill } from "react-icons/ri";
 import ChangePasswordModal from "./ChangePasswordModal/ChangePasswordModal";
 import { patchMyPasswordReq } from "../../../../../apis/user/userApis";
+import AccountInfoRow from "../../AccountInfoRow/AccountInfoRow";
 
 function PasswordSection() {
   const { principal } = usePrincipalState();
   const [open, setOpen] = useState(false);
   const canChange = principal?.canChangePassword ?? false;
   return (
-    <ContentItem>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>
-          <p style={{ fontWeight: 700 }}>비밀번호 변경</p>
-          {!canChange && (
-            <p style={{ fontSize: 12, color: "#64748b" }}>
-              소셜 로그인 계정은 비밀번호 변경이 불가해요.
-            </p>
-          )}
+    <AccountInfoRow
+      label={
+        <div css={s.labelWithIcon}>
+          <RiLockPasswordFill size={18} />
+          <span>비밀번호 변경</span>
         </div>
-
+      }
+      action={
         <button
           type="button"
           disabled={!canChange}
@@ -36,6 +28,22 @@ function PasswordSection() {
         >
           변경
         </button>
+      }
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          {!canChange && (
+            <p style={{ fontSize: 12, color: "#64748b" }}>
+              소셜 로그인 계정은 비밀번호 변경이 불가해요.
+            </p>
+          )}
+        </div>
       </div>
 
       <ChangePasswordModal
@@ -46,7 +54,7 @@ function PasswordSection() {
           setOpen(false);
         }}
       />
-    </ContentItem>
+    </AccountInfoRow>
   );
 }
 

@@ -1,4 +1,5 @@
-import React from "react";
+/** @jsxImportSource @emotion/react */
+import * as s from "./styles";
 import EmailVerifySection from "./UserAccount/EmailVerifySection/EmailVerifySection";
 import ChangeUserSection from "./UserAccount/ChangeUsernameSection/ChangeUsernameSection";
 
@@ -7,11 +8,20 @@ import EditProfileImgSection from "./UserAccount/EditProfileImgSection/EditProfi
 
 function AccountPage() {
   return (
-    <div>
-      <EditProfileImgSection />
-      <ChangeUserSection />
-      <EmailVerifySection />
-      <PasswordSection />
+     <div css={s.page}>
+      <div css={s.header}>
+        <h1 css={s.title}>개인 정보</h1>
+        <p css={s.desc}>
+          내 계정 정보와 공개 범위를 관리하세요.
+        </p>
+      </div>
+
+      <div css={s.card}>
+        <EditProfileImgSection />
+        <ChangeUserSection />
+        <EmailVerifySection />
+        <PasswordSection />
+      </div>
     </div>
   );
 }

@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { usePrincipalState } from "../../../../../stores/usePrincipalState";
 import { useMutation } from "@tanstack/react-query";
 import { patchMyUsernameReq } from "../../../../../apis/user/userApis";
-import { ContentItem } from "../../styles";
+import { FaUser } from "react-icons/fa";
+import AccountInfoRow from "../../AccountInfoRow/AccountInfoRow";
 
 function ChangeUserSection() {
   const { principal, updatePrincipal } = usePrincipalState();
@@ -62,20 +63,35 @@ function ChangeUserSection() {
   };
 
   return (
-    <ContentItem>
-      <p>이름</p>
-      <input
-        value={username}
-        css={s.input}
-        onChange={(e) => setUsername(e.target.value)}
-        // placeholder={current}
-      />
-      <button css={s.reserveBtn} onClick={onSave} disabled={!canSave}>
-        {mut.isPending ? "저장중" : "저장"}
-      </button>
-      {!validLen && <p>이름은 2~30자 내로 입력해주세요.</p>}
-      {message && <p>{message}</p>}
-    </ContentItem>
+    <AccountInfoRow
+      label={
+        <div css={s.labelWithIcon}>
+          <FaUser size={17} />
+          <span>이름</span>
+        </div>
+      }
+      action={
+        <button css={s.reserveBtn} onClick={onSave} disabled={!canSave}>
+          {mut.isPending ? "저장중" : "저장"}
+        </button>
+      }
+    >
+      <div>
+        <input
+          value={username}
+          css={s.input}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+
+        {!validLen && <p css={s.errorText}>이름은 2~30자 내로 입력해주세요.</p>}
+
+        {message && (
+          <p css={message.includes("완료") ? s.successText : s.errorText}>
+            {message}
+          </p>
+        )}
+      </div>
+    </AccountInfoRow>
   );
 }
 
