@@ -8,12 +8,16 @@ export type LessonStatus = "ACTIVE" | "INACTIVE";
 
 // 레슨 타임 슬롯 예약 가능/예약중/불가 상태
 export type TimeSlotStatus = "OPEN" | "BOOKED" | "CLOSED";
+ 
 
 // 스타일 태그 응답
 export interface LessonStyleTagResponse {
   lessonStyleTagId: number;
   styleName: string;
 }
+
+// 스타일 태그 default 값 상수
+export const EMPTY_STYLE_TAGS: LessonStyleTagResponse[] = [];
 
 // 공통 베이스 (요약 / 상세 둘 다 가지고있음)
 export interface LessonBase {

@@ -79,7 +79,7 @@ function MultiSelectDropdown<T>({
 
   return (
     <div css={s.dropdownRoot} ref={rootRef}>
-      <button type="button" onClick={() => setOpen((v) => !v)}>
+      <button type="button" css={s.trigger} onClick={() => setOpen((v) => !v)}>
         {selectedCount ? selectedCountLabel(selectedCount) : label}
         <span css={s.caret(open)}>▾</span>
       </button>

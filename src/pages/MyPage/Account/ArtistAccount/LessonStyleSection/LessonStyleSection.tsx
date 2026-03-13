@@ -169,7 +169,6 @@ function LessonStyleSection() {
         disabled={locked || !isDirty}
         css={s.reserveBtn}
         onClick={() => saveMutation.mutate()}
-
       >
         {locked ? "저장중..." : "저장"}
       </button>

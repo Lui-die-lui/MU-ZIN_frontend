@@ -169,7 +169,7 @@ function LessonSearchPage() {
           onChangeCategory={setDraftInstCategory}
           instIds={draftInstIds}
           onChangeInstIds={setDraftInstIds}
-          resetOnCategortChange={true}
+          resetOnCategoryChange={true}
         />
 
         <button

@@ -41,7 +41,7 @@ export const getMyLessonDetailReq = (lessonId: number) =>
   instance.get<ApiRespDto<MyLessonDetail>>(`/lessons/me/${lessonId}`);
 
 // 레슨 방식 스타일 태그 목록
-export const getLessonStyleTagsReq = () =>
+export const getLessonStyleTagsReq = async() =>
   instance.get<ApiRespDto<LessonStyleTagResponse[]>>("/lessons/style-tags");
 
 // 스타일 태그(전체 교체)
