@@ -19,6 +19,7 @@ import SearchTimeFilter from "./SearchTimeFilter/SearchTimeFilter";
 import type { InstrumentCategory } from "../../../Types/instrumentTypes";
 import { hasTimeFilter } from "./SearchTimeFilter/hasTimeFilter";
 import { formatKRW } from "../../../utils/myPageUtils";
+import StyleDropdown from "../../Artist/ArtistSearch/StyleDropdown/StyleDropdown";
 
 function LessonSearchPage() {
   const navigate = useNavigate();
@@ -164,6 +165,11 @@ function LessonSearchPage() {
           <option value="ONLINE">온라인</option>
           <option value="OFFLINE">오프라인</option>
         </select>
+
+        <StyleDropdown
+          lessonStyleTagIds={draftTagIds}
+          onChangeStyleTagIds={setDraftTagIds}
+        />
         <InstFilterDropdown
           category={draftInstCategory}
           onChangeCategory={setDraftInstCategory}
@@ -189,8 +195,8 @@ function LessonSearchPage() {
 
       <SearchTimeFilter value={draftTime} onChange={setDraftTime} />
 
-      {/* 스타일 태그 필터 */}
-      <div css={s.row}>
+      {/* 스타일 태그 필터 - dropdown 으로 변경 */}
+      {/* <div css={s.row}>
         {tags.map((t) => {
           const active = draftTagIds.includes(t.lessonStyleTagId);
           return (
@@ -204,7 +210,7 @@ function LessonSearchPage() {
           );
         })}
       </div>
-      <div css={s.row}></div>
+      <div css={s.row}></div> */}
 
       {/* 결과 */}
       {!appliedParams && (

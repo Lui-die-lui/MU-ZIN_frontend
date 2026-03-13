@@ -44,6 +44,13 @@ export const getMyLessonDetailReq = (lessonId: number) =>
 export const getLessonStyleTagsReq = async() =>
   instance.get<ApiRespDto<LessonStyleTagResponse[]>>("/lessons/style-tags");
 
+// 스타일 배열 문제 때문에 가공 함수 추가
+export const getLessonStyleTags = async (): Promise<LessonStyleTagResponse[]> => {
+  const resp = await getLessonStyleTagsReq();
+  const arr = resp.data.data;
+  return Array.isArray(arr) ? arr : [];
+}
+
 // 스타일 태그(전체 교체)
 export const setMyLessonStyleTagsReq = (
   lessonId: number,

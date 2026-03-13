@@ -1,8 +1,11 @@
 import { css } from "@emotion/react";
 
 export const wrap = css`
-  display: grid;
-  gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
 `;
 
 export const row = css`
@@ -10,13 +13,13 @@ export const row = css`
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+  min-width: fit-content;
 `;
-
 export const label = css`
-  width: 44px;
   font-weight: 700;
   font-size: 13px;
   color: #222;
+  white-space: nowrap;
 `;
 
 export const inline = css`

@@ -15,6 +15,8 @@ export const searchBar = css`
   display: flex;
   gap: 10px;
   width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
 `;
 
 export const searchButton = css`
@@ -23,6 +25,8 @@ export const searchButton = css`
   border: none;
   border-radius: 10px;
   cursor: pointer;
+  flex: 0 0 auto;
+  white-space: nowrap;
 `;
 
 export const resetButton = css`
@@ -32,6 +36,8 @@ export const resetButton = css`
   border-radius: 10px;
   background: white;
   cursor: pointer;
+  flex: 0 0 auto;
+  white-space: nowrap;
 `;
 
 export const resultSection = css`

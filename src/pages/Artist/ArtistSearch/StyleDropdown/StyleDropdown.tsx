@@ -3,7 +3,10 @@ import {
   EMPTY_STYLE_TAGS,
   type LessonStyleTagResponse,
 } from "../../../../Types/lessonTypes";
-import { getLessonStyleTagsReq } from "../../../../apis/lesson/lessonApis";
+import {
+  getLessonStyleTags,
+  getLessonStyleTagsReq,
+} from "../../../../apis/lesson/lessonApis";
 import MultiSelectDropdown from "../../../../components/common/MultiSelectDropdown/MultiSelectDropdown";
 type Props = {
   lessonStyleTagIds: number[];
@@ -15,11 +18,8 @@ function StyleDropdown({ lessonStyleTagIds, onChangeStyleTagIds }: Props) {
     LessonStyleTagResponse[]
   >({
     queryKey: ["lessonStyleTags"],
-    queryFn: async () => {
-      const arr = (await getLessonStyleTagsReq()).data.data;
-      return Array.isArray(arr) ? arr : [];
-    },
-    staleTime: 10 * 60 * 1000,
+    queryFn: getLessonStyleTags,
+    staleTime: 1 * 60 * 1000,
   });
   return (
     <MultiSelectDropdown<LessonStyleTagResponse>
