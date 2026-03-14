@@ -22,7 +22,7 @@ export type ArtistProfileResponse = {
   bio: string;
   career: string;
   majorName: string;
-  artistStatus: ArtistStatus;
+  status: ArtistStatus;
   instruments: InstrumentResponse[];
 };
 

@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { useNavigate } from "react-router-dom";
 import type { ArtistSearchResp } from "../../../../Types/artistSearchTypes";
 import * as s from "./styles";
 
@@ -7,8 +8,14 @@ type Props = {
 };
 
 function ArtistCard({ artist }: Props) {
+  const navigate = useNavigate();
+
+  const handleClickCard = () => {
+    navigate(`/artists/${artist.artistProfileId}`);
+  };
+
   return (
-     <article css={s.card}>
+    <article css={s.card} onClick={handleClickCard}>
       <img
         css={s.image}
         src={artist.profileImgUrl || "/default-profile.png"}

@@ -1,4 +1,3 @@
-
 import { Route, Routes } from "react-router-dom";
 import AppLayout from "../components/layout/Layout/AppLayout";
 import Home from "../pages/Home/Home";
@@ -8,6 +7,7 @@ import MyPageRouter from "./MyPageRouter";
 import ArtistMain from "../pages/Artist/ArtistMain";
 import OAuth2Redirect from "../pages/Auth/OAuth2Redirect/OAuth2Redirect";
 import LessonRouter from "./LessonRouter";
+import ArtistRouter from "./ArtistRouter";
 
 function MainRouter() {
   return (
@@ -17,7 +17,7 @@ function MainRouter() {
         <Route path="/" element={<Home />} />
         <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
         <Route path="/lessons/*" element={<LessonRouter />} />
-        <Route path="/artist" element={<ArtistMain />} />
+        <Route path="/artists/*" element={<ArtistRouter />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
       </Route>

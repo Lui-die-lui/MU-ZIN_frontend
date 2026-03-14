@@ -11,6 +11,7 @@ import type {
 import type { LessonStyleTagResponse } from "../../Types/lessonTypes";
 import type { ApiRespDto } from "../../Types/responseType";
 import { instance } from "../instance/instance";
+import type { ArtistProfileDetailResp } from "../../Types/artistDetailTypes";
 
 // 임시저장한 신청서
 export const getMyArtistProfileReq = () =>
@@ -58,7 +59,7 @@ export const setMyArtistStyleTagsReq = (body: ArtistStyleSetRequest) =>
 export const searchArtistsReq = async (
   params: ArtistSearchReq, // 검색 조건 객체 타입
 ): Promise<ArtistSearchResp[]> => {
-  // 최종적으로 해당 배열을 담은 Promise 를 반환(ex. 아티스트 카드 리스트) 
+  // 최종적으로 해당 배열을 담은 Promise 를 반환(ex. 아티스트 카드 리스트)
   const resp = await instance.get("/artists", {
     // get 요청 보내고 끝날 때까지 기다린 뒤 결과를 resp에 저장
     params,
@@ -68,4 +69,15 @@ export const searchArtistsReq = async (
   });
 
   return resp.data; // 실제 데이터 반환
+};
+
+// 아티스트 상세 페이지 프로필 디테일
+export const getArtistProfileDetailReq = async (
+  artistProfileId: number,
+): Promise<ArtistProfileDetailResp> => {
+  const resp = await instance.get<ApiRespDto<ArtistProfileDetailResp>>(
+    `/artists/${artistProfileId}`,
+  );
+
+  return resp.data.data;
 };

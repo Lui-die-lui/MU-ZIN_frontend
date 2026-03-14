@@ -17,6 +17,7 @@ import { useCreateReservation } from "../../../hooks/reservation/useCreateReserv
 import ReservationSuccessView from "./ReservationSuccessView/ReservationSuccessView";
 import RequestReservationView from "./RequestReservationView/RequestReservationView";
 import { formatKRW } from "../../../utils/myPageUtils";
+import { useNavigate } from "react-router-dom";
 
 export type Props = {
   open: boolean;
@@ -35,6 +36,7 @@ function LessonDetailDrawer({
   initialOpenSlotFilter = null, // lessonId 없으면 렌더 요청 하지않기
 }: Props) {
   const qc = useQueryClient();
+
 
   const id = lessonId ?? 0;
   const { data, isLoading, isError } = usePublicLessonDetail(id);
@@ -91,6 +93,7 @@ function LessonDetailDrawer({
 
   // create reservation
   const createM = useCreateReservation(id);
+
 
   return (
     <SideDrawer open={open} onClose={onClose} title="레슨 상세" width={440}>

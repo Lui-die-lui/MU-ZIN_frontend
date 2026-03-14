@@ -13,7 +13,12 @@ export const artistHeader = css`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 12px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
 `;
 
 export const artistMeta = css`

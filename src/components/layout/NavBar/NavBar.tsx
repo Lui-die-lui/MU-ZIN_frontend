@@ -31,7 +31,7 @@ function NavBar() {
   const navItems = [
     // { path: "/", label: "홈" },
     { path: "/lessons", label: "레슨" },
-    { path: "/artist", label: "아티스트" },
+    { path: "/artists", label: "아티스트" },
   ];
 
   const onLogout = () => {
@@ -117,9 +117,7 @@ function NavBar() {
             {/* 알림 */}
             <s.IconBtn onClick={notiMenu.onOpen} aria-label="notifications">
               <PiBellSimpleThin />
-              {unread > 0 && <s.Badge>
-                {unread > 99 ? "99+" : unread}
-                </s.Badge>}
+              {unread > 0 && <s.Badge>{unread > 99 ? "99+" : unread}</s.Badge>}
             </s.IconBtn>
 
             <Menu
