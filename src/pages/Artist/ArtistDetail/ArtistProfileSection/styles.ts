@@ -64,9 +64,9 @@ export const major = css`
 `;
 
 export const editButton = css`
-  padding: 10px 14px;
+  padding: 6px 7px;
   border: 1px solid #d0d7de;
-  border-radius: 12px;
+  border-radius: 50px;
   background: #fff;
   cursor: pointer;
 `;

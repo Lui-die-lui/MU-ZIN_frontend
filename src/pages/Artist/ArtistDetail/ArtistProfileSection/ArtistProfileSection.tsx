@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { ArtistProfileDetailResp } from "../../../../Types/artistDetailTypes";
 import * as s from "./styles";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import { MdEdit } from "react-icons/md";
 
 type Props = {
   artist: ArtistProfileDetailResp;
@@ -40,7 +41,7 @@ function ArtistProfileSection({ artist }: Props) {
             {isOwner && (
               // 나중에 icon 처리
               <button css={s.editButton} onClick={handleClickEdit}>
-                편집
+                <MdEdit size={15} />
               </button>
             )}
           </div>
@@ -59,8 +60,6 @@ function ArtistProfileSection({ artist }: Props) {
               )}
             </div>
           </div>
-
-    
 
           <div css={s.metaSection}>
             <p css={s.metaLabel}>레슨 스타일</p>
