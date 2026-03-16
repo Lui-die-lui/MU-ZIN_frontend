@@ -5,6 +5,8 @@ import type {
   SetMyInstrumentRequest,
 } from "../../Types/artistApplyTypes";
 import type {
+  ArtistLessonCardResp,
+  ArtistLessonDetailResp,
   ArtistSearchReq,
   ArtistSearchResp,
 } from "../../Types/artistSearchTypes";
@@ -80,4 +82,23 @@ export const getArtistProfileDetailReq = async (
   );
 
   return resp.data.data;
+};
+
+// 아티스트 상세 페이지 레슨 카드
+export const getArtistLessonCardReq = async (artistProfileId: number) => {
+  const resp = await instance.get<ApiRespDto<ArtistLessonCardResp[]>>(
+    `/artists/${artistProfileId}/lessons`,
+  );
+  return resp.data;
+};
+
+// 아티스트 상세 페이지 레슨 상세
+export const getArtistLessonDetailReq = async (
+  artistProfileId: number,
+  lessonId: number,
+) => {
+  const resp = await instance.get<ApiRespDto<ArtistLessonDetailResp>>(
+    `/artists/${artistProfileId}/lessons/${lessonId}`,
+  );
+  return resp.data;
 };

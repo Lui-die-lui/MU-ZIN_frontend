@@ -8,4 +8,10 @@ export const artistKeys = {
 
   profileDetail: (artistProfileId: number) =>
     [...artistKeys.all, "profileDetail", artistProfileId] as const,
+
+  lessonCards: (artistProfileId: number) =>
+    [...artistKeys.all, "lessonCards", artistProfileId] as const,
+
+  lessonDetail: (artistProfileId: number, lessonId: number | null) =>
+    [...artistKeys.all, "lessonDetail", artistProfileId, lessonId] as const,
 };
