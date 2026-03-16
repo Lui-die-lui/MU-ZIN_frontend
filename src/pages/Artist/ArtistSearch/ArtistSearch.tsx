@@ -43,7 +43,7 @@ function ArtistSearch({ draft, onChangeDraft, onSearch, onReset }: Props) {
           onChangeCategory={(value) =>
             onChangeDraft((prev) => ({
               ...prev,
-              instrumentCategory: value,
+              instCategory: value,
             }))
           }
           instIds={draft.instIds}
