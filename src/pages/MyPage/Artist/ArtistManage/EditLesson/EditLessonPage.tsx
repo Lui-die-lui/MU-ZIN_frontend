@@ -28,6 +28,7 @@ import { useUpdateLessonWithSlots } from "../../../../../hooks/Lesson/useUpdateL
 import { buildLessonUpdatePatch } from "./buildLessonUpdatePatch";
 import EditLessonFormSection from "./EditLessonFormSection";
 import EditLessonTimeSlotSection from "./EditLessonTimeSlotSection";
+import ClosingPolicyRadio from "../common/ClosingPolicyRadio/ClosingPolicyRadio";
 
 function EditLessonPage() {
   const navigate = useNavigate();
@@ -149,6 +150,11 @@ function EditLessonPage() {
       />
 
       <hr style={{ margin: "20px 0" }} />
+
+      <ClosingPolicyRadio 
+      value={lessonDraft.closingPolicy}
+      onChange={(value) => setField("closingPolicy", value)}
+      />
 
       {/* 타임슬롯 섹션(추가 예정분만 관리) */}
       <EditLessonTimeSlotSection

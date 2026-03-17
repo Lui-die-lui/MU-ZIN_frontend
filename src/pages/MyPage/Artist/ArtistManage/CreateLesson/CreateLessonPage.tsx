@@ -14,6 +14,7 @@ import type {
 
 import TimeSlotSelectedList from "../common/TimeSlots/TimeSlotSelectedList/TimeSlotSelectedList";
 import TimeSlotCreatePanel from "../common/TimeSlots/TimeSlotCreatePanel/TimeSlotCreatePanel";
+import ClosingPolicyRadio from "../common/ClosingPolicyRadio/ClosingPolicyRadio";
 
 // 변환 함수 - form 재사용을 위해서
 const toCreateReq = (v: LessonFormValues): LessonCreateReq => ({
@@ -24,6 +25,7 @@ const toCreateReq = (v: LessonFormValues): LessonCreateReq => ({
   description: v.description.trim() === "" ? null : v.description,
   requirementText: v.requirementText.trim() === "" ? null : v.requirementText,
   instId: v.instId,
+  closingPolicy: v.closingPolicy,
 });
 
 function CreateLessonPage() {
@@ -87,14 +89,11 @@ function CreateLessonPage() {
       />
 
       <hr style={{ margin: "20px 0" }} />
-      {/* <TimeSlotSection
-        durationMin={durationMinNum}
-        startDts={startDts}
-        onAdd={add}
-        onAddMany={addMany}
-        onRemove={remove}
-        onClear={clear}
-      /> */}
+      <ClosingPolicyRadio
+        value={lessonDraft.closingPolicy}
+        onChange={(value) => setField("closingPolicy", value)}
+      />
+      
       <TimeSlotCreatePanel
         durationMin={durationMinNum}
         onAdd={add}

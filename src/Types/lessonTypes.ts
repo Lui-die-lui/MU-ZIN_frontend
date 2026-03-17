@@ -8,7 +8,20 @@ export type LessonStatus = "ACTIVE" | "INACTIVE";
 
 // 레슨 타임 슬롯 예약 가능/예약중/불가 상태
 export type TimeSlotStatus = "OPEN" | "BOOKED" | "CLOSED";
- 
+
+// 레슨 타임 슬롯 만료 시 노출 유무
+export type LessonClosingPolicy =
+  | "KEEP_OPEN_FOR_REQUEST"
+  | "AUTO_CLOSE_WHEN_NO_SLOTS";
+
+export const LESSON_CLOSING_POLICY_LABEL: Record<LessonClosingPolicy, string> =
+  {
+    KEEP_OPEN_FOR_REQUEST: "타임슬롯이 없어도 요청 계속 받기",
+    AUTO_CLOSE_WHEN_NO_SLOTS: "타임슬롯이 없으면 자동으로 레슨 닫기",
+  };
+// 기본값
+export const DEFAULT_LESSON_CLOSING_POLICY: LessonClosingPolicy =
+  "KEEP_OPEN_FOR_REQUEST";
 
 // 스타일 태그 응답
 export interface LessonStyleTagResponse {
@@ -65,6 +78,7 @@ export interface LessonCreateReq {
   description?: string | null;
   requirementText?: string | null;
   instId: number;
+  closingPolicy: LessonClosingPolicy;
 }
 
 // 레슨 생성 응답 타입 자체를 분리하는게 타입 깨질 걱정 없다고 함 - 백이랑 맞춤
@@ -73,6 +87,7 @@ export interface LessonCreateResp {
   title: string;
   mode: LessonMode;
   status: LessonStatus;
+  closingPolicy: LessonClosingPolicy;
 }
 
 // 레슨 수정
@@ -85,6 +100,7 @@ export interface LessonUpdateReq {
   requirementText?: string | null;
   status?: LessonStatus | null;
   instId?: number;
+  closingPolicy?: LessonClosingPolicy | null;
 }
 
 // 레슨 스타일 토글
@@ -138,6 +154,7 @@ export type LessonFormValues = {
   price: string;
   description: string;
   requirementText: string;
+  closingPolicy: LessonClosingPolicy;
 };
 
 // edit(=update)시 원래 내 Detail값 set 해줄 수 있도록 (관리용)
@@ -149,6 +166,7 @@ export interface MyLessonDetail {
   durationMin: number;
   mode: LessonMode;
   status: LessonStatus;
+  closingPolicy: LessonClosingPolicy;
 
   description: string | null;
   requirementText: string | null;

@@ -11,12 +11,13 @@ type DisabledMap = Partial<Record<keyof LessonFormValues, boolean>>;
 // 서버 MyLessonDetail -> 폼값
 const toFormValues = (d: MyLessonDetail): LessonFormValues => ({
   title: d.title ?? "",
-  instId: d.instId ?? 0, 
+  instId: d.instId ?? 0,
   mode: d.mode,
   durationMin: String(d.durationMin ?? ""),
   price: d.price == null ? "" : String(d.price),
   description: d.description ?? "",
   requirementText: d.requirementText ?? "",
+  closingPolicy: d.closingPolicy,
 });
 
 type Props = {
@@ -47,7 +48,7 @@ function EditLessonFormSection({
     // setAll(toFormValues(detail));
 
     const next = toFormValues(detail);
-   
+
     setAll(next);
 
     hydratedRef.current = true;
