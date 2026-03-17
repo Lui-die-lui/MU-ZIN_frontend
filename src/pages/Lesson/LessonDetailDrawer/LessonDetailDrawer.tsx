@@ -37,7 +37,6 @@ function LessonDetailDrawer({
 }: Props) {
   const qc = useQueryClient();
 
-
   const id = lessonId ?? 0;
   const { data, isLoading, isError } = usePublicLessonDetail(id);
 
@@ -93,7 +92,6 @@ function LessonDetailDrawer({
 
   // create reservation
   const createM = useCreateReservation(id);
-
 
   return (
     <SideDrawer open={open} onClose={onClose} title="레슨 상세" width={440}>
@@ -155,6 +153,7 @@ function LessonDetailDrawer({
                     setSubmitError(null);
                     setMode("request");
                   }}
+                  requireFilterToShow
                 />
               </div>
             </>

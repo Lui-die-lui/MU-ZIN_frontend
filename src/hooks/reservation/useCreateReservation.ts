@@ -4,7 +4,7 @@ import type {
   ReservationResp,
 } from "../../Types/reservationType";
 import { createReservationReq } from "../../apis/reservation/reservationApis";
-import { timeSlotKeys } from "../Lesson/timeSlotKyes";
+import { timeSlotKeys } from "../Lesson/timeSlotKeys";
 import type { OpenTimeSlotsParams } from "../../apis/lesson/timeSlotApis";
 
 export function useCreateReservation(

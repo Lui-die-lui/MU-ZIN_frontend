@@ -8,16 +8,23 @@ import { useQuery } from "@tanstack/react-query";
 import { getOpenTimeSlotsReq } from "../../../../apis/lesson/timeSlotApis";
 import TimeSlotPickerGrouped from "../../../../components/common/TimeSlotPickerGrouped/TimeSlotPickerGroped";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { timeSlotKeys } from "../../../../hooks/Lesson/timeSlotKeys";
 
 type Props = {
   lessonId: number;
   // initialOpenSlotFilter: OpenSlotFilter | null;
   filter: OpenSlotFilter | null;
   onClickReserve: (timeSlotId: number) => void; // 예약버튼 누를 시 전환 트리거
+  requireFilterToShow?: boolean; // 필터를 기본으로 보여줄건지 아닌지
 };
 
-function LessonTimeSlotSection({ lessonId, filter, onClickReserve }: Props) {
+function LessonTimeSlotSection({
+  lessonId,
+  filter,
+  onClickReserve,
+  requireFilterToShow = false,
+}: Props) {
   const isAuthenticated = usePrincipalState((s) => s.isAuthenticated);
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,6 +33,8 @@ function LessonTimeSlotSection({ lessonId, filter, onClickReserve }: Props) {
 
   // 실제로 적용된 필터만(필터 선택없을 때 전체 검색을 위해서)
   const effectiveFilter = hasTimeFilter(filter) ? filter : null;
+  // 슬롯을 보여줄지 결정
+  const shouldShowSlots = requireFilterToShow ? !!effectiveFilter : true;
 
   // 요청 파라미터 정리
   const params = useMemo(() => {
@@ -48,14 +57,11 @@ function LessonTimeSlotSection({ lessonId, filter, onClickReserve }: Props) {
     setSelectedId(null);
   }, [filter]);
 
-  // 슬롯을 보여줄지 결정
-  const shouldShowSlots = true;
-
   // openSlots 조회(레슨 검색 시간 필터 존재할 때)
   const { data, isFetching, isError } = useQuery({
-    queryKey: ["lessonOpenSlots", lessonId, params ?? "ALL"],
+    queryKey: timeSlotKeys.openSlots(lessonId, params),
     queryFn: async () => (await getOpenTimeSlotsReq(lessonId, params)).data,
-    enabled: !!lessonId,
+    enabled: !!lessonId && shouldShowSlots,
   });
 
   const handleReserveClick = () => {
@@ -63,6 +69,7 @@ function LessonTimeSlotSection({ lessonId, filter, onClickReserve }: Props) {
     if (!isAuthenticated) {
       alert("로그인 후 예약 가능합니다.");
       navigate("/signin", { state: { from: location }, replace: false });
+      return;
     }
     onClickReserve(selectedId);
   };

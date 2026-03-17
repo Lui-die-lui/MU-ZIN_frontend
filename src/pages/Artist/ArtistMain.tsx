@@ -9,6 +9,7 @@ import {
 import { useArtistSearch } from "../../hooks/artistSearch/useArtistSearch";
 import ArtistList from "./ArtistList/ArtistList";
 import { useSearchParams } from "react-router-dom";
+import { makeArtistSearchParams } from "../../utils/artistSearchUtils";
 
 function ArtistMain() {
   // 뒤로가기 버튼 누를 시 검색 정보 그대로 유지를 위해 사용
@@ -49,11 +50,15 @@ function ArtistMain() {
     setDraft(applied);
   }, [applied]);
 
-  const hasSearched =
-    searchParams.has("keyword") ||
-    searchParams.has("instCategory") ||
-    searchParams.has("styleTagIds") ||
-    searchParams.has("instIds");
+  // 파라미터가 하나라도 존재하는가
+  // const hasSearched =
+  //   searchParams.has("keyword") ||
+  //   searchParams.has("instCategory") ||
+  //   searchParams.has("styleTagIds") ||
+  //   searchParams.has("instIds");
+
+  // 사용자가 검색 버튼을 눌러 searched=true를 URL에 남겼나
+  const hasSearched = searchParams.get("searched") === "true";
 
   const {
     data: artistList = [],
@@ -62,22 +67,25 @@ function ArtistMain() {
   } = useArtistSearch(applied, hasSearched);
 
   const handleSearch = () => {
+    const query = makeArtistSearchParams(draft);
     // 검색 조건이 전부 상태값에 의존하고 있어서 URL query string으로 바꿈
     const params = new URLSearchParams();
 
-    if (draft.keyword.trim()) {
+    params.set("searched", "true");
+
+    if (query.keyword) {
       params.set("keyword", draft.keyword.trim());
     }
 
-    if (draft.instCategory !== "ALL") {
+    if (query.instCategory) {
       params.set("instCategory", draft.instCategory);
     }
 
-    draft.styleTagIds.forEach((id) => {
+    query.styleTagIds?.forEach((id) => {
       params.append("styleTagIds", String(id));
     });
 
-    draft.instIds.forEach((id) => {
+    query.instIds?.forEach((id) => {
       params.append("instIds", String(id));
     });
 
