@@ -96,7 +96,6 @@ function EditLessonPage() {
   // submit
   const onSubmit = () => {
     if (!detailQ.data) return;
-    console.log("DETAIL RAW", detailQ.data);
     if (!lessonDraft.title.trim()) return alert("레슨명을 입력하세요.");
 
     const dm = Number(lessonDraft.durationMin);
@@ -151,9 +150,9 @@ function EditLessonPage() {
 
       <hr style={{ margin: "20px 0" }} />
 
-      <ClosingPolicyRadio 
-      value={lessonDraft.closingPolicy}
-      onChange={(value) => setField("closingPolicy", value)}
+      <ClosingPolicyRadio
+        value={lessonDraft.closingPolicy}
+        onChange={(value) => setField("closingPolicy", value)}
       />
 
       {/* 타임슬롯 섹션(추가 예정분만 관리) */}

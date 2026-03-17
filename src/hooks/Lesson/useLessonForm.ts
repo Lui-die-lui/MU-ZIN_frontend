@@ -1,5 +1,10 @@
 import { useRef, useState } from "react";
-import type { LessonFormValues, LessonMode } from "../../Types/lessonTypes";
+import {
+  DEFAULT_LESSON_CLOSING_POLICY,
+  type LessonClosingPolicy,
+  type LessonFormValues,
+  type LessonMode,
+} from "../../Types/lessonTypes";
 
 // 레슨 폼 제출됐을 때 처리 훅
 
@@ -12,6 +17,7 @@ const defaultDraft: LessonFormValues = {
   description: "", // 레슨 소개
   requirementText: "", // 레슨 필수사항 안내
   instId: 0,
+  closingPolicy: DEFAULT_LESSON_CLOSING_POLICY,
 };
 
 // initial = 호출하는 쪽의 로컬 디폴트
@@ -44,6 +50,8 @@ export function useLessonForm(initial?: Partial<LessonFormValues>) {
   const setDescription = (v: string) => setField("description", v);
   const setRequirementText = (v: string) => setField("requirementText", v);
   const setInstrumentId = (v: number) => setField("instId", v);
+  const setClosingPolicy = (v: LessonClosingPolicy) =>
+    setField("closingPolicy", v);
 
   const reset = () =>
     setLessonDraft({ ...defaultDraft, ...initialRef.current });
@@ -59,6 +67,7 @@ export function useLessonForm(initial?: Partial<LessonFormValues>) {
     setDescription,
     setRequirementText,
     setInstrumentId,
+    setClosingPolicy,
     reset,
   };
 }

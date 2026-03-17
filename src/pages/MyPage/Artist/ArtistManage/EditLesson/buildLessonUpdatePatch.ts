@@ -43,6 +43,10 @@ export function buildLessonUpdatePatch(params: {
     patch.instId = draft.instId;
   }
 
+  if (draft.closingPolicy !== original.closingPolicy) {
+    patch.closingPolicy = draft.closingPolicy;
+  }
+
   // 예약되어있어도 바꿀 수 있는 fields
   if (nextDesc !== original.description) patch.description = nextDesc;
   if (nextReq !== original.requirementText) patch.requirementText = nextReq;

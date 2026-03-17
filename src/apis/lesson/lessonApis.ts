@@ -1,14 +1,15 @@
-import type {
-  LessonCreateReq,
-  LessonCreateResp,
-  LessonDetail,
-  LessonRecurrenceResp,
-  LessonRecurrenceUpsertReq,
-  LessonStyleTagResponse,
-  LessonUpdateReq,
-  MyLessonDetail,
-  SetLessonStylesReq,
-  TimeSlotCreateReq,
+import {
+  LESSON_CLOSING_POLICY_LABEL,
+  type LessonCreateReq,
+  type LessonCreateResp,
+  type LessonDetail,
+  type LessonRecurrenceResp,
+  type LessonRecurrenceUpsertReq,
+  type LessonStyleTagResponse,
+  type LessonUpdateReq,
+  type MyLessonDetail,
+  type SetLessonStylesReq,
+  type TimeSlotCreateReq,
 } from "../../Types/lessonTypes";
 import type { ApiRespDto } from "../../Types/responseType";
 import { instance } from "../instance/instance";
@@ -23,6 +24,7 @@ export const createMyTimeSlotsReq = (
   body: TimeSlotCreateReq,
 ) =>
   instance.post<ApiRespDto<null>>(`/lessons/me/${lessonId}/time-slots`, body);
+  closingPolicy: Object.keys(LESSON_CLOSING_POLICY_LABEL)
 
 // 내 레슨 수정
 export const updateMyLessonReq = (lessonId: number, body: LessonUpdateReq) =>

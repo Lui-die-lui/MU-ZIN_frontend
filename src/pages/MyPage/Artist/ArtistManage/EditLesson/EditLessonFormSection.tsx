@@ -11,13 +11,13 @@ type DisabledMap = Partial<Record<keyof LessonFormValues, boolean>>;
 // 서버 MyLessonDetail -> 폼값
 const toFormValues = (d: MyLessonDetail): LessonFormValues => ({
   title: d.title ?? "",
-  instId: d.instId ?? 0,
+  instId: d.instId ?? 0, 
   mode: d.mode,
   durationMin: String(d.durationMin ?? ""),
   price: d.price == null ? "" : String(d.price),
   description: d.description ?? "",
   requirementText: d.requirementText ?? "",
-  closingPolicy: d.closingPolicy,
+  closingPolicy: d.closingPolicy
 });
 
 type Props = {
@@ -41,17 +41,15 @@ function EditLessonFormSection({
   hasBooked,
 }: Props) {
   // detail -> setAll을 "최초 1회만"
-  const hydratedRef = useRef(false);
+  const hydratedLessonRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (hydratedRef.current) return;
+    if (hydratedLessonRef.current === detail.lessonId) return;
     // setAll(toFormValues(detail));
+   
+    setAll(toFormValues(detail));
 
-    const next = toFormValues(detail);
-
-    setAll(next);
-
-    hydratedRef.current = true;
+    hydratedLessonRef.current = detail.lessonId;
   }, [detail, setAll]);
 
   const disabledMap: DisabledMap = useMemo(() => {
