@@ -14,7 +14,7 @@ type Props = {
 
 function ArtistLessonSection({ artistProfileId }: Props) {
   const [selectedLessonId, setSelectedLessonId] = useState<number | null>(null);
-  const [slotFliter, setSlotFilter] = useState<OpenSlotFilter | null>(null);
+  const [slotFilter, setSlotFilter] = useState<OpenSlotFilter | null>(null);
 
   const {
     data: lessons = [],
@@ -64,7 +64,7 @@ function ArtistLessonSection({ artistProfileId }: Props) {
       {selectedLessonId && (
         <LessonTimeSlotSection
           lessonId={selectedLessonId}
-          filter={slotFliter}
+          filter={slotFilter}
           onClickReserve={handleClickReserve}
         />
       )}
