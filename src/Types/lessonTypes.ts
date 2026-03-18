@@ -9,6 +9,9 @@ export type LessonStatus = "ACTIVE" | "INACTIVE";
 // 레슨 타임 슬롯 예약 가능/예약중/불가 상태
 export type TimeSlotStatus = "OPEN" | "BOOKED" | "CLOSED";
 
+// 드로어 내 컴포넌트(페이지) 전환
+export type Mode = "pick" | "request" | "success";
+
 // 레슨 타임 슬롯 만료 시 노출 유무
 export type LessonClosingPolicy =
   | "KEEP_OPEN_FOR_REQUEST"

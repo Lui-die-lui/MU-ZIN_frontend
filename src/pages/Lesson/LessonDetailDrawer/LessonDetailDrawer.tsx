@@ -12,12 +12,11 @@ import {
 } from "../../../Types/searchForTimeTypes";
 import LessonTimeSlotSection from "./LessonTimeSlotSection/LessonTimeSlotSection";
 import { hasTimeFilter } from "../LessonSearch/SearchTimeFilter/hasTimeFilter";
-import { useQueryClient } from "@tanstack/react-query";
 import { useCreateReservation } from "../../../hooks/reservation/useCreateReservation";
 import ReservationSuccessView from "./ReservationSuccessView/ReservationSuccessView";
 import RequestReservationView from "./RequestReservationView/RequestReservationView";
 import { formatKRW } from "../../../utils/myPageUtils";
-import { useNavigate } from "react-router-dom";
+import type { Mode } from "../../../Types/lessonTypes";
 
 export type Props = {
   open: boolean;
@@ -26,8 +25,6 @@ export type Props = {
   initialOpenSlotFilter?: OpenSlotFilter | null;
 };
 
-// 드로어 내 컴포넌트(페이지) 전환
-type Mode = "pick" | "request" | "success";
 
 function LessonDetailDrawer({
   open,
@@ -35,8 +32,6 @@ function LessonDetailDrawer({
   onClose,
   initialOpenSlotFilter = null, // lessonId 없으면 렌더 요청 하지않기
 }: Props) {
-  const qc = useQueryClient();
-
   const id = lessonId ?? 0;
   const { data, isLoading, isError } = usePublicLessonDetail(id);
 
@@ -52,6 +47,9 @@ function LessonDetailDrawer({
   const [selectedTimeSlotId, setSelectedTimeSlotId] = useState<number | null>(
     null,
   );
+  // 선택한 타임슬롯 년/월/일 시간 세팅
+  const [selectedSlotText, setSelectedSlotText] = useState("");
+
   const [requestMsg, setRequestMsg] = useState("");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -67,6 +65,7 @@ function LessonDetailDrawer({
     // 화면 상태도 초기화
     setMode("pick");
     setSelectedTimeSlotId(null);
+    setSelectedSlotText("");
     setRequestMsg("");
     setSubmitError(null);
   }, [lessonId, initialOpenSlotFilter]);
@@ -148,12 +147,13 @@ function LessonDetailDrawer({
                 <LessonTimeSlotSection
                   lessonId={lessonId}
                   filter={appliedTime}
-                  onClickReserve={(timeSlotId) => {
+                  onClickReserve={(timeSlotId, slotText) => {
                     setSelectedTimeSlotId(timeSlotId);
+                    setSelectedSlotText(slotText);
                     setSubmitError(null);
                     setMode("request");
                   }}
-                  requireFilterToShow
+                  // requireFilterToShow
                 />
               </div>
             </>
@@ -162,7 +162,7 @@ function LessonDetailDrawer({
           {mode === "request" && (
             <RequestReservationView
               selectedSlotText={
-                selectedTimeSlotId ? `선택한 슬롯: #${selectedTimeSlotId}` : ""
+                selectedTimeSlotId ? `선택한 시간: ${selectedSlotText}` : ""
               }
               requestMsg={requestMsg}
               onChangeMsg={setRequestMsg}
@@ -196,6 +196,7 @@ function LessonDetailDrawer({
               onOk={() => {
                 setMode("pick");
                 setSelectedTimeSlotId(null);
+                setSelectedSlotText("");
                 setRequestMsg("");
                 setSubmitError(null);
                 onClose();

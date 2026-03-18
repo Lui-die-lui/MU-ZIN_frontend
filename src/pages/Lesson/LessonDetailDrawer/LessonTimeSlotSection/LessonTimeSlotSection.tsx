@@ -15,7 +15,7 @@ type Props = {
   lessonId: number;
   // initialOpenSlotFilter: OpenSlotFilter | null;
   filter: OpenSlotFilter | null;
-  onClickReserve: (timeSlotId: number) => void; // 예약버튼 누를 시 전환 트리거
+  onClickReserve: (timeSlotId: number, slotText: string) => void; // 예약버튼 누를 시 전환 트리거
   requireFilterToShow?: boolean; // 필터를 기본으로 보여줄건지 아닌지
 };
 
@@ -64,17 +64,33 @@ function LessonTimeSlotSection({
     enabled: !!lessonId && shouldShowSlots,
   });
 
+  const slots = data?.data ?? [];
+
+  // 예약 화면에서 보여줄 선택한 슬롯
+  const selectedSlot =
+    slots.find((slot) => slot.timeSlotId === selectedId) ?? null;
+
   const handleReserveClick = () => {
-    if (!selectedId) return;
+    if (!selectedSlot) return;
+
     if (!isAuthenticated) {
       alert("로그인 후 예약 가능합니다.");
       navigate("/signin", { state: { from: location }, replace: false });
       return;
     }
-    onClickReserve(selectedId);
-  };
 
-  const slots = data?.data ?? [];
+    const start = new Date(selectedSlot.startDt);
+
+    const yyyy = start.getFullYear();
+    const mm = String(start.getMonth() + 1).padStart(2, "0");
+    const dd = String(start.getDate()).padStart(2, "0");
+    const hh = String(start.getHours()).padStart(2, "0");
+    const min = String(start.getMinutes()).padStart(2, "0");
+
+    const slotText = `${yyyy}/${mm}/${dd} ${hh}:${min}`;
+
+    onClickReserve(selectedSlot.timeSlotId, slotText);
+  };
 
   return (
     <section css={s.wrap}>
