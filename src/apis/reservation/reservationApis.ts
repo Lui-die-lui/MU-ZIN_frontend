@@ -67,3 +67,11 @@ export const cancelByArtistReq = (
     `/reservations/artist/${reservationId}/cancel-by-artist`,
     body,
   );
+
+// 아티스트 수업 완료
+export const compliteReservationByArtistReq = async (reservationId: number) => {
+  const resp = await instance.post(
+    `/reservations/artist/${reservationId}/complete}`,
+  );
+  return resp.data;
+};
