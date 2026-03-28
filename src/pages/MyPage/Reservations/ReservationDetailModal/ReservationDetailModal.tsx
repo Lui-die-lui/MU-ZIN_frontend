@@ -9,6 +9,7 @@ import type {
 } from "../../../../Types/reservationType";
 import {
   useCancelByArtistReservation,
+  useCompleteReservationByArtist,
   useConfirmReservation,
   useRejectReservation,
 } from "../../../../hooks/reservation/useArtistReservations";
@@ -21,6 +22,7 @@ import CommonModal from "../../../../components/common/CommonModal/CommonModal";
 import { pickYmdFromLocalDateTime } from "../../../../utils/searchForTimeUtils";
 import type { ViewerMode } from "../../../../Types/myPageTypes";
 import { formatKRW } from "../../../../utils/myPageUtils";
+import { completeReservationByArtistReq } from "../../../../apis/reservation/reservationApis";
 
 type Props = {
   open: boolean;
@@ -52,12 +54,14 @@ function ReservationDetailModal({
   const rejectMut = useRejectReservation();
   const cancelArtistMut = useCancelByArtistReservation();
   const cancelMyReservationMut = useCancelMyReservation();
+  const completeMut = useCompleteReservationByArtist();
 
   const busy =
     confirmMut.isPending ||
     rejectMut.isPending ||
     cancelArtistMut.isPending ||
-    cancelMyReservationMut.isPending;
+    cancelMyReservationMut.isPending ||
+    completeMut.isPending;
 
   const startDt = reservation?.timeSlot?.startDt;
 
@@ -80,6 +84,15 @@ function ReservationDetailModal({
       </CommonModal>
     );
   }
+
+  const onCompleteLesson = async () => {
+    await completeMut.mutateAsync(reservation.reservationId);
+    await qc.invalidateQueries({ queryKey: reservationKeys.artist() });
+    await qc.invalidateQueries({
+      queryKey: reservationKeys.artistDetail(reservation.reservationId),
+    });
+    onClose();
+  };
 
   // helper const
   const onAccept = async () => {
@@ -131,12 +144,17 @@ function ReservationDetailModal({
       status={reservation.status}
       canLessonCancel={canLessonCancel}
       cancelBlockedReason={cancelBlockedReason}
+      canMarkCompleted={reservation.canMarkCompleted}
+      completionSource={reservation.completionSource}
+      completedDt={reservation.completedDt}
+      myCompletionConfirmed={reservation.myCompletionConfirmed}
       busy={busy}
       onClose={onClose}
       onAccept={onAccept}
       onReject={onReject}
       onRequestCancel={onRequestCancel}
       onLessonCancel={onLessonCancel}
+      onCompleteLesson={onCompleteLesson}
     />
   );
 

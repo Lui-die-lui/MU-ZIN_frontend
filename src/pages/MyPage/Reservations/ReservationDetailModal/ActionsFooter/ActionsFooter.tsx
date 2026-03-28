@@ -11,6 +11,12 @@ type Props = {
   canLessonCancel: boolean;
   cancelBlockedReason?: string;
 
+  // 완료 관련
+  canMarkCompleted?: boolean;
+  completionSource?: "ARTIST" | "SYSTEM" | null;
+  completedDt?: string | null;
+  myCompletionConfirmed?: boolean;
+
   // 공통
   busy: boolean;
   onClose: () => void;
@@ -21,20 +27,28 @@ type Props = {
 
   onRequestCancel?: () => void;
   onLessonCancel?: () => void; // 양쪽 확정 후 레슨 취소
+  onCompleteLesson?: () => void;
 };
 function ActionsFooter({
   viewerMode,
   status,
   canLessonCancel,
   cancelBlockedReason,
+  canMarkCompleted,
+  completionSource,
+  completedDt,
+  myCompletionConfirmed,
   busy,
   onClose,
   onAccept,
   onReject,
   onLessonCancel,
+  onCompleteLesson,
 }: Props) {
   const isRequested = status === "REQUESTED";
   const isConfirmed = status === "CONFIRMED";
+  const isCompletionPending = status === "COMPLETION_PENDING";
+  const isCompleted = status === "COMPLETED";
   return (
     <div css={s.footer}>
       <button type="button" css={s.ghost} onClick={onClose} disabled={busy}>
@@ -89,6 +103,17 @@ function ActionsFooter({
             }
           >
             레슨 취소
+          </button>
+        )}
+        {/* 4) 완료 대기 상태: 아티스트 수동 완료 */}
+        {viewerMode === "ARTIST" && isCompletionPending && canMarkCompleted && (
+          <button
+            type="button"
+            css={s.primary}
+            onClick={onCompleteLesson}
+            disabled={busy || !onCompleteLesson}
+          >
+            수업 완료 확인
           </button>
         )}
       </div>

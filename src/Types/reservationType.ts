@@ -6,6 +6,7 @@ export type ReservationStatus =
   | "REQUESTED"
   | "CONFIRMED"
   | "CANCELED"
+  | "COMPLETION_PENDING"
   | "REJECTED"
   | "COMPLETED";
 
@@ -19,6 +20,8 @@ export type ReservationTab =
 
 // 요청일 / 예약일 드롭다운
 export type DateBasis = "REQUESTED_DT" | "LESSON_DT";
+
+export type CompletionSource = "ARTIST" | "SYSTEM";
 
 export function tabToStatus(
   tab: ReservationTab,
@@ -93,6 +96,10 @@ export type ArtistReservationSummaryResp = {
   confirmedDt: string | null;
   canceledDt: string | null;
 
+  completionPendingDt: string | null;
+  completedDt: string | null;
+  completionSource: CompletionSource | null;
+
   lessonId: number;
   lessonTitle: string;
 
@@ -113,6 +120,10 @@ export type ArtistReservationDetailResp = {
   confirmedDt: string | null;
   canceledDt: string | null;
 
+  completionPendingDt: string | null;
+  completedDt: string | null;
+  completionSource: CompletionSource | null;
+
   lessonId: number;
   lessonTitle: string;
 
@@ -125,6 +136,9 @@ export type ArtistReservationDetailResp = {
   requesterUsername: string;
 
   requestedMsg: string | null;
+
+  canMarkCompleted: boolean;
+  myCompletionConfirmed: boolean;
 };
 
 // 아티스트가 레슨 취소 시 타임슬롯 다시 열지 말지

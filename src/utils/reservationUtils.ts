@@ -1,5 +1,7 @@
 import type { SortOrder } from "../Types/commonTypes";
 import type {
+  ArtistReservationDetailResp,
+  ArtistReservationSummaryResp,
   DateBasis,
   SearchApplied,
   SearchDraft,
@@ -38,3 +40,23 @@ export function calcCanCancel(startIso: string, limitHours: number) {
   const diffMs = start - now; 
   return diffMs > limitHours * 60 * 60 * 1000; // 하루?
 }
+
+// 예약 관리 상태 표시용 
+type ReservationLike =
+  | ArtistReservationSummaryResp
+  | ArtistReservationDetailResp;
+
+export const isCompletionPending = (item: ReservationLike) =>
+  item.status === "COMPLETION_PENDING";
+
+export const isCompleted = (item: ReservationLike) =>
+  item.status === "COMPLETED";
+
+export const isAutoCompleted = (item: ReservationLike) =>
+  item.status === "COMPLETED" && item.completionSource === "SYSTEM";
+
+export const getCompletionLabel = (item: ReservationLike) => {
+  if (item.status === "COMPLETION_PENDING") return "진행중";
+  if (item.status === "COMPLETED") return "완료";
+  return null;
+};

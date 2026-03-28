@@ -11,6 +11,22 @@ type Props = {
 
 function StatusBadge({ status, onClick, disabled }: Props) {
   const meta = RESERVATION_STATUS_META[status];
+
+  // 추가된 뱃지 테스트용
+  if (!meta) {
+    console.error("Unknown reservation status:", status);
+    return (
+      <button
+        type="button"
+        // css={s.statusBtn("gray")}
+        onClick={onClick}
+        disabled={disabled}
+      >
+        알 수 없음
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"

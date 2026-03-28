@@ -1,6 +1,7 @@
 import { body } from "./../../pages/Lesson/LessonDetailDrawer/styles";
 import {
   cancelByArtistReq,
+  completeReservationByArtistReq,
   confirmReservationReq,
   getArtistReservationReq,
   rejectReservationReq,
@@ -13,6 +14,7 @@ import type {
 import { reservationKeys } from "./reservationKeys";
 import { getArtistReservationListReq } from "../../apis/reservation/reservationApis";
 import { buildArtistReservationParams } from "../../utils/filters/buildArtistReservationParams";
+import { queryClient } from "../../configs/queryClient";
 
 // 아티스트가 가진 예약 리스트 불러옴
 export function useArtistReservationList(filter: ArtistReservationListFilter) {
@@ -36,6 +38,12 @@ export function useArtistReservationDetail(reservationId: number | null) {
       return data; // ArtistReservationDetailResp 반환
     },
     enabled: !!reservationId,
+
+    // 완료 대기상태면 15초마다 다시 조회
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status === "COMPLETION_PENDING" ? 15000 : false;
+    },
   });
 }
 
@@ -94,3 +102,26 @@ export function useCancelByArtistReservation() {
     },
   });
 }
+
+export const useCompleteReservationByArtist = () => {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (reservationId: number) => {
+      const res = await completeReservationByArtistReq(reservationId);
+      const { status, message } = res;
+
+      if (status !== "success") {
+        throw new Error(message || "완료 처리 실패");
+      }
+
+      return res;
+    },
+
+    onSuccess: () => {
+      qc.invalidateQueries({
+        queryKey: reservationKeys.artist(),
+      });
+    },
+  });
+};

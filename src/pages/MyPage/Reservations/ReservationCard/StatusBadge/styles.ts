@@ -9,6 +9,7 @@ const toneVars: Record<StatusTone, { bg: string; fg: string; bd: string }> = {
   success: { bg: "rgba(0,180,120,0.12)", fg: "rgba(0,120,80,1)", bd: "rgba(0,180,120,0.24)" },
   warning: { bg: "rgba(255,170,0,0.14)", fg: "rgba(160,100,0,1)", bd: "rgba(255,170,0,0.28)" },
   danger:  { bg: "rgba(255,60,80,0.12)", fg: "rgba(190,0,30,1)", bd: "rgba(255,60,80,0.26)" },
+  progress:{ bg: "rgba(0, 150, 200, 0.12)", fg: "rgba(0, 110, 150, 1)", bd: "rgba(0, 150, 200, 0.26)" },
 };
 
 const basePill = css`
