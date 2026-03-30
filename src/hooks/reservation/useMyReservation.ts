@@ -1,4 +1,7 @@
-import { cancelMyReservationReq } from "./../../apis/reservation/reservationApis";
+import {
+  cancelMyReservationReq,
+  getMyReservationReq,
+} from "./../../apis/reservation/reservationApis";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ReservationTab } from "../../Types/reservationType";
 import { reservationKeys } from "./reservationKeys";
@@ -8,6 +11,17 @@ export function useMyReservationList(tab: ReservationTab) {
   return useQuery({
     queryKey: reservationKeys.myList({ tab }),
     queryFn: async () => (await getMyReservationListReq()).data.data,
+  });
+}
+
+export function useMyReservationDetail(reservationId: number | null) {
+  return useQuery({
+    queryKey: reservationKeys.myDetail(reservationId ?? 0),
+    queryFn: async () => {
+      const resp = await getMyReservationReq(reservationId!);
+      return resp.data.data;
+    },
+    enabled: !!reservationId,
   });
 }
 
@@ -26,5 +40,3 @@ export function useCancelMyReservation() {
     },
   });
 }
-
-

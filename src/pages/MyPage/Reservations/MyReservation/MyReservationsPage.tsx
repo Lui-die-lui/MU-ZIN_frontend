@@ -17,7 +17,10 @@ import {
   makeReservationSearchApplied,
   makeSortComparator,
 } from "../../../../utils/reservationUtils";
-import { useMyReservationList } from "../../../../hooks/reservation/useMyReservation";
+import {
+  useMyReservationDetail,
+  useMyReservationList,
+} from "../../../../hooks/reservation/useMyReservation";
 import { pickYmdFromLocalDateTime } from "../../../../utils/searchForTimeUtils";
 import ReservationCard from "../ReservationCard/ReservationCard";
 import DateRangeSearchBar from "../DateSearchBar/DateRangeSearchBar";
@@ -64,7 +67,7 @@ function MyReservationsPage() {
   const { data = [], isLoading, isFetching } = useMyReservationList(tab);
 
   // 유저 예약 상세(선택된 id로) - 현재 아티스트 디테일이랑 동일하게 받아오고있음
-  const { data: detail } = useArtistReservationDetail(selectedId);
+  const { data: detail } = useMyReservationDetail(selectedId);
 
   const viewItems = useMemo(() => {
     let items = [...data];

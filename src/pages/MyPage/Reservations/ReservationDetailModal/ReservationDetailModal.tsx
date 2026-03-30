@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import type {
   ArtistCancelReq,
   ArtistReservationDetailResp,
+  ReservationResp,
 } from "../../../../Types/reservationType";
 import {
   useCancelByArtistReservation,
@@ -27,7 +28,7 @@ type Props = {
   onClose: () => void;
 
   // 상세 DTO (백엔드에서 내려오는 타입)
-  reservation: ArtistReservationDetailResp | null;
+  reservation: ReservationResp | null;
 
   // 보는 사람의 상태
   viewerMode: ViewerMode;

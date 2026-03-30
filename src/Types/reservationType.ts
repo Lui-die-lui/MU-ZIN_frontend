@@ -66,17 +66,19 @@ export type ReservationCreateReq = {
   requestMsg: string | null;
 };
 
-export type ReservationResp = {
-  reservationId: number;
-  status: ReservationStatus;
-  priceAtBooking: number;
-  requestedDt: string;
-  confirmedDt: string | null;
-  canceledDt: string | null;
-  lessonId: number;
-  lessonTitle: string;
-  timeSlot: TimeSlotResp;
-};
+// export type ReservationResp = {
+//   reservationId: number;
+//   status: ReservationStatus;
+//   priceAtBooking: number;
+//   requestedDt: string;
+//   confirmedDt: string | null;
+//   canceledDt: string | null;
+//   lessonId: number;
+//   lessonTitle: string;
+//   timeSlot: TimeSlotResp;
+// };
+
+export type ReservationResp = ArtistReservationDetailResp;
 
 // ===============================
 //  아티스트
