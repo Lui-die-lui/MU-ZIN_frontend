@@ -89,15 +89,31 @@ function ArtistReservationPage() {
       const ymd = todayYmd();
       items = items.filter(
         (r) =>
-          r.status === "CONFIRMED" &&
+          (r.status === "CONFIRMED" || r.status === "COMPLETION_PENDING") &&
           pickYmdFromLocalDateTime(r.timeSlot.startDt) === ymd,
       );
-    }
+    } else {
+      items = items.filter((r) => {
+        switch (tab) {
+          case "requested":
+            return r.status === "REQUESTED";
 
-    if (tab === "canceled") {
-      items = items.filter(
-        (r) => r.status === "CANCELED" || r.status === "REJECTED",
-      );
+          case "inProgress":
+            return (
+              r.status === "CONFIRMED" || r.status === "COMPLETION_PENDING"
+            );
+
+          case "completed":
+            return r.status === "COMPLETED";
+
+          case "canceled":
+            return r.status === "CANCELED" || r.status === "REJECTED";
+
+          case "all":
+          default:
+            return true;
+        }
+      });
     }
 
     const getYmd = (r: (typeof data)[number]) =>

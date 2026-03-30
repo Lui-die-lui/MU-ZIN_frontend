@@ -70,26 +70,33 @@ function MyReservationsPage() {
     let items = [...data];
 
     // 유저 기준 tab 필터
-    if (tab === "requested") {
-      items = items.filter((r) => r.status === "REQUESTED");
-    }
-    if (tab === "confirmed") {
-      items = items.filter((r) => r.status === "CONFIRMED");
-    }
-
-    if (tab === "canceled") {
-      items = items.filter(
-        (r) => r.status === "CANCELED" || r.status === "REJECTED",
-      );
-    }
-
     if (tab === "today") {
       const ymd = todayYmd();
       items = items.filter(
         (r) =>
-          r.status === "CONFIRMED" &&
+          (r.status === "CONFIRMED" || r.status === "COMPLETION_PENDING") &&
           pickYmdFromLocalDateTime(r.timeSlot.startDt) === ymd,
       );
+    } else {
+      if (tab === "requested") {
+        items = items.filter((r) => r.status === "REQUESTED");
+      }
+
+      if (tab === "inProgress") {
+        items = items.filter(
+          (r) => r.status === "CONFIRMED" || r.status === "COMPLETION_PENDING",
+        );
+      }
+
+      if (tab === "completed") {
+        items = items.filter((r) => r.status === "COMPLETED");
+      }
+
+      if (tab === "canceled") {
+        items = items.filter(
+          (r) => r.status === "CANCELED" || r.status === "REJECTED",
+        );
+      }
     }
 
     // 날짜 범위 필터

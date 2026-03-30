@@ -1,3 +1,4 @@
+import { all } from "axios";
 import { tab } from "./../components/common/MypageTabBar/styles";
 import { page } from "./../pages/MyPage/Reservations/pageStyles";
 import type { SortOrder } from "./commonTypes";
@@ -14,7 +15,8 @@ export type ReservationStatus =
 export type ReservationTab =
   | "all"
   | "requested"
-  | "confirmed"
+  | "inProgress"
+  | "completed"
   | "canceled"
   | "today";
 
@@ -23,19 +25,21 @@ export type DateBasis = "REQUESTED_DT" | "LESSON_DT";
 
 export type CompletionSource = "ARTIST" | "SYSTEM";
 
-export function tabToStatus(
+export function tabToStatuses(
   tab: ReservationTab,
-): ReservationStatus | undefined {
+): ReservationStatus[] | undefined {
   switch (tab) {
     case "requested":
-      return "REQUESTED";
-    case "confirmed":
-      return "CONFIRMED";
+      return ["REQUESTED"];
+    case "inProgress":
+      return ["CONFIRMED", "COMPLETION_PENDING"];
+    case "completed":
+      return ["COMPLETED"];
     case "canceled":
-      return "CANCELED"; // REJECTED까지 묶고 싶으면 백엔드에서 statusIn으로 확장 필요
-    case "today":
-      return undefined; // today는 기간 필터가 필요(백엔드 from/to 없으면 임시로 all)
+      return ["CANCELED", "REJECTED"]; // REJECTED까지 묶고 싶으면 백엔드에서 statusIn으로 확장 필요
+
     case "all":
+    case "today":
     default:
       return undefined;
   }

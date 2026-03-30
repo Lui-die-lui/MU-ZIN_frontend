@@ -2,7 +2,6 @@
 import * as s from "./styles";
 
 import { useQueryClient } from "@tanstack/react-query";
-import type { ArtistStatus } from "../../../../Types/auth";
 import type {
   ArtistCancelReq,
   ArtistReservationDetailResp,
@@ -22,7 +21,6 @@ import CommonModal from "../../../../components/common/CommonModal/CommonModal";
 import { pickYmdFromLocalDateTime } from "../../../../utils/searchForTimeUtils";
 import type { ViewerMode } from "../../../../Types/myPageTypes";
 import { formatKRW } from "../../../../utils/myPageUtils";
-import { completeReservationByArtistReq } from "../../../../apis/reservation/reservationApis";
 
 type Props = {
   open: boolean;

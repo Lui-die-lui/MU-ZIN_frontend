@@ -1,23 +1,28 @@
+import type { TabItem } from "../components/common/MypageTabBar/MypageTabBar";
+import { label } from "../pages/MyPage/Account/AccountInfoRow/styles";
 import type { Option, SortOrder } from "../Types/commonTypes";
 import type {
   DateBasis,
   DateRange,
+  ReservationTab,
   SearchDraft,
 } from "../Types/reservationType";
 
 // Artist
-export const ARTIST_TAB_ITEMS = [
+export const ARTIST_TAB_ITEMS: readonly TabItem<ReservationTab>[] = [
   { key: "requested", label: "요청" },
-  { key: "confirmed", label: "확정" },
+  { key: "inProgress", label: "확정" },
+  { key: "completed", label: "완료" },
   { key: "canceled", label: "취소/거절" },
   { key: "today", label: "오늘" },
   { key: "all", label: "전체" },
 ] as const;
 
 // default user
-export const MY_TAB_ITEMS = [
+export const MY_TAB_ITEMS: readonly TabItem<ReservationTab>[] = [
   { key: "requested", label: "요청" },
-  { key: "confirmed", label: "확정" },
+  { key: "inProgress", label: "확정" },
+  { key: "completed", label: "완료" },
   { key: "canceled", label: "취소/거절" },
   { key: "today", label: "오늘" },
   { key: "all", label: "전체" },
