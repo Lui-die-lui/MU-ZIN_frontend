@@ -157,7 +157,7 @@ function ArtistReservationPage() {
   }, [viewItems]);
 
   const visibleItems = useMemo(() => {
-    if (!selectedId) return viewItems;
+    if (!selectedDate) return viewItems;
 
     return viewItems.filter(
       (item) =>

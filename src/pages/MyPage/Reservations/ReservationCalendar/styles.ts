@@ -10,8 +10,10 @@ export const wrapper = css`
 
 export const header = css`
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 `;
 
 export const toggleButton = css`
