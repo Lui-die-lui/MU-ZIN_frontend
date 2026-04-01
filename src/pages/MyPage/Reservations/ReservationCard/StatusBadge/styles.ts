@@ -3,13 +3,14 @@ import { css } from "@emotion/react";
 import type { StatusTone } from "./badgeUi";
 
 
-const toneVars: Record<StatusTone, { bg: string; fg: string; bd: string }> = {
+export const toneVars: Record<StatusTone, { bg: string; fg: string; bd: string }> = {
   neutral: { bg: "rgba(0,0,0,0.06)", fg: "rgba(0,0,0,0.72)", bd: "rgba(0,0,0,0.12)" },
   info:    { bg: "rgba(0,120,255,0.10)", fg: "rgba(0,90,200,1)", bd: "rgba(0,120,255,0.22)" },
   success: { bg: "rgba(0,180,120,0.12)", fg: "rgba(0,120,80,1)", bd: "rgba(0,180,120,0.24)" },
   warning: { bg: "rgba(255,170,0,0.14)", fg: "rgba(160,100,0,1)", bd: "rgba(255,170,0,0.28)" },
   danger:  { bg: "rgba(255,60,80,0.12)", fg: "rgba(190,0,30,1)", bd: "rgba(255,60,80,0.26)" },
   progress:{ bg: "rgba(0, 150, 200, 0.12)", fg: "rgba(0, 110, 150, 1)", bd: "rgba(0, 150, 200, 0.26)" },
+  confirmed: { bg: "rgba(124, 92, 255, 0.12)", fg: "rgba(88, 56, 220, 1)", bd: "rgba(124, 92, 255, 0.28)" },
 };
 
 const basePill = css`

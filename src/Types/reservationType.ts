@@ -158,3 +158,12 @@ export type ReservationKeyParams = {
   tab: ReservationTab;
   status?: ReservationStatus;
 };
+
+
+export type CalendarReservationItem = {
+  reservationId: number;
+  status: ReservationStatus;
+  lessonId: number;
+  lessonTitle: string;
+  timeSlot: TimeSlotResp;
+};

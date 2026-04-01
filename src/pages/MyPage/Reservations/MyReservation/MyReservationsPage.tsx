@@ -29,6 +29,8 @@ import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailM
 import { useArtistReservationDetail } from "../../../../hooks/reservation/useArtistReservations";
 import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
 import { todayYmd } from "../../../../utils/timeSlotUtils";
+import { reservationCalendarUtils } from "../../../../utils/reservationCalendarUtils";
+import ReservationCalendarSection from "../ReservationCalendar/ReservationCalendarSection";
 
 function MyReservationsPage() {
   const [tab, setTab] = useState<ReservationTab>("today");
@@ -37,6 +39,10 @@ function MyReservationsPage() {
   const [applied, setApplied] = useState<SearchApplied>(
     makeReservationSearchApplied(DEFAULT_SEARCH_DRAFT),
   );
+
+  // 캘린더 상태
+  const [isCalendarOpen, setIsCalendarOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // 모달 상태
   const [detailOpen, setDetailOpen] = useState(false);
@@ -133,6 +139,19 @@ function MyReservationsPage() {
     applied.stamp,
   ]);
 
+  const calendarEvents = useMemo(() => {
+    return reservationCalendarUtils(viewItems);
+  }, [viewItems]);
+
+  const visibleItems = useMemo(() => {
+    if (!selectedDate) return viewItems;
+
+    return viewItems.filter(
+      (item) =>
+        pickYmdFromLocalDateTime(item.timeSlot.startDt) === selectedDate,
+    );
+  }, [viewItems, selectedDate]);
+
   if (isLoading) {
     return (
       <div css={s.list}>
@@ -146,6 +165,15 @@ function MyReservationsPage() {
   return (
     <div css={s.page}>
       <MypageTabBar value={tab} items={MY_TAB_ITEMS} onChange={onChangeTab} />
+      
+      <ReservationCalendarSection
+        isOpen={isCalendarOpen}
+        onToggle={() => setIsCalendarOpen((prev) => !prev)}
+        events={calendarEvents}
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}
+        onClickEvent={openDetail}
+      />
 
       <DateRangeSearchBar
         draft={draft}
@@ -157,13 +185,13 @@ function MyReservationsPage() {
         isSearching={isFetching}
       />
 
-      {!viewItems.length ? (
+      {!visibleItems.length ? (
         <div css={s.empty}>
           <div css={s.emptyTitle}>예약이 없습니다.</div>
         </div>
       ) : (
         <div css={s.list}>
-          {viewItems.map((item) => {
+          {visibleItems.map((item) => {
             return (
               <ReservationCard
                 key={item.reservationId}

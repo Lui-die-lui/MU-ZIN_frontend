@@ -31,6 +31,8 @@ import {
 import DateRangeSearchBar from "../DateSearchBar/DateRangeSearchBar";
 import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailModal";
 import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
+import { reservationCalendarUtils } from "../../../../utils/reservationCalendarUtils";
+import ReservationCalendarSection from "../ReservationCalendar/ReservationCalendarSection";
 
 function ArtistReservationPage() {
   // 모달 상태
@@ -52,6 +54,10 @@ function ArtistReservationPage() {
 
   // 탭은 즉시 반영(탭 누르면 refetch)
   const [tab, setTab] = useState<ReservationTab>("requested");
+
+  // 캘린더 관련 상태
+  const [isCalendarOpen, setIsCalendarOpen] = useState(true);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // 입력중인 값(draft) - 요청x
   const [draft, setDraft] = useState<SearchDraft>(DEFAULT_SEARCH_DRAFT);
@@ -144,6 +150,21 @@ function ArtistReservationPage() {
     applied.range.to,
     applied.stamp,
   ]);
+
+  // 캘린더 핸들러
+  const calendarEvents = useMemo(() => {
+    return reservationCalendarUtils(viewItems);
+  }, [viewItems]);
+
+  const visibleItems = useMemo(() => {
+    if (!selectedId) return viewItems;
+
+    return viewItems.filter(
+      (item) =>
+        pickYmdFromLocalDateTime(item.timeSlot.startDt) === selectedDate,
+    );
+  }, [viewItems, selectedDate]);
+
   if (isLoading) {
     return (
       <div css={s.list}>
@@ -163,6 +184,15 @@ function ArtistReservationPage() {
         onChange={onChangeTab}
       />
 
+      <ReservationCalendarSection
+        isOpen={isCalendarOpen}
+        onToggle={() => setIsCalendarOpen((prev) => !prev)}
+        events={calendarEvents}
+        selectedDate={selectedDate}
+        onSelectDate={setSelectedDate}
+        onClickEvent={openDetail}
+      />
+
       {/* (추가) 요청일/레슨일 드롭다운 */}
       <DateRangeSearchBar
         draft={draft}
@@ -174,13 +204,13 @@ function ArtistReservationPage() {
         isSearching={isFetching}
       />
 
-      {!viewItems.length ? (
+      {!visibleItems.length ? (
         <div css={s.empty}>
           <div css={s.emptyTitle}>예약이 없습니다.</div>
         </div>
       ) : (
         <div css={s.list}>
-          {viewItems.map((item) => {
+          {visibleItems.map((item) => {
             return (
               <ReservationCard
                 key={item.reservationId}
