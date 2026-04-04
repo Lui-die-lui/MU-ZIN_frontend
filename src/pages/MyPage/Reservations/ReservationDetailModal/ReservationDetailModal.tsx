@@ -194,6 +194,12 @@ function ReservationDetailModal({
             value={pickYmdFromLocalDateTime(reservation.canceledDt)}
           />
         )}
+        {reservation.completedDt && (
+          <Row
+            label="완료일"
+            value={pickYmdFromLocalDateTime(reservation.completedDt)}
+          />
+        )}
 
         <div css={s.block}>
           <div css={s.blockTitle}>레슨 일정</div>
