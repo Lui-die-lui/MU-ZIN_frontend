@@ -87,9 +87,10 @@ function LessonSearchPage() {
     data: lessonResp,
     isFetching,
     isError,
+    error,
   } = useQuery({
     queryKey: ["lessons", "search", appliedParams],
-    queryFn: async () => (await searchLessonReq(appliedParams!)).data,
+    queryFn: async () => searchLessonReq(appliedParams!),
     enabled: !!appliedParams, // applied가 되기 전에 호출하지 않음
   });
 
