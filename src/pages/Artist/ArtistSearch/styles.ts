@@ -20,20 +20,19 @@ export const searchBar = css`
 `;
 
 export const searchButton = css`
-  height: 40px;
-  padding: 0 18px;
+  padding: 10px 14px;
+  border-radius: 12px;
   border: none;
-  border-radius: 10px;
+  background: #111;
+  color: #fff;
   cursor: pointer;
-  flex: 0 0 auto;
-  white-space: nowrap;
 `;
 
 export const resetButton = css`
   height: 40px;
   padding: 0 18px;
   border: 1px solid #ddd;
-  border-radius: 10px;
+  border-radius: 12px;
   background: white;
   cursor: pointer;
   flex: 0 0 auto;
