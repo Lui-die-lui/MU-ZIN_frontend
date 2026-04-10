@@ -3,13 +3,13 @@ import {
   getMyArtistProfileReq,
   updateApprovedProfileReq,
 } from "../../apis/artist/artistApi";
-import { useEffect, useMemo, useState } from "react";
+import { useArtistApplyFormStore } from "../../stores/useArtistApplyFormStore";
+import { useEffect, useMemo } from "react";
 import type { ArtistProfileUpsertRequest } from "../../Types/artistApplyTypes";
 
 function useArtistAccount() {
   const qc = useQueryClient();
 
-  // 아티스트 기존 프로필 값
   const {
     data: profile,
     isLoading,
@@ -17,31 +17,59 @@ function useArtistAccount() {
   } = useQuery({
     queryKey: ["artistProfile", "me"],
     queryFn: async () => {
-      const res = await getMyArtistProfileReq();
-      return res.data.data; // ArtistProfileResponse | null
+      const resp = await getMyArtistProfileReq();
+      return resp.data.data;
     },
   });
 
-  const [bio, setBio] = useState("");
-  const [career, setCareer] = useState("");
+  const bio = useArtistApplyFormStore((s) => s.bio);
+  const career = useArtistApplyFormStore((s) => s.career);
+  const majorName = useArtistApplyFormStore((s) => s.majorName);
+  const mainRegion = useArtistApplyFormStore((s) => s.mainRegion);
 
-  // 컴포넌트 처음 렌더링 될 때 해당 값을 set 해줌 - 없으면 공백
+  const hydrateFormProfile = useArtistApplyFormStore(
+    (s) => s.hydrateFormProfile,
+  );
+  const reset = useArtistApplyFormStore((s) => s.reset);
+
   useEffect(() => {
     if (!profile) return;
-    setBio(profile.bio ?? "");
-    setCareer(profile.career ?? "");
-  }, [profile?.artistProfileId]);
+    hydrateFormProfile(profile);
+  }, [profile?.artistProfileId, hydrateFormProfile]);
 
-  // 입력한 값이 서버에서 받아온 원래 값이랑 달라졌는지 체크
+  // 리셋 할 필요가 있나?
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, []);
+
   const isDirty = useMemo(() => {
-    if (!profile) return false;
+    if (!profile) return;
+
+    const currentMainRegion = JSON.stringify(mainRegion ?? null);
+    const originalMainRegion = JSON.stringify(
+      profile.mainRegion
+        ? {
+            region1DepthName: profile.mainRegion.region1DepthName ?? null,
+            region2DepthName: profile.mainRegion.region2DepthName ?? null,
+            region3DepthName: profile.mainRegion.region3DepthName ?? null,
+            addressLabel: profile.mainRegion.addressLabel ?? null,
+            roadAddress: null,
+            jibunAddress: null,
+            latitude: profile.mainRegion.latitude ?? null,
+            longitude: profile.mainRegion.longitude ?? null,
+          }
+        : null,
+    );
     return (
       (bio ?? "") !== (profile.bio ?? "") ||
-      (career ?? "") !== (profile.career ?? "")
+      (career ?? "") !== (profile.career ?? "") ||
+      (majorName ?? "") !== (profile.majorName ?? "") ||
+      currentMainRegion !== originalMainRegion
     );
-  }, [profile, bio, career]);
+  }, [profile, bio, career, majorName, mainRegion]);
 
-  // 바뀐 값을 바로 적용시킴
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (!profile) throw new Error("아티스트 프로필이 없습니다.");
@@ -49,19 +77,23 @@ function useArtistAccount() {
       const body: ArtistProfileUpsertRequest = {
         bio,
         career,
-        majorName: profile.majorName, // 원래 값을 받아와서 변경 잠금
+        majorName,
+        mainRegion,
       };
 
-      const res = await updateApprovedProfileReq(body); // 정보 업데이트
+      const res = await updateApprovedProfileReq(body);
       return res.data.data;
     },
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["artistProfile", "me"] });
+      await qc.invalidateQueries({
+        queryKey: ["artistProfileDetail", profile?.artistProfileId],
+      });
       await qc.invalidateQueries({ queryKey: ["principal"] });
       alert("저장이 완료되었습니다.");
     },
     onError: () => {
-      alert("저장 실패"); // 이거 나중에 서버 메시지 받아올거면 생각해보기
+      alert("저장 실패");
     },
   });
 
@@ -69,10 +101,6 @@ function useArtistAccount() {
     profile,
     isLoading,
     isError,
-    bio,
-    setBio,
-    career,
-    setCareer,
     isDirty,
     save: () => saveMutation.mutate(),
     isSaving: saveMutation.isPending,

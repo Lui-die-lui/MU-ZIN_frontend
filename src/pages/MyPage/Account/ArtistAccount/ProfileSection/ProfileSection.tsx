@@ -1,20 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "../../styles";
 import useArtistAccount from "../../../../../hooks/ArtistProfile/useArtistAccount";
+import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
+import RegionSection from "../RegionSection/RegionSection";
 
 function ProfileSection() {
-  const {
-    profile,
-    isLoading,
-    isError,
-    bio,
-    setBio,
-    career,
-    setCareer,
-    isDirty,
-    save,
-    isSaving,
-  } = useArtistAccount();
+  const { profile, isLoading, isError, isDirty, save, isSaving } =
+    useArtistAccount();
+
+  const bio = useArtistApplyFormStore((state) => state.bio);
+  const career = useArtistApplyFormStore((state) => state.career);
+  const majorName = useArtistApplyFormStore((state) => state.majorName);
+  const setField = useArtistApplyFormStore((state) => state.setField);
 
   if (isLoading) return <div>로딩중...</div>;
   if (isError) return <div>불러오기에 실패했습니다.</div>;
@@ -35,7 +32,7 @@ function ProfileSection() {
         <textarea
           value={bio}
           css={s.textarea}
-          onChange={(e) => setBio(e.target.value)}
+          onChange={(e) => setField("bio", e.target.value)}
         />
       </div>
 
@@ -44,9 +41,11 @@ function ProfileSection() {
         <textarea
           value={career}
           css={s.textarea}
-          onChange={(e) => setCareer(e.target.value)}
+          onChange={(e) => setField("career", e.target.value)}
         />
       </div>
+
+      <RegionSection />
 
       <button disabled={!isDirty || isSaving} css={s.reserveBtn} onClick={save}>
         {isSaving ? "저장중..." : "저장"}

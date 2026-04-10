@@ -1,4 +1,4 @@
-import React from "react";
+
 import ProfileSection from "./ArtistAccount/ProfileSection/ProfileSection";
 import InstrumentSection from "./ArtistAccount/InstrumentSection/InstrumentSection";
 import LessonStyleSection from "./ArtistAccount/LessonStyleSection/LessonStyleSection";

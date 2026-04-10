@@ -5,3 +5,4 @@ import type { LessonStyleTagResponse } from "./lessonTypes";
 export type ArtistProfileDetailResp = ArtistProfileResponse & {
   styleTags: LessonStyleTagResponse[];
 };
+
