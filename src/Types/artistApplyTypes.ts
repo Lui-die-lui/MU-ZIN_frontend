@@ -1,6 +1,11 @@
 import type { InstrumentResponse } from "./instrumentTypes";
 import type { ArtistStatus } from "./auth";
-import type { ArtistProfileRegion, ArtistProfileRegionRequest, ArtistServiceRegion } from "./artistRegionTypes";
+import type {
+  ArtistProfileRegion,
+  ArtistProfileRegionRequest,
+  ArtistServiceRegion,
+  ArtistServiceRegionRequest,
+} from "./artistRegionTypes";
 
 // 저장 / 제출되는 아티스트 정보
 export type ArtistProfileUpsertRequest = {
@@ -8,14 +13,13 @@ export type ArtistProfileUpsertRequest = {
   career: string;
   majorName: string;
   mainRegion: ArtistProfileRegionRequest | null;
+  serviceRegions: ArtistServiceRegionRequest[];
 };
 
 // 제출 / 수정되는 아티스트 악기
 export type SetMyInstrumentRequest = {
   instrumentIds: number[];
 };
-
-
 
 // 아티스트 정보 전체
 export type ArtistProfileResponse = {

@@ -33,6 +33,7 @@ const initial: ApplyArtistPayload = {
   career: "",
   majorName: "",
   mainRegion: null,
+  serviceRegions: [],
   instrumentIds: [],
 };
 
@@ -81,6 +82,10 @@ export const useArtistApplyFormStore = create<State>((set, get) => ({
             longitude: p.mainRegion.longitude ?? null,
           }
         : null,
+      serviceRegions: (p.serviceRegions ?? []).map((region) => ({
+        region1DepthName: region.region1DepthName,
+        region2DepthName: region.region2DepthName,
+      })),
       selectedInstruments: p.instruments ?? [], // 객체로 저장
       instrumentIds: (p.instruments ?? []).map((i) => i.instId), // ids도 저장
       // 검색창에 딸려있는 악기 컴포넌트 재 사용하려는데
@@ -91,7 +96,6 @@ export const useArtistApplyFormStore = create<State>((set, get) => ({
     });
     // 서버 프로필을 폼 초기값으로 딱 1번만 채우는 함수 - db를 계속 조회하는걸 막음
   },
-  
 
   reset: () => set({ ...initial, selectedInstruments: [], hydrated: false }),
   // 폼을 비우고 hydrated도 초기화

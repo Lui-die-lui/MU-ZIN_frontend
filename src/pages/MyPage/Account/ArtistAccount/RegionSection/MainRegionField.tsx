@@ -1,6 +1,6 @@
 import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
 
-function ActivityRegionField() {
+function MainRegionField() {
   const mainRegion = useArtistApplyFormStore((s) => s.mainRegion);
   const setField = useArtistApplyFormStore((s) => s.setField);
 
@@ -22,4 +22,4 @@ function ActivityRegionField() {
   );
 }
 
-export default ActivityRegionField;
+export default MainRegionField;

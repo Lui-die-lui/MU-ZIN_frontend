@@ -26,6 +26,7 @@ function useArtistAccount() {
   const career = useArtistApplyFormStore((s) => s.career);
   const majorName = useArtistApplyFormStore((s) => s.majorName);
   const mainRegion = useArtistApplyFormStore((s) => s.mainRegion);
+  const serviceRegions = useArtistApplyFormStore((s) => s.serviceRegions);
 
   const hydrateFormProfile = useArtistApplyFormStore(
     (s) => s.hydrateFormProfile,
@@ -35,7 +36,7 @@ function useArtistAccount() {
   useEffect(() => {
     if (!profile) return;
     hydrateFormProfile(profile);
-  }, [profile?.artistProfileId, hydrateFormProfile]);
+  }, [profile, hydrateFormProfile]);
 
   // 리셋 할 필요가 있나?
   useEffect(() => {
@@ -62,13 +63,41 @@ function useArtistAccount() {
           }
         : null,
     );
+
+    const currentServiceRegions = JSON.stringify(
+      [...serviceRegions]
+        .map((region) => ({
+          region1DepthName: region.region1DepthName,
+          region2DepthName: region.region2DepthName,
+        }))
+        .sort((a, b) =>
+          `${a.region1DepthName}-${a.region2DepthName}`.localeCompare(
+            `${b.region1DepthName}-${b.region2DepthName}`,
+          ),
+        ),
+    );
+
+    const originalServiceRegions = JSON.stringify(
+      [...(profile.serviceRegions ?? [])]
+        .map((region) => ({
+          region1DepthName: region.region1DepthName,
+          region2DepthName: region.region2DepthName,
+        }))
+        .sort((a, b) =>
+          `${a.region1DepthName}-${a.region2DepthName}`.localeCompare(
+            `${b.region1DepthName}-${b.region2DepthName}`,
+          ),
+        ),
+    );
+
     return (
       (bio ?? "") !== (profile.bio ?? "") ||
       (career ?? "") !== (profile.career ?? "") ||
       (majorName ?? "") !== (profile.majorName ?? "") ||
-      currentMainRegion !== originalMainRegion
+      currentMainRegion !== originalMainRegion ||
+      currentServiceRegions !== originalServiceRegions
     );
-  }, [profile, bio, career, majorName, mainRegion]);
+  }, [profile, bio, career, majorName, mainRegion, serviceRegions]);
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -79,6 +108,7 @@ function useArtistAccount() {
         career,
         majorName,
         mainRegion,
+        serviceRegions,
       };
 
       const res = await updateApprovedProfileReq(body);
