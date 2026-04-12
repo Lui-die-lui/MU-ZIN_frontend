@@ -85,6 +85,7 @@ export const useArtistApplyFormStore = create<State>((set, get) => ({
       serviceRegions: (p.serviceRegions ?? []).map((region) => ({
         region1DepthName: region.region1DepthName,
         region2DepthName: region.region2DepthName,
+        region3DepthName: region.region3DepthName
       })),
       selectedInstruments: p.instruments ?? [], // 객체로 저장
       instrumentIds: (p.instruments ?? []).map((i) => i.instId), // ids도 저장
