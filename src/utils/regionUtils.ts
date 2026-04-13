@@ -7,6 +7,7 @@ type AddressSearchResult = {
   addressLabel?: string;
   roadAddress?: string;
   jibunAddress?: string;
+  detailAddress?: string;
   latitude?: string | number;
   longitude?: string | number;
 };
@@ -21,6 +22,7 @@ export const toActivityRegionRequest = (
     addressLabel: value.addressLabel ?? null,
     roadAddress: value.roadAddress ?? null,
     jibunAddress: value.jibunAddress ?? null,
+    detailAddress: value.detailAddress ?? null,
     latitude:
       value.latitude === undefined || value.latitude === null
         ? null

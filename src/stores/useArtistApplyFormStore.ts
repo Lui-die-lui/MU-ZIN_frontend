@@ -76,8 +76,9 @@ export const useArtistApplyFormStore = create<State>((set, get) => ({
             region2DepthName: p.mainRegion.region2DepthName ?? null,
             region3DepthName: p.mainRegion.region3DepthName ?? null,
             addressLabel: p.mainRegion.addressLabel ?? null,
-            roadAddress: null,
-            jibunAddress: null,
+            roadAddress: p.mainRegion.roadAddress ?? null,
+            jibunAddress: p. mainRegion.jibunAddress ?? null,
+            detailAddress: p.mainRegion.detailAddress ?? null,
             latitude: p.mainRegion.latitude ?? null,
             longitude: p.mainRegion.longitude ?? null,
           }

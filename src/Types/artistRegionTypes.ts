@@ -1,4 +1,3 @@
-import { message } from "./../pages/Artist/styles";
 // 아티스트 서비스 지역
 export type ArtistServiceRegion = {
   region1DepthName: string;
@@ -19,6 +18,9 @@ export type ArtistProfileRegion = {
   region2DepthName: string | null;
   region3DepthName?: string | null;
   addressLabel?: string | null;
+  roadAddress?: string | null;
+  jibunAddress?: string | null;
+  detailAddress?: string | null;
   latitude?: number | null;
   longitude?: number | null;
 };
@@ -31,6 +33,7 @@ export type ArtistProfileRegionRequest = {
   addressLabel?: string | null;
   roadAddress?: string | null;
   jibunAddress?: string | null;
+  detailAddress?: string | null;
   latitude?: number | null;
   longitude?: number | null;
 };
@@ -49,4 +52,34 @@ export type RegionFieldState = {
   selected: RegionOption | null;
   isInvalid: boolean;
   message: string;
+};
+
+export type DaumPostcodeData = {
+  address: string;
+  addressType: "R" | "J";
+  bname: string;
+  buildingName: string;
+  roadAddress: string;
+  jibunAddress: string;
+  sido: string;
+  sigungu: string;
+};
+
+// 다음(카카오) 주소찾기 매핑
+export const mapPostcodeToArtistProfileRegion = (
+  data: DaumPostcodeData,
+): ArtistProfileRegion => {
+  const addressLabel =
+    data.roadAddress || data.jibunAddress || data.address || null;
+
+  return {
+    region1DepthName: data.sido || null,
+    region2DepthName: data.sigungu || null,
+    region3DepthName: data.bname || null,
+    addressLabel,
+    roadAddress: data.roadAddress || null,
+    jibunAddress: data.jibunAddress || null,
+    latitude: null,
+    longitude: null,
+  };
 };

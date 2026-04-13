@@ -127,7 +127,7 @@ function InputDropdown<T extends string | number>({
     <div css={s.root} ref={rootRef}>
       <input
         ref={inputRef}
-        css={[s.input, error && s.inputError]}
+        css={[s.input, error && s.errorText]}
         value={value}
         placeholder={placeholder}
         disabled={disabled}

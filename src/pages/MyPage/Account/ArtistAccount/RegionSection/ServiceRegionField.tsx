@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/** @jsxImportSource @emotion/react */
+import * as s from "./styles";
 import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
 import SelectedChips from "../../../../../components/common/SelectedChips/SelectedChips";
 import type { ArtistServiceRegion } from "../../../../../Types/artistRegionTypes";
@@ -95,55 +96,61 @@ function ServiceRegionField() {
   };
 
   return (
-    <div>
+    <div css={s.section}>
       <h4>서비스 가능 지역</h4>
 
-      <div>
-        <InputDropdown
-          value={sidoInput}
-          options={sidoOptions}
-          placeholder="시/도"
-          loading={isSidoLoading}
-          error={!!sidoError}
-          helperText={sidoError}
-          onChange={handleChangeSido}
-          onSelect={handleSelectSido}
-          onBlur={validateSido}
-        />
+      <div css={s.regionInputRow}>
+        <div css={s.fieldItem}>
+          <InputDropdown
+            value={sidoInput}
+            options={sidoOptions}
+            placeholder="시/도"
+            loading={isSidoLoading}
+            error={!!sidoError}
+            helperText={sidoError}
+            onChange={handleChangeSido}
+            onSelect={handleSelectSido}
+            onBlur={validateSido}
+          />
+        </div>
 
-        <InputDropdown
-          value={sigunguInput}
-          options={sigunguOptions}
-          placeholder="시/군/구"
-          loading={isSigunguLoading}
-          disabled={!selectedSido}
-          error={!!sigunguError}
-          helperText={sigunguError}
-          onChange={handleChangeSigungu}
-          onSelect={handleSelectSigungu}
-          onBlur={validateSigungu}
-        />
+        <div css={s.fieldItem}>
+          <InputDropdown
+            value={sigunguInput}
+            options={sigunguOptions}
+            placeholder="시/군/구"
+            loading={isSigunguLoading}
+            disabled={!selectedSido}
+            error={!!sigunguError}
+            helperText={sigunguError}
+            onChange={handleChangeSigungu}
+            onSelect={handleSelectSigungu}
+            onBlur={validateSigungu}
+          />
+        </div>
 
-        <InputDropdown
-          value={emdInput}
-          options={emdOptions}
-          placeholder="읍/면/동"
-          loading={isEmdLoading}
-          disabled={!selectedSigungu}
-          error={!!emdError}
-          helperText={emdError}
-          onChange={handleChangeEmd}
-          onSelect={handleSelectEmd}
-          onBlur={validateEmd}
-        />
+        <div css={s.fieldItem}>
+          <InputDropdown
+            value={emdInput}
+            options={emdOptions}
+            placeholder="읍/면/동"
+            loading={isEmdLoading}
+            disabled={!selectedSigungu}
+            error={!!emdError}
+            helperText={emdError}
+            onChange={handleChangeEmd}
+            onSelect={handleSelectEmd}
+            onBlur={validateEmd}
+          />
+        </div>
 
-        <button type="button" onClick={handleAddRegion}>
+        <button type="button" css={s.addButton} onClick={handleAddRegion}>
           지역 추가
         </button>
       </div>
 
       {serviceRegions.length === 0 ? (
-        <p>선택된 서비스 지역이 없습니다.</p>
+        <p css={s.emptyText}>선택된 서비스 지역이 없습니다.</p>
       ) : (
         <SelectedChips
           items={serviceRegions}
@@ -170,7 +177,7 @@ function ServiceRegionField() {
         />
       )}
 
-      <p>{serviceRegions.length}/5</p>
+      <p css={s.countText}>{serviceRegions.length}/5</p>
     </div>
   );
 }

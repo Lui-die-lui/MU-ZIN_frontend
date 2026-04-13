@@ -4,11 +4,13 @@ import { css } from "@emotion/react";
 export const root = css`
   position: relative;
   width: 100%;
+  min-width: 0;
 `;
 
 export const input = css`
   width: 100%;
   height: 44px;
+  box-sizing: border-box;
   padding: 0 12px;
   border: 1px solid #d1d5db;
   border-radius: 10px;
@@ -25,16 +27,6 @@ export const input = css`
     background: #f3f4f6;
     color: #9ca3af;
     cursor: not-allowed;
-  }
-`;
-
-export const inputError = css`
-  border-color: #ef4444;
-  background: #fff7f7;
-
-  &:focus {
-    border-color: #ef4444;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
   }
 `;
 
