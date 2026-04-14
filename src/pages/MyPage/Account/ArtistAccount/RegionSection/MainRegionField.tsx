@@ -3,15 +3,22 @@ import * as s from "./styles";
 import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
 import { openDaumAddressSearch } from "../../../../../utils/openDaumAddressSearchUtils";
 
-function MainRegionField() {
+type Props = {
+  disabled?: boolean;
+};
+
+function MainRegionField({ disabled = false }: Props) {
   const mainRegion = useArtistApplyFormStore((s) => s.mainRegion);
   const setField = useArtistApplyFormStore((s) => s.setField);
 
   const handleSelectNone = () => {
+    if (disabled) return;
     setField("mainRegion", null);
   };
 
   const handleOpenAddressSearch = async () => {
+    if (disabled) return;
+
     try {
       await openDaumAddressSearch({
         onSelect: (selectedRegion) => {
@@ -31,7 +38,7 @@ function MainRegionField() {
   ) => {
     const value = e.target.value;
 
-    if (!mainRegion) return;
+    if (!mainRegion || disabled) return;
 
     setField("mainRegion", {
       ...mainRegion,
@@ -43,18 +50,28 @@ function MainRegionField() {
     ? [mainRegion.addressLabel, mainRegion.detailAddress]
         .filter((value) => value && value.trim() !== "")
         .join(" ")
-    : "선택된 주 활동 지역이 없습니다.";
+    : "개인 스튜디오 및 학원이 있을 시 주소를 등록해주세요.";
 
   return (
     <div css={s.section}>
-      <h3>주 활동 지역</h3>
+      <h3>스튜디오 주소</h3>
 
       <div css={s.buttonRow}>
-        <button type="button" css={s.addButton} onClick={handleOpenAddressSearch}>
+        <button
+          type="button"
+          css={s.addButton}
+          disabled={disabled}
+          onClick={handleOpenAddressSearch}
+        >
           주소 찾기
         </button>
 
-        <button type="button" css={s.addButton} onClick={handleSelectNone}>
+        <button
+          type="button"
+          css={s.addButton}
+          disabled={disabled}
+          onClick={handleSelectNone}
+        >
           취소
         </button>
       </div>
@@ -67,7 +84,7 @@ function MainRegionField() {
         placeholder="상세 주소 (선택) 예: 3층, ○○음악학원"
         value={mainRegion?.detailAddress ?? ""}
         onChange={handleChangeDetailAddress}
-        disabled={!mainRegion}
+        disabled={disabled || !mainRegion}
       />
     </div>
   );

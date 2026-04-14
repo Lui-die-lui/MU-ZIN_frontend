@@ -1,4 +1,6 @@
 import { useArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
+import MainRegionField from "../../Account/ArtistAccount/RegionSection/MainRegionField";
+import ServiceRegionField from "../../Account/ArtistAccount/RegionSection/ServiceRegionField";
 
 // 기본 입력 필드들
 type Props = { disabled: boolean };
@@ -33,6 +35,8 @@ export default function ArtistProfileFields({ disabled }: Props) {
           disabled={disabled}
           onChange={(e) => setField("majorName", e.target.value)}
         />
+        <MainRegionField disabled={disabled} />
+        <ServiceRegionField disabled={disabled} />
       </label>
     </div>
   );

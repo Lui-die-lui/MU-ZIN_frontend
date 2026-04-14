@@ -14,6 +14,8 @@ export function useArtistDraftSaveMutation() {
         bio: p.bio,
         career: p.career,
         majorName: p.majorName,
+        mainRegion: p.mainRegion,
+        serviceRegions: p.serviceRegions
       });
       await setMyInstrumentReq({ instrumentIds: p.instrumentIds });
     },

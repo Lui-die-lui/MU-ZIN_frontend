@@ -20,8 +20,15 @@ function ArtistApplyPage() {
   const { data: profile, isLoading, isError } = useMyArtistProfile();
   const { principal } = usePrincipalState();
 
-  const { bio, career, majorName, instrumentIds, hydrateFormProfile } =
-    useArtistApplyFormStore();
+  const {
+    bio,
+    career,
+    majorName,
+    instrumentIds,
+    mainRegion,
+    serviceRegions,
+    hydrateFormProfile,
+  } = useArtistApplyFormStore();
 
   // 제출 시 화면 즉시 반영 및 알림 창
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -40,7 +47,7 @@ function ArtistApplyPage() {
   if (isError) return <div css={s.state}>조회 실패</div>;
 
   // profile이 null이면 아직 작성 안함 -> status = principal에서 fallback
-  const rawStatus = profile?.artistStatus ?? principal?.artistStatus ?? "NONE";
+  const rawStatus = profile?.status ?? principal?.artistStatus ?? "NONE";
 
   // 삼항 연산 + 타입 좁히기
   const status: ArtistStatus =
@@ -63,7 +70,16 @@ function ArtistApplyPage() {
   // NONE 상태만 접근 허용
   const locked = !isEditable;
   // 담을 객체
-  const payload = { bio, career, majorName, instrumentIds };
+  const payload = {
+    bio,
+    career,
+    majorName,
+    instrumentIds,
+    mainRegion,
+    serviceRegions,
+  };
+
+  console.log("draft payload", payload);
 
   const handleConfirmSubmit = () => {
     submitMut.mutate(payload, {
@@ -88,7 +104,10 @@ function ArtistApplyPage() {
     bio.trim().length > 0 &&
     career.trim().length > 0 &&
     majorName.trim().length > 0 &&
-    instrumentIds.length > 0;
+    instrumentIds.length > 0 &&
+    // !!mainRegion &&
+    serviceRegions.length > 0;
+
 
   return (
     <div css={s.page}>

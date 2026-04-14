@@ -6,7 +6,11 @@ import type { ArtistServiceRegion } from "../../../../../Types/artistRegionTypes
 import { useRegionSelector } from "../../../../../hooks/region/useRegionSelector";
 import InputDropdown from "../../../../../components/common/InputDropdown/InputDropdown";
 
-function ServiceRegionField() {
+type Props = {
+  disabled?: boolean;
+};
+
+function ServiceRegionField({ disabled = false }: Props) {
   const serviceRegions = useArtistApplyFormStore((s) => s.serviceRegions);
   const setField = useArtistApplyFormStore((s) => s.setField);
 
@@ -48,6 +52,8 @@ function ServiceRegionField() {
   } = useRegionSelector();
 
   const handleAddRegion = () => {
+    if (disabled) return;
+
     const isValid = validateAll();
     if (!isValid) return;
 
@@ -81,6 +87,8 @@ function ServiceRegionField() {
     region2DepthName: string | null;
     region3DepthName: string | null;
   }) => {
+    if (disabled) return;
+
     const next = serviceRegions.filter(
       (region) =>
         !(
@@ -106,6 +114,7 @@ function ServiceRegionField() {
             options={sidoOptions}
             placeholder="시/도"
             loading={isSidoLoading}
+            disabled={disabled}
             error={!!sidoError}
             helperText={sidoError}
             onChange={handleChangeSido}
@@ -120,7 +129,7 @@ function ServiceRegionField() {
             options={sigunguOptions}
             placeholder="시/군/구"
             loading={isSigunguLoading}
-            disabled={!selectedSido}
+            disabled={disabled || !selectedSido}
             error={!!sigunguError}
             helperText={sigunguError}
             onChange={handleChangeSigungu}
@@ -135,7 +144,7 @@ function ServiceRegionField() {
             options={emdOptions}
             placeholder="읍/면/동"
             loading={isEmdLoading}
-            disabled={!selectedSigungu}
+            disabled={disabled || !selectedSigungu}
             error={!!emdError}
             helperText={emdError}
             onChange={handleChangeEmd}
@@ -144,7 +153,12 @@ function ServiceRegionField() {
           />
         </div>
 
-        <button type="button" css={s.addButton} onClick={handleAddRegion}>
+        <button
+          type="button"
+          css={s.addButton}
+          disabled={disabled}
+          onClick={handleAddRegion}
+        >
           지역 추가
         </button>
       </div>
