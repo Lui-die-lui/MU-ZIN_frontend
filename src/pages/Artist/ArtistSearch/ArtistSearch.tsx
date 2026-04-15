@@ -4,6 +4,7 @@ import { type ArtistSearchDraft } from "../../../Types/artistSearchTypes";
 import ArtistSearchInput from "./ArtistSearchInput/ArtistSearchInput";
 import StyleDropdown from "./StyleDropdown/StyleDropdown";
 import InstFilterDropdown from "../../Lesson/InstFilterDropdown/InstFilterDropdown";
+import RegionSearchInput from "./RegionSearchInput/RegionSearchInput";
 
 type Props = {
   draft: ArtistSearchDraft;
@@ -12,9 +13,10 @@ type Props = {
   ) => void;
   onSearch: () => void;
   onReset: () => void;
+  resetKey: number;
 };
 
-function ArtistSearch({ draft, onChangeDraft, onSearch, onReset }: Props) {
+function ArtistSearch({ draft, onChangeDraft, onSearch, onReset, resetKey }: Props) {
   return (
     <div css={s.searchSection}>
       <div css={s.searchBar}>
@@ -55,14 +57,20 @@ function ArtistSearch({ draft, onChangeDraft, onSearch, onReset }: Props) {
           }
           resetOnCategoryChange
         />
+        <div css={s.searchSection}>
+          <div css={s.regionArea}>
+            <RegionSearchInput key={resetKey} draft={draft} onChangeDraft={onChangeDraft} />
+          </div>
 
-        <button type="button" css={s.searchButton} onClick={onSearch}>
-          검색
-        </button>
-
-        <button type="button" css={s.resetButton} onClick={onReset}>
-          초기화
-        </button>
+          <div css={s.buttonGroup}>
+            <button type="button" css={s.searchButton} onClick={onSearch}>
+              검색
+            </button>
+            <button type="button" css={s.resetButton} onClick={onReset}>
+              초기화
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

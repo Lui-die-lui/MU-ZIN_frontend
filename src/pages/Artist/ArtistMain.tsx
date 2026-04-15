@@ -15,6 +15,9 @@ function ArtistMain() {
   // 뒤로가기 버튼 누를 시 검색 정보 그대로 유지를 위해 사용
   const [searchParams, setSearchParams] = useSearchParams();
 
+  // 현재 지역만 따로 연결하면서 리셋이 안먹음
+  const [regionResetKey, setRegionResetKey] = useState(0);
+
   const searchParamsKey = searchParams.toString();
 
   // 실제 검색에 반영된 값
@@ -37,6 +40,9 @@ function ArtistMain() {
         .getAll("instIds")
         .map(Number)
         .filter((id) => !Number.isNaN(id)),
+      region1DepthName: searchParams.get("region1DepthName") ?? "",
+      region2DepthName: searchParams.get("region2DepthName") ?? "",
+      region3DepthName: searchParams.get("region3DepthName") ?? "",
     };
     // searchParams 가 바뀔 대만 applied를 계산
   }, [searchParamsKey]);
@@ -81,6 +87,18 @@ function ArtistMain() {
       params.set("instCategory", draft.instCategory);
     }
 
+    if (query.region1DepthName) {
+      params.set("region1DepthName", draft.region1DepthName);
+    }
+
+    if (query.region2DepthName) {
+      params.set("region2DepthName", draft.region2DepthName);
+    }
+
+    if (query.region3DepthName) {
+      params.set("region3DepthName", draft.region3DepthName);
+    }
+
     query.styleTagIds?.forEach((id) => {
       params.append("styleTagIds", String(id));
     });
@@ -94,6 +112,7 @@ function ArtistMain() {
 
   const handleReset = () => {
     setSearchParams({});
+    setRegionResetKey((prev) => prev + 1);
   };
 
   return (
@@ -103,6 +122,7 @@ function ArtistMain() {
         onChangeDraft={setDraft}
         onSearch={handleSearch}
         onReset={handleReset}
+        resetKey={regionResetKey}
       />
 
       <div css={s.resultSection}>

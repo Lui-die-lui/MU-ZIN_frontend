@@ -7,9 +7,27 @@ export const page = css`
   width: 100%;
 `;
 
+// export const searchSection = css`
+//   width: 100%;
+// `;
 export const searchSection = css`
+  display: flex;
+  align-items: center;
+  gap: 12px;
   width: 100%;
 `;
+
+export const regionArea = css`
+  flex: 1;
+  min-width: 0;
+`;
+
+export const buttonGroup = css`
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+`;
+
 
 export const searchBar = css`
   display: flex;
