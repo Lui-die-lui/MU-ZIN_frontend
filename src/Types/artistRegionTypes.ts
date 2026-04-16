@@ -54,6 +54,7 @@ export type RegionFieldState = {
   message: string;
 };
 
+// 다음 주소찾기 타입
 export type DaumPostcodeData = {
   address: string;
   addressType: "R" | "J";
@@ -82,4 +83,12 @@ export const mapPostcodeToArtistProfileRegion = (
     latitude: null,
     longitude: null,
   };
+};
+
+// 카카오 맵 역지오코딩시 타입
+export type KakaoRegionCodeResult = {
+  region_type: "H" | "B" | string;
+  region_1depth_name: string;
+  region_2depth_name: string;
+  region_3depth_name: string;
 };

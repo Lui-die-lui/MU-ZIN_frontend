@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
-import type { ArtistServiceRegion, RegionOption } from "../../Types/artistRegionTypes";
+import { useEffect, useMemo, useState } from "react";
+import type {
+  ArtistServiceRegion,
+  RegionOption,
+} from "../../Types/artistRegionTypes";
 import type { Option } from "../../Types/commonTypes";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -7,6 +10,12 @@ import {
   getSidoListReq,
 } from "../../apis/region/regionApi";
 import { regionKeys } from "./regionKeys";
+
+type UseRegionSelectorParams = {
+  region1DepthName?: string;
+  region2DepthName?: string;
+  region3DepthName?: string;
+};
 
 // UI 공통 타입 기반
 const toOptions = (regions: RegionOption[]): Option<number>[] =>
@@ -40,7 +49,11 @@ const resolveExactMatch = (
   return { matched: null, invalid: true };
 };
 
-export function useRegionSelector() {
+export function useRegionSelector({
+  region1DepthName = "",
+  region2DepthName = "",
+  region3DepthName = "",
+}: UseRegionSelectorParams = {}) {
   const [sidoInput, setSidoInput] = useState("");
   const [sigunguInput, setSigunguInput] = useState("");
   const [emdInput, setEmdInput] = useState("");
@@ -55,6 +68,20 @@ export function useRegionSelector() {
   const [sigunguError, setSigunguError] = useState("");
   const [emdError, setEmdError] = useState("");
 
+  // 외부값 -> input 문자열 동기화
+  useEffect(() => {
+    setSidoInput(region1DepthName);
+  }, [region1DepthName]);
+
+  useEffect(() => {
+    setSigunguInput(region2DepthName);
+  }, [region2DepthName]);
+
+  useEffect(() => {
+    setEmdInput(region3DepthName);
+  }, [region3DepthName]);
+
+  // 시/도 조회
   const { data: sidoRaw = [], isLoading: isSidoLoading } = useQuery({
     queryKey: regionKeys.sidoList(sidoInput),
     queryFn: () => getSidoListReq(sidoInput),
@@ -196,6 +223,37 @@ export function useRegionSelector() {
     return true;
   };
 
+  const clearSido = () => {
+    setSidoInput("");
+    setSigunguInput("");
+    setEmdInput("");
+
+    setSelectedSido(null);
+    setSelectedSigungu(null);
+    setSelectedEmd(null);
+
+    setSidoError("");
+    setSigunguError("");
+    setEmdError("");
+  };
+
+  const clearSigungu = () => {
+    setSigunguInput("");
+    setEmdInput("");
+
+    setSelectedSigungu(null);
+    setSelectedEmd(null);
+
+    setSigunguError("");
+    setEmdError("");
+  };
+
+  const clearEmd = () => {
+    setEmdInput("");
+    setSelectedEmd(null);
+    setEmdError("");
+  };
+
   const buildRegionItem = (): ArtistServiceRegion | null => {
     if (!selectedSido) return null;
 
@@ -253,6 +311,10 @@ export function useRegionSelector() {
     validateSigungu,
     validateEmd,
     validateAll,
+
+    clearSido,
+    clearSigungu,
+    clearEmd,
 
     buildRegionItem,
     resetInputs,

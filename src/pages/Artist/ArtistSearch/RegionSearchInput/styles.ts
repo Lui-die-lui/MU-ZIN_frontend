@@ -6,3 +6,12 @@ export const layout = css`
   gap: 12px;
   width: 100%;
 `;
+
+export const locationButton = css`
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: none;
+  background: #111;
+  color: #fff;
+  cursor: pointer;
+`;
