@@ -2,6 +2,7 @@
 import * as s from "./styles";
 import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
 import { openDaumAddressSearch } from "../../../../../utils/openDaumAddressSearchUtils";
+import { normalizeRegion1DepthName } from "../../../../../utils/regionUtils";
 
 type Props = {
   disabled?: boolean;
@@ -22,8 +23,12 @@ function MainRegionField({ disabled = false }: Props) {
     try {
       await openDaumAddressSearch({
         onSelect: (selectedRegion) => {
+          const normalizedRegion1 = normalizeRegion1DepthName(
+            selectedRegion.region1DepthName,
+          );
           setField("mainRegion", {
             ...selectedRegion,
+            region1DepthName: normalizedRegion1,
             detailAddress: mainRegion?.detailAddress ?? null,
           });
         },

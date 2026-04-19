@@ -143,11 +143,14 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
 
       const region = await resolveRegionFromCoords(latitude, longitude);
 
+      clearEmd();
+
       onChangeDraft((prev) => ({
         ...prev,
         region1DepthName: region.region1DepthName ?? "",
         region2DepthName: region.region2DepthName ?? "",
-        region3DepthName: region.region3DepthName ?? "",
+        // region3DepthName: region.region3DepthName ?? "",
+        region3DepthName: "",
       }));
     } catch (error) {
       console.error(error);
