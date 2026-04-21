@@ -160,13 +160,15 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
 
   return (
     <div css={s.layout}>
-      <button
-        type="button"
-        css={s.locationButton}
-        onClick={handleUseMyLocation}
-      >
-        현재 위치
-      </button>
+      <div css={s.locationButtonWrap}>
+        <button
+          type="button"
+          css={s.locationButton}
+          onClick={handleUseMyLocation}
+        >
+          현재 위치
+        </button>
+      </div>
 
       <InputDropdown
         value={sidoInput}
