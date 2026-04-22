@@ -4,6 +4,7 @@ import type { ArtistStatus } from "../../../Types/auth";
 import { buildMyPageNavItems, type NavItem } from "./navItems";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
+import { item } from "../../Lesson/InstFilterDropdown/styles";
 
 type Props = {
   artistStatus: ArtistStatus;
@@ -19,6 +20,26 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
     ...item,
     badgeCount: badgeMap?.[item.key] ?? item.badgeCount,
   }));
+
+  // const items = buildMyPageNavItems(artistStatus).map((item) => {
+  //   // 탭 내 탭 뱃지
+  //   const children = item.children?.map((child) => ({
+  //     ...child,
+  //     badgeCount: badgeMap?.[child.key] ?? child.badgeCount ?? 0,
+  //   }));
+
+  //   // 부모 뱃지 카운트 = 자식 뱃지카운트 더한 값
+  //   const computedParentBadgeCount =
+  //     children?.reduce((sum, child) => sum + (child.badgeCount ?? 0), 0) ?? 0;
+
+  //   return {
+  //     ...item,
+  //     children,
+  //     badgeCount: children?.length
+  //       ? computedParentBadgeCount
+  //       : (badgeMap?.[item.key] ?? item.badgeCount ?? 0),
+  //   };
+  // });
 
   // 아코디언 오픈 상태
   const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -49,7 +70,7 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
     );
   };
 
-  // 일반 유저 예약관리 선택 시 내 예약으로 바로 이동 
+  // 일반 유저 예약관리 선택 시 내 예약으로 바로 이동
   const goOrToggle = (parent: NavItem) => {
     const children = parent.children ?? [];
     if (children.length === 1 && children[0].to) {

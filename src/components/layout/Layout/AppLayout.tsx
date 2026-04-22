@@ -2,7 +2,6 @@
 import { Outlet } from "react-router-dom";
 import NavBar from "../NavBar/NavBar";
 import * as s from "./styles";
-import React from "react";
 
 function Layout() {
   return (
