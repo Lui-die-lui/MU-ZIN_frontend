@@ -8,14 +8,21 @@ import { useMyNotifications } from "../../hooks/notification/useMyNotifications"
 import { useMemo } from "react";
 
 function MyPageLayout() {
-  const { principal } = usePrincipalState();
+  const { principal, hydrated } = usePrincipalState();
 
   // principal 없으면 일단 NONE처리 (로그인 가드 로직 있으면 여긴 타지 않으나, 혹시 모르니)
   const artistStatus: ArtistStatus = (principal?.artistStatus ??
     "NONE") as ArtistStatus;
 
-  const { data: notifications = [] } = useMyNotifications();
-
+  // 알림 배열 비는 순간 관련 문제
+  const canFetchNotifications = hydrated && !!principal?.userId;
+  const { data: notifications = [] } = useMyNotifications({
+    enabled: canFetchNotifications,
+  });
+    console.log("notifications:", notifications);
+    console.log("isArray:", Array.isArray(notifications));
+    console.log("type:", typeof notifications);
+    
   const badgeMap = useMemo(() => {
     const reservationUnreadCount = notifications.filter(
       (notification) =>
@@ -29,10 +36,7 @@ function MyPageLayout() {
 
   return (
     <s.Wrap>
-      <SideNavBar
-        artistStatus={artistStatus}
-        badgeMap={badgeMap}
-      />
+      <SideNavBar artistStatus={artistStatus} badgeMap={badgeMap} />
       <s.Content>
         <Outlet />
       </s.Content>

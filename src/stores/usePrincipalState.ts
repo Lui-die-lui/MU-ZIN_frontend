@@ -2,10 +2,13 @@ import { create } from "zustand";
 import type { Principal } from "../Types/auth";
 import { queryClient } from "../configs/queryClient";
 import { getPrincipalReq, signinReq } from "../apis/auth/authApi";
+import { hydrate } from "@fullcalendar/core/preact.js";
 
 type PrincipalStore = {
   principal: Principal | null;
   isAuthenticated: boolean;
+  hydrated: boolean;
+
   setPrincipal: (p: Principal | null) => void;
 
   updatePrincipal: (patch: Partial<Principal>) => void;
@@ -19,6 +22,7 @@ type PrincipalStore = {
 export const usePrincipalState = create<PrincipalStore>((set) => ({
   principal: null,
   isAuthenticated: false,
+  hydrated: false,
 
   setPrincipal: (p) => set({ principal: p, isAuthenticated: !!p }),
 
@@ -30,6 +34,7 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
         ...state,
         principal: { ...state.principal, ...patch },
         isAuthenticated: true,
+        hydrated: true,
       };
     }),
 
@@ -64,13 +69,20 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
     }
 
     // 4. 전역 상태 세팅
-    set({ principal, isAuthenticated: true });
+    set({ principal, isAuthenticated: true, hydrated: true });
   },
 
   bootstrap: async () => {
     // 앱 시작/새로고침 시 토큰 있으면 principal 복구
     const token = localStorage.getItem("accessToken");
-    if (!token) return;
+    if (!token) {
+      set({
+        principal: null,
+        isAuthenticated: false,
+        hydrated: true,
+      });
+      return;
+    }
 
     try {
       const principalRes = await getPrincipalReq();
@@ -78,22 +90,22 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
 
       if (status !== "success") {
         localStorage.removeItem("accessToken");
-        set({ principal: null, isAuthenticated: false });
+        set({ principal: null, isAuthenticated: false, hydrated: true });
         return;
       }
 
       // 성공시 principal 객체 / 인증 상태 true로 세팅해줌
-      set({ principal, isAuthenticated: true });
+      set({ principal, isAuthenticated: true, hydrated: true });
     } catch {
       // 네트워크/401 등
       localStorage.removeItem("accessToken");
-      set({ principal: null, isAuthenticated: false });
+      set({ principal: null, isAuthenticated: false, hydrated: true });
     }
   },
 
   logout: () => {
     localStorage.removeItem("accessToken");
     queryClient.clear();
-    set({ principal: null, isAuthenticated: false });
+    set({ principal: null, isAuthenticated: false, hydrated: true });
   },
 }));

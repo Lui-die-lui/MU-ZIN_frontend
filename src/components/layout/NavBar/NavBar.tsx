@@ -54,9 +54,11 @@ function NavBar() {
   // 알림 메뉴 열렸을 때만 가져오는 리스트용
   const notiListQ = useQuery({
     queryKey: notificationKeys.list(),
-    queryFn: getMyNotificationsReq,
+    queryFn: async () => {
+      const resp = await getMyNotificationsReq();
+      return Array.isArray(resp.data.data) ? resp.data.data : [];
+    },
     enabled: !!principal && notiMenu.open,
-    select: (resp) => resp.data.data ?? 0,
   });
 
   // 전체 알림 읽기
@@ -140,7 +142,7 @@ function NavBar() {
               </s.MenuHeader>
               <Divider />
 
-              {notiListQ.isLoading ? (
+              {notiListQ.isPending || notiListQ.isFetching ? (
                 <s.MenuEmpty>불러오는 중...</s.MenuEmpty>
               ) : (notiListQ.data?.length ?? 0) === 0 ? (
                 <s.MenuEmpty>알림이 없습니다.</s.MenuEmpty>
