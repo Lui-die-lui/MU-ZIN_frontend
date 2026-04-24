@@ -19,18 +19,31 @@ function MyPageLayout() {
   const { data: notifications = [] } = useMyNotifications({
     enabled: canFetchNotifications,
   });
-    console.log("notifications:", notifications);
-    console.log("isArray:", Array.isArray(notifications));
-    console.log("type:", typeof notifications);
-    
+  console.log("notifications:", notifications);
+  console.log("isArray:", Array.isArray(notifications));
+  console.log("type:", typeof notifications);
+
   const badgeMap = useMemo(() => {
-    const reservationUnreadCount = notifications.filter(
+    // 내 예약 알림
+    const myReservationUnreadCount = notifications.filter(
       (notification) =>
-        notification.refType === "RESERVATION" && !notification.isRead,
+        notification.refType === "RESERVATION" &&
+        notification.type !== "RESERVATION_REQUESTED" &&
+        !notification.isRead,
+    ).length;
+
+    // 요청 알림
+    const artistRequestUnreadCount = notifications.filter(
+      (notification) =>
+        notification.refType === "RESERVATION" &&
+        notification.type === "RESERVATION_REQUESTED" &&
+        !notification.isRead,
     ).length;
 
     return {
-      reservations: reservationUnreadCount,
+      reservations: myReservationUnreadCount + artistRequestUnreadCount,
+      myReservations: myReservationUnreadCount,
+      artistRequests: artistRequestUnreadCount,
     };
   }, [notifications]);
 
