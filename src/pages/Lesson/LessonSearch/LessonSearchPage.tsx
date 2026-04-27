@@ -20,6 +20,11 @@ import type { InstrumentCategory } from "../../../Types/instrumentTypes";
 import { hasTimeFilter } from "./SearchTimeFilter/hasTimeFilter";
 import { formatKRW } from "../../../utils/myPageUtils";
 import StyleDropdown from "../../Artist/ArtistSearch/StyleDropdown/StyleDropdown";
+import {
+  getCurrentPosition,
+  normalizeRegion1DepthName,
+  resolveRegionFromCoords,
+} from "../../../utils/regionUtils";
 
 function LessonSearchPage() {
   const navigate = useNavigate();
@@ -49,8 +54,17 @@ function LessonSearchPage() {
     styleTagIds?: number[];
     instIds?: number[];
     instCategory?: InstrumentCategory;
+    region1DepthName?: string;
+    region2DepthName?: string;
+    region3DepthName?: string;
     time?: OpenSlotFilter;
   }>(null);
+
+  const [draftRegion, setDraftRegion] = useState({
+    region1DepthName: "",
+    region2DepthName: "",
+    region3DepthName: "",
+  });
 
   // 태그 목록(chip UI)
   const { data: tagResp } = useQuery({
@@ -65,7 +79,7 @@ function LessonSearchPage() {
 
     const t = applied.time;
 
-    // 빈배열/빈 문자열ㅇ이면 꼬일 가능성때문에 연산자 사용
+    // 빈배열/빈 문자열이면 꼬일 가능성때문에 연산자 사용
     return {
       keyword: applied.keyword,
       mode: applied.mode,
@@ -73,6 +87,10 @@ function LessonSearchPage() {
 
       instIds: applied.instIds,
       instCategory: applied.instCategory,
+
+      region1DepthName: applied.region1DepthName,
+      region2DepthName: applied.region2DepthName,
+      region3DepthName: applied.region3DepthName,
 
       from: t?.from?.trim() || undefined,
       to: t?.to?.trim() || undefined,
@@ -110,6 +128,13 @@ function LessonSearchPage() {
       styleTagIds: draftTagIds.length ? draftTagIds : undefined,
       instIds: draftInstIds.length ? draftInstIds : undefined,
       instCategory: draftInstCategory === "ALL" ? undefined : draftInstCategory,
+
+      region1DepthName:
+        normalizeRegion1DepthName(draftRegion.region1DepthName).trim() ||
+        undefined,
+      region2DepthName: draftRegion.region2DepthName.trim() || undefined,
+      region3DepthName: draftRegion.region3DepthName.trim() || undefined,
+
       time: hasTimeFilter(draftTime) ? draftTime : undefined,
     });
   };
@@ -133,6 +158,26 @@ function LessonSearchPage() {
   const close = () => {
     setOpen(false);
     setSelectedId(null);
+  };
+
+  const handleUseCurrentLocation = async () => {
+    try {
+      const position = await getCurrentPosition();
+
+      const region = await resolveRegionFromCoords(
+        position.coords.latitude,
+        position.coords.longitude,
+      );
+
+      setDraftRegion({
+        region1DepthName: normalizeRegion1DepthName(region.region1DepthName),
+        region2DepthName: region.region2DepthName ?? "",
+        region3DepthName: region.region3DepthName ?? "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("현재 위치를 가져오지 못했습니다.");
+    }
   };
 
   return (
