@@ -25,6 +25,8 @@ import {
   normalizeRegion1DepthName,
   resolveRegionFromCoords,
 } from "../../../utils/regionUtils";
+import type { RegionSearchValue } from "../../../Types/artistRegionTypes";
+import RegionSearchInput from "../../Artist/ArtistSearch/RegionSearchInput/RegionSearchInput";
 
 function LessonSearchPage() {
   const navigate = useNavigate();
@@ -60,10 +62,10 @@ function LessonSearchPage() {
     time?: OpenSlotFilter;
   }>(null);
 
-  const [draftRegion, setDraftRegion] = useState({
+  const [draftRegion, setDraftRegion] = useState<RegionSearchValue>({
     region1DepthName: "",
-    region2DepthName: "",
-    region3DepthName: "",
+    region2DepthName: null,
+    region3DepthName: null,
   });
 
   // 태그 목록(chip UI)
@@ -132,8 +134,8 @@ function LessonSearchPage() {
       region1DepthName:
         normalizeRegion1DepthName(draftRegion.region1DepthName).trim() ||
         undefined,
-      region2DepthName: draftRegion.region2DepthName.trim() || undefined,
-      region3DepthName: draftRegion.region3DepthName.trim() || undefined,
+      region2DepthName: draftRegion.region2DepthName?.trim() || undefined,
+      region3DepthName: draftRegion.region3DepthName?.trim() || undefined,
 
       time: hasTimeFilter(draftTime) ? draftTime : undefined,
     });
@@ -158,26 +160,6 @@ function LessonSearchPage() {
   const close = () => {
     setOpen(false);
     setSelectedId(null);
-  };
-
-  const handleUseCurrentLocation = async () => {
-    try {
-      const position = await getCurrentPosition();
-
-      const region = await resolveRegionFromCoords(
-        position.coords.latitude,
-        position.coords.longitude,
-      );
-
-      setDraftRegion({
-        region1DepthName: normalizeRegion1DepthName(region.region1DepthName),
-        region2DepthName: region.region2DepthName ?? "",
-        region3DepthName: region.region3DepthName ?? "",
-      });
-    } catch (error) {
-      console.error(error);
-      alert("현재 위치를 가져오지 못했습니다.");
-    }
   };
 
   return (
@@ -223,23 +205,19 @@ function LessonSearchPage() {
           onChangeInstIds={setDraftInstIds}
           resetOnCategoryChange={true}
         />
+      </div>
 
-        <button
-          onClick={onSearch}
-          css={css`
-            padding: 10px 14px;
-            border-radius: 12px;
-            border: none;
-            background: #111;
-            color: #fff;
-            cursor: pointer;
-          `}
-        >
+      <RegionSearchInput value={draftRegion} onChange={setDraftRegion} />
+
+      <div css={s.timeSearchRow}>
+        <div css={s.timeFilterArea}>
+          <SearchTimeFilter value={draftTime} onChange={setDraftTime} />
+        </div>
+
+        <button type="button" onClick={onSearch} css={s.searchButton}>
           검색
         </button>
       </div>
-
-      <SearchTimeFilter value={draftTime} onChange={setDraftTime} />
 
       {/* 스타일 태그 필터 - dropdown 으로 변경 */}
       {/* <div css={s.row}>

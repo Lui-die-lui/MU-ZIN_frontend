@@ -9,15 +9,18 @@ import {
   resolveRegionFromCoords,
 } from "../../../../utils/regionUtils";
 import { useEffect } from "react";
+import type { RegionSearchValue } from "../../../../Types/artistRegionTypes";
 
 type Props = {
-  draft: ArtistSearchDraft;
-  onChangeDraft: (
-    updater: (prev: ArtistSearchDraft) => ArtistSearchDraft,
-  ) => void;
+  // draft: ArtistSearchDraft;
+  value: RegionSearchValue;
+  // onChangeDraft: (
+  //   updater: (prev: ArtistSearchDraft) => ArtistSearchDraft,
+  // ) => void;
+  onChange: React.Dispatch<React.SetStateAction<RegionSearchValue>>;
 };
 
-function RegionSearchInput({ draft, onChangeDraft }: Props) {
+function RegionSearchInput({ value, onChange }: Props) {
   const {
     sidoInput,
     sigunguInput,
@@ -51,62 +54,62 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
     clearSigungu,
     clearEmd,
   } = useRegionSelector({
-    region1DepthName: draft.region1DepthName,
-    region2DepthName: draft.region2DepthName,
-    region3DepthName: draft.region3DepthName,
+    region1DepthName: value.region1DepthName,
+    region2DepthName: value.region2DepthName,
+    region3DepthName: value.region3DepthName,
   });
 
   useEffect(() => {
-    if (!draft.region1DepthName) return;
+    if (!value.region1DepthName) return;
     if (!sidoOptions.length) return;
-    if (selectedSido?.name === draft.region1DepthName) return;
+    if (selectedSido?.name === value.region1DepthName) return;
 
     const matchedSido = sidoOptions.find(
-      (option) => option.label === draft.region1DepthName,
+      (option) => option.label === value.region1DepthName,
     );
 
     if (matchedSido) {
       handleSelectSido(matchedSido);
     }
-  }, [draft.region1DepthName, sidoOptions, selectedSido, handleSelectSido]);
+  }, [value.region1DepthName, sidoOptions, selectedSido, handleSelectSido]);
 
   useEffect(() => {
-    if (!draft.region2DepthName) return;
+    if (!value.region2DepthName) return;
     if (!sigunguOptions.length) return;
-    if (selectedSigungu?.name === draft.region2DepthName) return;
+    if (selectedSigungu?.name === value.region2DepthName) return;
 
     const matchedSigungu = sigunguOptions.find(
-      (option) => option.label === draft.region2DepthName,
+      (option) => option.label === value.region2DepthName,
     );
 
     if (matchedSigungu) {
       handleSelectSigungu(matchedSigungu);
     }
   }, [
-    draft.region2DepthName,
+    value.region2DepthName,
     sigunguOptions,
     selectedSigungu,
     handleSelectSigungu,
   ]);
 
   useEffect(() => {
-    if (!draft.region3DepthName) return;
+    if (!value.region3DepthName) return;
     if (!emdOptions.length) return;
-    if (selectedEmd?.name === draft.region3DepthName) return;
+    if (selectedEmd?.name === value.region3DepthName) return;
 
     const matchedEmd = emdOptions.find(
-      (option) => option.label === draft.region3DepthName,
+      (option) => option.label === value.region3DepthName,
     );
 
     if (matchedEmd) {
       handleSelectEmd(matchedEmd);
     }
-  }, [draft.region3DepthName, emdOptions, selectedEmd, handleSelectEmd]);
+  }, [value.region3DepthName, emdOptions, selectedEmd, handleSelectEmd]);
 
   const handleSelectRegion1 = (option: Option<number>) => {
     handleSelectSido(option);
 
-    onChangeDraft((prev) => ({
+    onChange((prev) => ({
       ...prev,
       region1DepthName: option.label,
       region2DepthName: "",
@@ -117,7 +120,7 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
   const handleSelectRegion2 = (option: Option<number>) => {
     handleSelectSigungu(option);
 
-    onChangeDraft((prev) => ({
+    onChange((prev) => ({
       ...prev,
       region2DepthName: option.label,
       region3DepthName: "",
@@ -127,7 +130,7 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
   const handleSelectRegion3 = (option: Option<number>) => {
     handleSelectEmd(option);
 
-    onChangeDraft((prev) => ({
+    onChange((prev) => ({
       ...prev,
       region3DepthName: option.label,
     }));
@@ -145,7 +148,7 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
 
       clearEmd();
 
-      onChangeDraft((prev) => ({
+      onChange((prev) => ({
         ...prev,
         region1DepthName: region.region1DepthName ?? "",
         region2DepthName: region.region2DepthName ?? "",
@@ -178,7 +181,7 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
         error={!!sidoError}
         helperText={sidoError}
         onChange={(value) => {
-          onChangeDraft((prev) => ({
+          onChange((prev) => ({
             ...prev,
             region1DepthName: value,
             region2DepthName: "",
@@ -194,11 +197,11 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
         options={sigunguOptions}
         placeholder="시/군/구"
         loading={isSigunguLoading}
-        disabled={!selectedSido && !draft.region1DepthName}
+        disabled={!selectedSido && !value.region1DepthName}
         error={!!sigunguError}
         helperText={sigunguError}
         onChange={(value) => {
-          onChangeDraft((prev) => ({
+          onChange((prev) => ({
             ...prev,
             region2DepthName: value,
             region3DepthName: "",
@@ -213,11 +216,11 @@ function RegionSearchInput({ draft, onChangeDraft }: Props) {
         options={emdOptions}
         placeholder="읍/면/동"
         loading={isEmdLoading}
-        disabled={!selectedSigungu && !draft.region2DepthName}
+        disabled={!selectedSigungu && !value.region2DepthName}
         error={!!emdError}
         helperText={emdError}
         onChange={(value) => {
-          onChangeDraft((prev) => ({
+          onChange((prev) => ({
             ...prev,
             region3DepthName: value,
           }));

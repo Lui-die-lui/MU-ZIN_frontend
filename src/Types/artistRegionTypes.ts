@@ -5,6 +5,12 @@ export type ArtistServiceRegion = {
   region3DepthName: string | null;
 };
 
+export type RegionSearchValue = {
+  region1DepthName: string;
+  region2DepthName: string | null;
+  region3DepthName: string | null;
+};
+
 // 아티스트 서비스 지역 요청 타입(추후 확장성 고려)
 export type ArtistServiceRegionRequest = {
   region1DepthName: string;

@@ -32,14 +32,54 @@ export const select = css`
   border: 1px solid #d7dfe7;
 `;
 
-// 검색 버튼
-export const button = css`
-  padding: 10px 14px;
-  border-radius: 12px;
+export const timeSearchRow = css`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  flex-wrap: nowrap;
+
+  @media (max-width: 1100px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+`;
+
+export const timeFilterArea = css`
+  flex: 0 0 auto;
+  min-width: 0;
+
+  @media (max-width: 1100px) {
+    width: 100%;
+  }
+`;
+
+export const searchButton = css`
+  flex: 1 1 auto;
+  min-width: 76px;
+  height: 42px;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
   border: none;
   background: #111;
   color: #fff;
+
   cursor: pointer;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 14px;
+
+  @media (max-width: 1100px) {
+    width: 100%;
+    flex: none;
+    height: 46px;
+  }
 `;
 
 // 칩 UI

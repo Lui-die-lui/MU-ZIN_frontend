@@ -12,17 +12,17 @@ export type ArtistSearchReq = {
 };
 
 export type SearchMainRegionSummary = {
-    region1DepthName: string | null;
-    region2DepthName: string | null;
-    region3DepthName: string | null;
-    addressLabel: string | null;
-}
+  region1DepthName: string | null;
+  region2DepthName: string | null;
+  region3DepthName: string | null;
+  addressLabel: string | null;
+};
 
 export type SearchServiceRegionResp = {
-    region1DepthName: string | null;
-    region2DepthName: string | null;
-    region3DepthName: string | null;
-}
+  region1DepthName: string | null;
+  region2DepthName: string | null;
+  region3DepthName: string | null;
+};
 
 export type ArtistInstrumentSummary = {
   instId: number;
@@ -47,8 +47,8 @@ export type ArtistSearchDraft = {
   instIds: number[];
   styleTagIds: number[];
   region1DepthName: string;
-  region2DepthName: string;
-  region3DepthName: string;
+  region2DepthName: string | null;
+  region3DepthName: string | null;
 };
 
 // 입력되는 기본 검색 값

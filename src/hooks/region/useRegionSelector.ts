@@ -12,9 +12,9 @@ import {
 import { regionKeys } from "./regionKeys";
 
 type UseRegionSelectorParams = {
-  region1DepthName?: string;
-  region2DepthName?: string;
-  region3DepthName?: string;
+  region1DepthName?: string | null;
+  region2DepthName?: string | null;
+  region3DepthName?: string | null;
 };
 
 // UI 공통 타입 기반
@@ -69,16 +69,27 @@ export function useRegionSelector({
   const [emdError, setEmdError] = useState("");
 
   // 외부값 -> input 문자열 동기화
+  // useEffect(() => {
+  //   setSidoInput(region1DepthName);
+  // }, [region1DepthName]);
+
+  // useEffect(() => {
+  //   setSigunguInput(region2DepthName);
+  // }, [region2DepthName]);
+
+  // useEffect(() => {
+  //   setEmdInput(region3DepthName);
+  // }, [region3DepthName]);
   useEffect(() => {
-    setSidoInput(region1DepthName);
+    setSidoInput(region1DepthName ?? "");
   }, [region1DepthName]);
 
   useEffect(() => {
-    setSigunguInput(region2DepthName);
+    setSigunguInput(region2DepthName ?? "");
   }, [region2DepthName]);
 
   useEffect(() => {
-    setEmdInput(region3DepthName);
+    setEmdInput(region3DepthName ?? "");
   }, [region3DepthName]);
 
   // 시/도 조회

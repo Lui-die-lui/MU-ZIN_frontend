@@ -16,7 +16,13 @@ type Props = {
   resetKey: number;
 };
 
-function ArtistSearch({ draft, onChangeDraft, onSearch, onReset, resetKey }: Props) {
+function ArtistSearch({
+  draft,
+  onChangeDraft,
+  onSearch,
+  onReset,
+  resetKey,
+}: Props) {
   return (
     <div css={s.searchSection}>
       <div css={s.searchBar}>
@@ -59,7 +65,33 @@ function ArtistSearch({ draft, onChangeDraft, onSearch, onReset, resetKey }: Pro
         />
         <div css={s.searchSection}>
           <div css={s.regionArea}>
-            <RegionSearchInput key={resetKey} draft={draft} onChangeDraft={onChangeDraft} />
+            <RegionSearchInput
+              key={resetKey}
+              value={{
+                region1DepthName: draft.region1DepthName,
+                region2DepthName: draft.region2DepthName,
+                region3DepthName: draft.region3DepthName,
+              }}
+              onChange={(updater) => {
+                onChangeDraft((prev) => {
+                  const nextRegion =
+                    typeof updater === "function"
+                      ? updater({
+                          region1DepthName: prev.region1DepthName,
+                          region2DepthName: prev.region2DepthName,
+                          region3DepthName: prev.region3DepthName,
+                        })
+                      : updater;
+
+                  return {
+                    ...prev,
+                    region1DepthName: nextRegion.region1DepthName,
+                    region2DepthName: nextRegion.region2DepthName,
+                    region3DepthName: nextRegion.region3DepthName,
+                  };
+                });
+              }}
+            />
           </div>
 
           <div css={s.buttonGroup}>
