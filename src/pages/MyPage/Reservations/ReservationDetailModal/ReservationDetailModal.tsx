@@ -4,7 +4,6 @@ import * as s from "./styles";
 import { useQueryClient } from "@tanstack/react-query";
 import type {
   ArtistCancelReq,
-  ArtistReservationDetailResp,
   ReservationResp,
 } from "../../../../Types/reservationType";
 import {

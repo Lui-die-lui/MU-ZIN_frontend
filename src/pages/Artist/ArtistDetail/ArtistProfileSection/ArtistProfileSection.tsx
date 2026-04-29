@@ -120,6 +120,21 @@ function ArtistProfileSection({ artist }: Props) {
               </div>
             </div>
           </div>
+
+          <div css={s.metaSection}>
+            <p css={s.metaLabel}>레슨 스타일</p>
+            <div css={s.tagRow}>
+              {artist.styleTags.length > 0 ? (
+                artist.styleTags.map((tag) => (
+                  <span key={tag.lessonStyleTagId} css={s.styleChip}>
+                    {tag.styleName}
+                  </span>
+                ))
+              ) : (
+                <span css={s.emptyText}>등록된 스타일 태그 없음</span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>
