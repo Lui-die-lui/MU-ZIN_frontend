@@ -2,7 +2,6 @@
 import * as s from "./styles";
 import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
 import SelectedChips from "../../../../../components/common/SelectedChips/SelectedChips";
-import type { ArtistServiceRegion } from "../../../../../Types/artistRegionTypes";
 import { useRegionSelector } from "../../../../../hooks/region/useRegionSelector";
 import InputDropdown from "../../../../../components/common/InputDropdown/InputDropdown";
 

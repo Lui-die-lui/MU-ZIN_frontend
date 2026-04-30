@@ -131,3 +131,102 @@ export const successText = css`
   font-size: 13px;
   color: #2e7d32;
 `;
+
+
+// Artist css
+export const section = css`
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 28px;
+  padding: 28px 30px;
+  border-bottom: 1px solid #eef0f3;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 24px 20px;
+  }
+`;
+
+export const sectionLabel = css`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  h2,
+  h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #64748b;
+  }
+`;
+
+export const sectionContent = css`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+export const fieldGroup = css`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+  }
+`;
+
+export const actionRow = css`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+`;
+
+// Profile Section 
+export const innerDivider = css`
+  width: 100%;
+  height: 1px;
+  background: #eef0f3;
+  margin: 8px 0;
+`;
+
+export const subSection = css`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+export const subSectionHeader = css`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 800;
+    color: #111827;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
+  }
+`;

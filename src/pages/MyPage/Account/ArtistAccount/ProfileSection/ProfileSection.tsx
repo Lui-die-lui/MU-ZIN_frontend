@@ -18,38 +18,83 @@ function ProfileSection() {
   if (!profile) return <div>아티스트 프로필이 없습니다.</div>;
 
   return (
-    <section>
-      <h3>소개 / 경력</h3>
+    // <section>
+    //   <h3>소개 / 경력</h3>
 
-      <div>
-        <label>전공(승인 후 변경 불가)</label>
-        {/* 이거 꼭 인풋으로 넣어야하나 그럼...? */}
-        <input value={profile.majorName ?? ""} css={s.input} readOnly />
+    //   <div>
+    //     <label>전공(승인 후 변경 불가)</label>
+    //     {/* 이거 꼭 인풋으로 넣어야하나 그럼...? */}
+    //     <input value={profile.majorName ?? ""} css={s.input} readOnly />
+    //   </div>
+
+    //   <div>
+    //     <label>소개</label>
+    //     <textarea
+    //       value={bio}
+    //       css={s.textarea}
+    //       onChange={(e) => setField("bio", e.target.value)}
+    //     />
+    //   </div>
+
+    //   <div>
+    //     <label>경력</label>
+    //     <textarea
+    //       value={career}
+    //       css={s.textarea}
+    //       onChange={(e) => setField("career", e.target.value)}
+    //     />
+    //   </div>
+
+    //   <RegionSection />
+
+    //   <button disabled={!isDirty || isSaving} css={s.reserveBtn} onClick={save}>
+    //     {isSaving ? "저장중..." : "저장"}
+    //   </button>
+    // </section>
+    <section css={s.section}>
+      <div css={s.sectionLabel}>
+        <h2>소개 / 경력</h2>
       </div>
 
-      <div>
-        <label>소개</label>
-        <textarea
-          value={bio}
-          css={s.textarea}
-          onChange={(e) => setField("bio", e.target.value)}
-        />
+      <div css={s.sectionContent}>
+        <div css={s.fieldGroup}>
+          <label>전공</label>
+          <input value={profile.majorName ?? ""} css={s.input} readOnly />
+          <p css={s.helperText}>승인 후 전공은 변경할 수 없어요.</p>
+        </div>
+
+        <div css={s.fieldGroup}>
+          <label>소개</label>
+          <textarea
+            value={bio}
+            css={s.textarea}
+            onChange={(e) => setField("bio", e.target.value)}
+          />
+        </div>
+
+        <div css={s.fieldGroup}>
+          <label>경력</label>
+          <textarea
+            value={career}
+            css={s.textarea}
+            onChange={(e) => setField("career", e.target.value)}
+          />
+        </div>
+
+        <div css={s.innerDivider} />
+
+        <RegionSection />
+
+        <div css={s.actionRow}>
+          <button
+            disabled={!isDirty || isSaving}
+            css={s.reserveBtn}
+            onClick={save}
+          >
+            {isSaving ? "저장중..." : "프로필 저장"}
+          </button>
+        </div>
       </div>
-
-      <div>
-        <label>경력</label>
-        <textarea
-          value={career}
-          css={s.textarea}
-          onChange={(e) => setField("career", e.target.value)}
-        />
-      </div>
-
-      <RegionSection />
-
-      <button disabled={!isDirty || isSaving} css={s.reserveBtn} onClick={save}>
-        {isSaving ? "저장중..." : "저장"}
-      </button>
     </section>
   );
 }
