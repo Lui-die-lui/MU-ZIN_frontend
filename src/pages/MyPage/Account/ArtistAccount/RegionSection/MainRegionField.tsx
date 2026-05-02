@@ -26,6 +26,7 @@ function MainRegionField({ disabled = false }: Props) {
           const normalizedRegion1 = normalizeRegion1DepthName(
             selectedRegion.region1DepthName,
           );
+
           setField("mainRegion", {
             ...selectedRegion,
             region1DepthName: normalizedRegion1,
@@ -38,6 +39,7 @@ function MainRegionField({ disabled = false }: Props) {
       alert("주소 검색 창을 열지 못했습니다.");
     }
   };
+
   const handleChangeDetailAddress = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -59,34 +61,43 @@ function MainRegionField({ disabled = false }: Props) {
 
   return (
     <div css={s.section}>
-      <h3>스튜디오 주소</h3>
+      <div css={s.sectionHeader}>
+        <h4 css={s.title}>스튜디오 주소</h4>
+        <p css={s.desc}>
+          실제 수업이 진행되는 대표 활동 지역을 등록하세요.
+        </p>
+      </div>
 
       <div css={s.buttonRow}>
         <button
           type="button"
-          css={s.addButton}
+          css={s.outlineButton}
           disabled={disabled}
           onClick={handleOpenAddressSearch}
         >
           주소 찾기
         </button>
 
-        <button
-          type="button"
-          css={s.addButton}
-          disabled={disabled}
-          onClick={handleSelectNone}
-        >
-          취소
-        </button>
+        {mainRegion && (
+          <button
+            type="button"
+            css={s.ghostButton}
+            disabled={disabled}
+            onClick={handleSelectNone}
+          >
+            주소 삭제
+          </button>
+        )}
       </div>
 
-      <div css={s.selectedAddress}>{displayMainRegion}</div>
+      <div css={s.addressBox(Boolean(mainRegion))}>
+        {displayMainRegion}
+      </div>
 
       <input
         css={s.detailAddressInput}
         type="text"
-        placeholder="상세 주소 (선택) 예: 3층, ○○음악학원"
+        placeholder="상세 주소 예: 3층, ○○음악학원"
         value={mainRegion?.detailAddress ?? ""}
         onChange={handleChangeDetailAddress}
         disabled={disabled || !mainRegion}
