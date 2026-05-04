@@ -31,9 +31,14 @@ import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
 import { todayYmd } from "../../../../utils/timeSlotUtils";
 import { reservationCalendarUtils } from "../../../../utils/reservationCalendarUtils";
 import ReservationCalendarSection from "../ReservationCalendar/ReservationCalendarSection";
+import { useSearchParams } from "react-router-dom";
 
 function MyReservationsPage() {
-  const [tab, setTab] = useState<ReservationTab>("today");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialTab = (searchParams.get("tab") ?? "today") as ReservationTab;
+
+  const [tab, setTab] = useState<ReservationTab>(initialTab);
 
   const [draft, setDraft] = useState<SearchDraft>(DEFAULT_SEARCH_DRAFT);
   const [applied, setApplied] = useState<SearchApplied>(
@@ -61,6 +66,9 @@ function MyReservationsPage() {
   // tab 바꿀 시 기본 상태로 set 해줌
   const onChangeTab = (next: ReservationTab) => {
     setTab(next);
+    setSearchParams({ tab: next });
+
+    setSelectedDate(null);
     setDraft(DEFAULT_SEARCH_DRAFT);
     setApplied(makeReservationSearchApplied(DEFAULT_SEARCH_DRAFT));
   };
@@ -165,7 +173,7 @@ function MyReservationsPage() {
   return (
     <div css={s.page}>
       <MypageTabBar value={tab} items={MY_TAB_ITEMS} onChange={onChangeTab} />
-      
+
       <ReservationCalendarSection
         isOpen={isCalendarOpen}
         onToggle={() => setIsCalendarOpen((prev) => !prev)}

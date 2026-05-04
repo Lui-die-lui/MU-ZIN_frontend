@@ -33,6 +33,7 @@ import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailM
 import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
 import { reservationCalendarUtils } from "../../../../utils/reservationCalendarUtils";
 import ReservationCalendarSection from "../ReservationCalendar/ReservationCalendarSection";
+import { useSearchParams } from "react-router-dom";
 
 function ArtistReservationPage() {
   // 모달 상태
@@ -53,7 +54,11 @@ function ArtistReservationPage() {
   const { data: detail } = useArtistReservationDetail(selectedId);
 
   // 탭은 즉시 반영(탭 누르면 refetch)
-  const [tab, setTab] = useState<ReservationTab>("requested");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialTab = (searchParams.get("tab") ?? "requested") as ReservationTab;
+
+  const [tab, setTab] = useState<ReservationTab>(initialTab);
 
   // 캘린더 관련 상태
   const [isCalendarOpen, setIsCalendarOpen] = useState(true);
@@ -70,8 +75,10 @@ function ArtistReservationPage() {
   // 탭 누르면 검색 상태 초기화 + refetch
   const onChangeTab = (next: ReservationTab) => {
     setTab(next);
+    setSearchParams({ tab: next });
 
     // 탭 변경 시 초기화
+    setSelectedDate(null);
     setDraft(DEFAULT_SEARCH_DRAFT);
     setApplied(makeReservationSearchApplied(DEFAULT_SEARCH_DRAFT));
   };

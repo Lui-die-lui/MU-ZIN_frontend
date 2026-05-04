@@ -90,6 +90,19 @@ function NavBar() {
     notiMenu.onClose();
   };
 
+  // 내 일정 버튼 분기
+  const goSchedule = () => {
+    const isApprovedArtist = principal?.artistStatus === "APPROVED";
+
+    navigate(
+      isApprovedArtist
+        ? "/mypage/reservations/requests?tab=all"
+        : "/mypage/reservations?tab=all",
+    );
+
+    profileMenu.onClose();
+  };
+  
   return (
     <s.Header>
       <s.Left>
@@ -197,9 +210,7 @@ function NavBar() {
               <MenuItem onClick={() => navigate("/mypage")}>
                 마이페이지
               </MenuItem>
-              <MenuItem onClick={() => navigate("/mypage/reservations")}>
-                내 일정
-              </MenuItem>
+              <MenuItem onClick={goSchedule}>내 일정</MenuItem>
               <MenuItem onClick={onLogout}>로그아웃</MenuItem>
             </Menu>
           </>
