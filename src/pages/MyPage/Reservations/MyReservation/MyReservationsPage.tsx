@@ -26,7 +26,6 @@ import ReservationCard from "../ReservationCard/ReservationCard";
 import DateRangeSearchBar from "../DateSearchBar/DateRangeSearchBar";
 import MypageTabBar from "../../../../components/common/MypageTabBar/MypageTabBar";
 import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailModal";
-import { useArtistReservationDetail } from "../../../../hooks/reservation/useArtistReservations";
 import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
 import { todayYmd } from "../../../../utils/timeSlotUtils";
 import { reservationCalendarUtils } from "../../../../utils/reservationCalendarUtils";

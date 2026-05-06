@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "../../styles";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
 import {
   getMyArtistProfileReq,

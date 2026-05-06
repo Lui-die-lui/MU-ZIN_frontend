@@ -4,7 +4,6 @@ import Home from "../pages/Home/Home";
 import Signin from "../pages/Auth/Signin/Signin";
 import Signup from "../pages/Auth/Signup/Signup";
 import MyPageRouter from "./MyPageRouter";
-import ArtistMain from "../pages/Artist/ArtistMain";
 import OAuth2Redirect from "../pages/Auth/OAuth2Redirect/OAuth2Redirect";
 import LessonRouter from "./LessonRouter";
 import ArtistRouter from "./ArtistRouter";
