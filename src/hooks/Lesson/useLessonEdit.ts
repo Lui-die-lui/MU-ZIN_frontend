@@ -23,12 +23,6 @@ import {
 
 // lesson Query key 통일
 export const lessonKeys = {
-  // myDetail: (lessonId: number) => ["lessons", lessonId] as const,
-  // myTimeSlots: (lessonId: number, from: string, to: string) =>
-  //   ["lessons", "me", lessonId, "time-slots", from, to] as const,
-  // myRecurrence: (lessonId: number) =>
-  //   ["lessons", "me", lessonId, "recurrence"] as const,
-  // myList: (sort: LessonSort) => ["lessons", sort] as const,
   myList: () => ["lessons", "me", "list"] as const,
   myDetail: (lessonId: number) =>
     ["lessons", "me", "detail", lessonId] as const,

@@ -14,7 +14,6 @@ import type {
 import { reservationKeys } from "./reservationKeys";
 import { getArtistReservationListReq } from "../../apis/reservation/reservationApis";
 import { buildArtistReservationParams } from "../../utils/filters/buildArtistReservationParams";
-import { queryClient } from "../../configs/queryClient";
 
 // 아티스트가 가진 예약 리스트 불러옴
 export function useArtistReservationList(filter: ArtistReservationListFilter) {

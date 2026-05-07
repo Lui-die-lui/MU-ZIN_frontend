@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import type { ArtistLessonCardResp } from "../../../../../Types/artistSearchTypes";
 import LessonCard from "./LessonCard/LessonCard";
-import * as s from "./styles";
 
 type Props = {
   lessons: ArtistLessonCardResp[];

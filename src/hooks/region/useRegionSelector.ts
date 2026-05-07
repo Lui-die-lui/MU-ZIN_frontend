@@ -68,18 +68,6 @@ export function useRegionSelector({
   const [sigunguError, setSigunguError] = useState("");
   const [emdError, setEmdError] = useState("");
 
-  // 외부값 -> input 문자열 동기화
-  // useEffect(() => {
-  //   setSidoInput(region1DepthName);
-  // }, [region1DepthName]);
-
-  // useEffect(() => {
-  //   setSigunguInput(region2DepthName);
-  // }, [region2DepthName]);
-
-  // useEffect(() => {
-  //   setEmdInput(region3DepthName);
-  // }, [region3DepthName]);
   useEffect(() => {
     setSidoInput(region1DepthName ?? "");
   }, [region1DepthName]);

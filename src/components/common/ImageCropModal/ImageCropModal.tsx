@@ -70,17 +70,6 @@ Props) {
         </s.CropArea>
 
         <s.Controls>
-          {/* <label>
-            줌
-            <s.Range
-              type="range"
-              min={1}
-              max={3}
-              step={0.01}
-              value={zoom}
-              onChange={(e) => setZoom(Number(e.target.value))}
-            />
-          </label> */}
 
           <s.BtnRow>
             <s.Btn type="button" onClick={onClose} disabled={isLoading}>
@@ -88,7 +77,6 @@ Props) {
             </s.Btn>
             <s.PrimaryBtn
               type="button"
-              // onClick={() => croppedAreaPixels && onConfirm(croppedAreaPixels)}
               disabled={isLoading || !croppedAreaPixels}
               onClick={handleConfirm}
             >
