@@ -7,7 +7,7 @@ function Signin() {
   return (
     <div>
       <SigninForm />
-      <div>
+      {/* <div>
         <OAuth2Button
           provider="google"
           flow="signup"
@@ -23,7 +23,7 @@ function Signin() {
           flow="signup"
             redirectPath="/redirect"
         />
-      </div>
+      </div> */}
     </div>
   );
 }

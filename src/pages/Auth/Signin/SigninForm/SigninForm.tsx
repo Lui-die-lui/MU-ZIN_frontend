@@ -1,7 +1,12 @@
+/** @jsxImportSource @emotion/react */
+import * as s from "./styles";
+
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePrincipalState } from "../../../../stores/usePrincipalState";
 import type { AuthRedirectState } from "../../../../Types/routerState";
+import AuthInput from "../../AuthInput/AuthInput";
+import OAuth2Button from "../../OAuth2Button/OAuth2Button";
 
 function SigninForm() {
   const navigate = useNavigate();
@@ -55,40 +60,52 @@ function SigninForm() {
 
 
   return (
+        <div css={s.formWrap}>
     <div
+      css={s.form}
       onKeyDown={(e) => {
         if (e.key === "Enter") onSubmit();
       }}
     >
-      <div>
-        <input
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="이메일"
-          autoComplete="email"
-        />
-      </div>
+      <AuthInput
+        label="이메일"
+        name="email"
+        value={email}
+        placeholder="이메일을 입력해주세요"
+        autoComplete="email"
+        onChange={setEmail}
+      />
 
-      <div>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="비밀번호"
-          autoComplete="current-password"
-        />
-      </div>
+      <AuthInput
+        label="비밀번호"
+        name="password"
+        type="password"
+        value={password}
+        placeholder="비밀번호를 입력해주세요"
+        autoComplete="current-password"
+        onChange={setPassword}
+      />
 
-      {errorMsg && <p style={{ marginTop: 8 }}>{errorMsg}</p>}
+      {errorMsg && <p css={s.errorMsg}>{errorMsg}</p>}
 
-      <button onClick={onSubmit} disabled={isLoading}>
+      <button css={s.submitButton} onClick={onSubmit} disabled={isLoading}>
         {isLoading ? "로그인 중..." : "로그인"}
       </button>
 
-      <div>
-        <p onClick={signupOnClick}>회원가입</p>
+      <div css={s.signupArea}>
+        <span css={s.signupText}>아직 계정이 없나요?</span>
+        <button css={s.signupButton} type="button" onClick={signupOnClick}>
+          회원가입
+        </button>
+      </div>
+
+      <div css={s.oauthArea}>
+        <OAuth2Button provider="google" flow="signin" redirectPath={fromPath} />
+        <OAuth2Button provider="naver" flow="signin" redirectPath={fromPath} />
+        <OAuth2Button provider="kakao" flow="signin" redirectPath={fromPath} />
       </div>
     </div>
+  </div>
   );
 }
 

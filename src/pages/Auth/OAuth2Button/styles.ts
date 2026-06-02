@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 
+
 export const OAuthButton = styled.a<{ provider: "google" | "naver" | "kakao" }>`
   display: inline-flex;
   align-items: center;
@@ -32,3 +33,4 @@ export const OAuthButton = styled.a<{ provider: "google" | "naver" | "kakao" }>`
       color: #000;
     `}
 `;
+
