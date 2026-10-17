@@ -34,6 +34,10 @@ export type ArtistProfileResponse = {
   instruments: InstrumentResponse[];
   mainRegion: ArtistProfileRegion | null;
   serviceRegions: ArtistServiceRegion[];
+  // 신청자 본인 화면용 (반려됐을 때 사유 / 마지막 제출 시각)
+  rejectReasonTitle?: string | null;
+  rejectedReason?: string | null;
+  submittedDt?: string | null;
 };
 
 // 아티스트 제출 정보(+ 악기) - 현재 api가 분리되어있으므로

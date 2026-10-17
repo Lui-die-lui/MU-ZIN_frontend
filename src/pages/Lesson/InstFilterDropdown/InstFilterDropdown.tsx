@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
+import SelectDropdown from "../../../components/common/SelectDropdown/SelectDropdown";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -89,7 +90,6 @@ function InstFilterDropdown({
   const clear = () => onChangeInstIds([]);
 
   const handleChangeCategory = (v: InstrumentCategory | "ALL") => {
-      console.log("category select raw =", v);
     onChangeCategory(v);
     if (resetOnCategoryChange) onChangeInstIds([]); // 카테고리 바꾸면 악기 선택 초기화 - 정확한 카테고리 선택을 위해
     setKeyword("");
@@ -118,20 +118,16 @@ function InstFilterDropdown({
   return (
     <div css={s.wrap} ref={rootRef}>
       {/* 카테고리 드롭다운 */}
-      <select
-        value={category}
-        onChange={(e) =>
-          handleChangeCategory(e.target.value as InstrumentCategory | "ALL")
-        }
+      <SelectDropdown<InstrumentCategory | "ALL">
         css={s.select}
-      >
-        <option value="ALL">악기군 전체</option>
-        {categories.map((c) => (
-          <option key={c} value={c}>
-            {INST_CATEGORY_LABEL[c]}
-          </option>
-        ))}
-      </select>
+        ariaLabel="악기군 선택"
+        value={category}
+        onChange={handleChangeCategory}
+        options={[
+          { value: "ALL", label: "악기군 전체" },
+          ...categories.map((c) => ({ value: c, label: INST_CATEGORY_LABEL[c] })),
+        ]}
+      />
 
       {/* 악기 멀티 드롭다운 */}
       <div css={s.dropdownRoot}>
@@ -139,9 +135,11 @@ function InstFilterDropdown({
           type="button"
           css={s.trigger}
           onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-haspopup="listbox"
         >
           {selectedCount ? `악기 ${selectedCount}개 선택됨` : "악기 선택"}
-          <span css={s.caret(open)}>▾</span>
+          <span css={s.caret(open)} aria-hidden="true" />
         </button>
 
         {open && (
@@ -151,6 +149,7 @@ function InstFilterDropdown({
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 placeholder="악기 검색 (예: 플룻)"
+                aria-label="악기 검색"
                 css={s.searchInput}
               />
               <button type="button" onClick={clear} css={s.clearBtn}>

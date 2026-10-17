@@ -1,321 +1,298 @@
 /** @jsxImportSource @emotion/react */
-import { useQuery } from "@tanstack/react-query";
-import type { LessonMode } from "../../../Types/lessonTypes";
-import * as s from "./styles";
-
-import { useMemo, useState } from "react";
-import { getLessonStyleTagsReq } from "../../../apis/lesson/lessonApis";
+import { useCallback, useMemo, useState, type FormEvent } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import type { InstrumentCategory } from "../../../Types/instrumentTypes";
+import { LESSON_MODE_LABEL, type LessonMode } from "../../../Types/lessonTypes";
+import { EMPTY_OPEN_SLOT_FILTER, type OpenSlotFilter } from "../../../Types/searchForTimeTypes";
+import type { RegionSearchValue } from "../../../Types/artistRegionTypes";
 import { searchLessonReq } from "../../../apis/lesson/lessonSearchApis";
-import { css } from "@emotion/react";
-import { useNavigate } from "react-router-dom";
-import { useIsMobile } from "../../../hooks/useIsMobile";
+import { formatKRW } from "../../../utils/myPageUtils";
+import { getErrorMessage } from "../../../utils/errorUtils";
+import { normalizeRegion1DepthName } from "../../../utils/regionUtils";
 import LessonDetailDrawer from "../LessonDetailDrawer/LessonDetailDrawer";
 import InstFilterDropdown from "../InstFilterDropdown/InstFilterDropdown";
-import {
-  EMPTY_OPEN_SLOT_FILTER,
-  type OpenSlotFilter,
-} from "../../../Types/searchForTimeTypes";
-import SearchTimeFilter from "./SearchTimeFilter/SearchTimeFilter";
-import type { InstrumentCategory } from "../../../Types/instrumentTypes";
-import { hasTimeFilter } from "./SearchTimeFilter/hasTimeFilter";
-import { formatKRW } from "../../../utils/myPageUtils";
 import StyleDropdown from "../../Artist/ArtistSearch/StyleDropdown/StyleDropdown";
-import {
-  getCurrentPosition,
-  normalizeRegion1DepthName,
-  resolveRegionFromCoords,
-} from "../../../utils/regionUtils";
-import type { RegionSearchValue } from "../../../Types/artistRegionTypes";
 import RegionSearchInput from "../../Artist/ArtistSearch/RegionSearchInput/RegionSearchInput";
+import SearchTimeFilter from "./SearchTimeFilter/SearchTimeFilter";
+import { hasTimeFilter } from "./SearchTimeFilter/hasTimeFilter";
+import { useInfiniteScroll } from "../../../hooks/useInfiniteScroll";
+import SelectDropdown, { type SelectOption } from "../../../components/common/SelectDropdown/SelectDropdown";
+import * as s from "./styles";
+
+const MODE_OPTIONS: SelectOption<LessonMode | "ALL">[] = [
+  { value: "ALL", label: "전체 방식" },
+  { value: "ONLINE", label: "온라인" },
+  { value: "OFFLINE", label: "대면" },
+  { value: "VISIT", label: "방문 레슨" },
+  { value: "REQUEST_ONLY", label: "일정 협의" },
+];
+
+type AppliedFilters = {
+  keyword?: string;
+  mode?: LessonMode;
+  styleTagIds?: number[];
+  instIds?: number[];
+  instCategory?: InstrumentCategory;
+  region1DepthName?: string;
+  region2DepthName?: string;
+  region3DepthName?: string;
+  time?: OpenSlotFilter;
+};
+
+const EMPTY_REGION: RegionSearchValue = {
+  region1DepthName: "",
+  region2DepthName: null,
+  region3DepthName: null,
+};
 
 function LessonSearchPage() {
-  const navigate = useNavigate();
-  const isMobile = useIsMobile();
-
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  // draft (입력중)
   const [draftKeyword, setDraftKeyword] = useState("");
   const [draftMode, setDraftMode] = useState<LessonMode | "ALL">("ALL");
   const [draftTagIds, setDraftTagIds] = useState<number[]>([]);
-  const [draftTime, setDraftTime] = useState<OpenSlotFilter>(
-    EMPTY_OPEN_SLOT_FILTER,
-  );
-
-  //악기 카테고리
-  const [draftInstCategory, setDraftInstCategory] = useState<
-    InstrumentCategory | "ALL"
-  >("ALL");
+  const [draftTime, setDraftTime] = useState<OpenSlotFilter>(EMPTY_OPEN_SLOT_FILTER);
+  const [draftInstCategory, setDraftInstCategory] = useState<InstrumentCategory | "ALL">("ALL");
   const [draftInstIds, setDraftInstIds] = useState<number[]>([]);
-
-  // 검색버튼 눌러서 확정된 조건
-  const [applied, setApplied] = useState<null | {
-    keyword?: string;
-    mode?: LessonMode;
-    styleTagIds?: number[];
-    instIds?: number[];
-    instCategory?: InstrumentCategory;
-    region1DepthName?: string;
-    region2DepthName?: string;
-    region3DepthName?: string;
-    time?: OpenSlotFilter;
-  }>(null);
-
-  const [draftRegion, setDraftRegion] = useState<RegionSearchValue>({
-    region1DepthName: "",
-    region2DepthName: null,
-    region3DepthName: null,
-  });
-
-  // 태그 목록(chip UI)
-  const { data: tagResp } = useQuery({
-    queryKey: ["lessonStyleTags"],
-    queryFn: async () => (await getLessonStyleTagsReq()).data,
-  });
-
-  const tags = tagResp?.data ?? [];
+  const [draftRegion, setDraftRegion] = useState<RegionSearchValue>(EMPTY_REGION);
+  const [applied, setApplied] = useState<AppliedFilters | null>(null);
+  const [filterError, setFilterError] = useState<string | null>(null);
+  const [regionResetKey, setRegionResetKey] = useState(0);
 
   const appliedParams = useMemo(() => {
     if (!applied) return null;
-
-    const t = applied.time;
-
-    // 빈배열/빈 문자열이면 꼬일 가능성때문에 연산자 사용
+    const time = applied.time;
     return {
       keyword: applied.keyword,
       mode: applied.mode,
       styleTagIds: applied.styleTagIds,
-
       instIds: applied.instIds,
       instCategory: applied.instCategory,
-
       region1DepthName: applied.region1DepthName,
       region2DepthName: applied.region2DepthName,
       region3DepthName: applied.region3DepthName,
-
-      from: t?.from?.trim() || undefined,
-      to: t?.to?.trim() || undefined,
-
-      daysOfWeek: t?.daysOfWeek?.length ? t.daysOfWeek : undefined,
-      timeParts: t?.timeParts?.length ? t.timeParts : undefined,
+      from: time?.from?.trim() || undefined,
+      to: time?.to?.trim() || undefined,
+      daysOfWeek: time?.daysOfWeek.length ? time.daysOfWeek : undefined,
+      timeParts: time?.timeParts.length ? time.timeParts : undefined,
     };
   }, [applied]);
 
-  // 레슨 검색(버튼 누른 후에만)
+  const pageSize = 12;
   const {
-    data: lessonResp,
-    isFetching,
+    data: lessonPages,
+    isPending,
     isError,
     error,
-  } = useQuery({
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     queryKey: ["lessons", "search", appliedParams],
-    queryFn: async () => searchLessonReq(appliedParams!),
-    enabled: !!appliedParams, // applied가 되기 전에 호출하지 않음
+    queryFn: async ({ pageParam }) =>
+      searchLessonReq({
+        ...appliedParams!,
+        page: pageParam,
+        size: pageSize,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _pages, lastPageParam) =>
+      lastPage.data.length === pageSize ? lastPageParam + 1 : undefined,
+    enabled: !!appliedParams,
   });
 
-  const lessons = lessonResp?.data ?? [];
+  const lessons = useMemo(
+    () => lessonPages?.pages.flatMap((page) => page.data) ?? [],
+    [lessonPages],
+  );
+  const isInitialLoading = !!appliedParams && isPending;
+  const loadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) void fetchNextPage();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  const loadMoreRef = useInfiniteScroll({
+    enabled: !!appliedParams && !!hasNextPage && !isFetchingNextPage && !isError,
+    onLoadMore: loadMore,
+  });
+  const appliedFilterCount = applied
+    ? [applied.keyword, applied.mode, applied.styleTagIds?.length,
+        applied.instCategory || applied.instIds?.length,
+        applied.region1DepthName, applied.time].filter(Boolean).length
+    : 0;
 
-  const toggleTag = (id: number) => {
-    setDraftTagIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
-  };
+  const onSearch = (event?: FormEvent) => {
+    event?.preventDefault();
+    if (draftTime.from && draftTime.to && draftTime.to < draftTime.from) {
+      setFilterError("종료 날짜는 시작 날짜보다 빠를 수 없어요.");
+      return;
+    }
 
-  // 검색
-  const onSearch = () => {
+    setFilterError(null);
     setApplied({
       keyword: draftKeyword.trim() || undefined,
       mode: draftMode === "ALL" ? undefined : draftMode,
       styleTagIds: draftTagIds.length ? draftTagIds : undefined,
       instIds: draftInstIds.length ? draftInstIds : undefined,
       instCategory: draftInstCategory === "ALL" ? undefined : draftInstCategory,
-
-      region1DepthName:
-        normalizeRegion1DepthName(draftRegion.region1DepthName).trim() ||
-        undefined,
+      region1DepthName: normalizeRegion1DepthName(draftRegion.region1DepthName).trim() || undefined,
       region2DepthName: draftRegion.region2DepthName?.trim() || undefined,
       region3DepthName: draftRegion.region3DepthName?.trim() || undefined,
-
       time: hasTimeFilter(draftTime) ? draftTime : undefined,
     });
   };
 
-  const initialOpenSlotFilter = useMemo<OpenSlotFilter | null>(() => {
-    // onSearch에서 필터 없으면 undefined라서 null로 떨어짐
-    return applied?.time ?? null;
-  }, [applied]);
-
-  // 레슨 클릭 시
-  const onClickLesson = (lessonId: number) => {
-    // if (isMobile) {
-    //   // 모바일이면
-    //   navigate(`/lessons/${lessonId}`);
-    //   return;
-    // }
-    setSelectedId(lessonId);
-    setOpen(true); // 데스크탑이면 사이드바
+  const onReset = () => {
+    setDraftKeyword("");
+    setDraftMode("ALL");
+    setDraftTagIds([]);
+    setDraftTime(EMPTY_OPEN_SLOT_FILTER);
+    setDraftInstCategory("ALL");
+    setDraftInstIds([]);
+    setDraftRegion(EMPTY_REGION);
+    setApplied(null);
+    setFilterError(null);
+    setRegionResetKey((value) => value + 1);
   };
 
-  const close = () => {
-    setOpen(false);
-    setSelectedId(null);
-  };
+  const initialOpenSlotFilter = useMemo<OpenSlotFilter | null>(
+    () => applied?.time ?? null,
+    [applied],
+  );
 
   return (
-    <div css={s.wrap}>
-      {/* 검색창 */}
-      <div css={s.row}>
-        <input
-          value={draftKeyword}
-          onChange={(e) => setDraftKeyword(e.target.value)}
-          placeholder="레슨 검색어를 입력하세요 (예: 플룻, 기본기)"
-          css={css`
-            flex: 1;
-            min-width: 220px;
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid #d7dfe7;
-          `}
-        />
+    <main css={s.wrap}>
+      <header css={s.pageHeader}>
+        <span css={s.eyebrow}>LESSON SEARCH</span>
+        <h1 css={s.pageTitle}>내게 맞는 레슨 찾기</h1>
+        <p css={s.pageDescription}>악기와 수업 방식, 가능한 일정까지 한 번에 비교해 보세요.</p>
+      </header>
 
-        <select
-          value={draftMode}
-          onChange={(e) => setDraftMode(e.target.value as any)}
-          css={css`
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid #d7dfe7;
-          `}
-        >
-          <option value="ALL">전체</option>
-          <option value="REQUEST_ONLY">요청만</option>
-          <option value="ONLINE">온라인</option>
-          <option value="OFFLINE">오프라인</option>
-        </select>
-
-        <StyleDropdown
-          lessonStyleTagIds={draftTagIds}
-          onChangeStyleTagIds={setDraftTagIds}
-        />
-        <InstFilterDropdown
-          category={draftInstCategory}
-          onChangeCategory={setDraftInstCategory}
-          instIds={draftInstIds}
-          onChangeInstIds={setDraftInstIds}
-          resetOnCategoryChange={true}
-        />
-      </div>
-
-      <RegionSearchInput value={draftRegion} onChange={setDraftRegion} />
-
-      <div css={s.timeSearchRow}>
-        <div css={s.timeFilterArea}>
-          <SearchTimeFilter value={draftTime} onChange={setDraftTime} />
-        </div>
-
-        <button type="button" onClick={onSearch} css={s.searchButton}>
-          검색
-        </button>
-      </div>
-
-      {/* 스타일 태그 필터 - dropdown 으로 변경 */}
-      {/* <div css={s.row}>
-        {tags.map((t) => {
-          const active = draftTagIds.includes(t.lessonStyleTagId);
-          return (
-            <div
-              key={t.lessonStyleTagId}
-              css={s.chip(active)}
-              onClick={() => toggleTag(t.lessonStyleTagId)}
-            >
-              {t.styleName}
-            </div>
-          );
-        })}
-      </div>
-      <div css={s.row}></div> */}
-
-      {/* 결과 */}
-      {!appliedParams && (
-        <div
-          css={css`
-            color: #667;
-            padding: 10px 2px;
-          `}
-        >
-          검색어/필터 설정 후 검색 버튼을 눌러주세요.
-        </div>
-      )}
-
-      {appliedParams && (
-        <>
-          {isFetching && <div>불러오는 중...</div>}
-          {isError && <div>검색 중 오류가 발생했어요.</div>}
-
-          {!isFetching && lessons.length === 0 && (
-            <div
-              css={css`
-                color: #667;
-                padding: 10px 2px;
-              `}
-            >
-              조건에 맞는 레슨이 없어요.
-            </div>
-          )}
-
-          <div
-            css={css`
-              display: flex;
-              flex-direction: column;
-              gap: 10px;
-            `}
-          >
-            {lessons.map((l) => (
-              <div
-                key={l.lessonId}
-                css={s.card}
-                onClick={() => onClickLesson(l.lessonId)}
-              >
-                <div
-                  css={css`
-                    font-weight: 700;
-                  `}
-                >
-                  {l.title}
-                </div>
-                {/* {l.description && (
-                  <div
-                    css={css`
-                      color: #556;
-                      margin-top: 6px;
-                    `}
-                  >
-                    {l.description}
-                  </div>
-                )} */}
-                <div
-                  css={css`
-                    color: #667;
-                    margin-top: 10px;
-                    font-size: 13px;
-                  `}
-                >
-                  {l.mode} · {l.durationMin}분 ·{" "}
-                  {l.price ? `${formatKRW(l.price)}` : "가격 협의"}
-                </div>
-              </div>
-            ))}
+      <form css={s.filterPanel} onSubmit={onSearch}>
+        <div css={s.primaryRow}>
+          <label css={s.keywordField}>
+            <span css={s.fieldLabel}>검색어</span>
+            <input value={draftKeyword} onChange={(e) => setDraftKeyword(e.target.value)}
+              placeholder="레슨명이나 배우고 싶은 내용을 입력하세요" css={s.input} />
+          </label>
+          <div css={s.modeField}>
+            <span css={s.fieldLabel}>수업 방식</span>
+            <SelectDropdown<LessonMode | "ALL">
+              css={s.select}
+              ariaLabel="수업 방식"
+              value={draftMode}
+              onChange={setDraftMode}
+              options={MODE_OPTIONS}
+            />
           </div>
-        </>
-      )}
-      <LessonDetailDrawer
-        open={open}
-        lessonId={selectedId}
-        onClose={close}
-        initialOpenSlotFilter={initialOpenSlotFilter}
-      />
-    </div>
+        </div>
+
+        <div css={s.filterGrid}>
+          <div css={s.filterGroup}>
+            <span css={s.fieldLabel}>레슨 스타일</span>
+            <StyleDropdown lessonStyleTagIds={draftTagIds} onChangeStyleTagIds={setDraftTagIds} />
+          </div>
+          <div css={s.filterGroupWide}>
+            <span css={s.fieldLabel}>악기</span>
+            <InstFilterDropdown category={draftInstCategory} onChangeCategory={setDraftInstCategory}
+              instIds={draftInstIds} onChangeInstIds={setDraftInstIds} resetOnCategoryChange />
+          </div>
+        </div>
+
+        <div css={s.filterBlock}>
+          <span css={s.fieldLabel}>지역</span>
+          <RegionSearchInput key={regionResetKey} value={draftRegion} onChange={setDraftRegion} />
+        </div>
+
+        <div css={s.filterBlock}>
+          <div css={s.blockHeading}>
+            <span css={s.fieldLabel}>가능한 일정</span>
+            <span css={s.optionalText}>선택한 조건을 모두 만족하는 레슨만 보여줘요.</span>
+          </div>
+          <SearchTimeFilter value={draftTime} onChange={setDraftTime} />
+          {filterError && <p css={s.validationMessage}>{filterError}</p>}
+        </div>
+
+        <div css={s.actions}>
+          <button type="button" css={s.resetButton} onClick={onReset}>초기화</button>
+          <button type="submit" css={s.searchButton} disabled={isInitialLoading}>
+            {isInitialLoading ? "검색 중..." : "레슨 검색"}
+          </button>
+        </div>
+      </form>
+
+      <section css={s.resultSection} aria-live="polite">
+        {!appliedParams ? (
+          <div css={s.emptyState}>
+            <strong>원하는 조건으로 레슨을 찾아보세요.</strong>
+            <span>조건 없이 검색하면 현재 열려 있는 모든 레슨을 볼 수 있어요.</span>
+          </div>
+        ) : (
+          <>
+            <div css={s.resultHeader}>
+              <div>
+                <span css={s.resultLabel}>검색 결과</span>
+                <h2 css={s.resultTitle}>{isInitialLoading ? "레슨을 찾고 있어요" : `${lessons.length}개 불러옴`}</h2>
+              </div>
+              {appliedFilterCount > 0 && <span css={s.filterCount}>{appliedFilterCount}개 조건 적용</span>}
+            </div>
+
+            {isError ? (
+              <div css={s.emptyState}>
+                <strong>{getErrorMessage(error, "검색 중 오류가 발생했어요.")}</strong>
+                <button type="button" css={s.retryButton} onClick={() => refetch()}>다시 시도</button>
+              </div>
+            ) : !isInitialLoading && lessons.length === 0 ? (
+              <div css={s.emptyState}>
+                <strong>조건에 맞는 레슨이 없어요.</strong>
+                <span>지역이나 일정 조건을 조금 넓혀보세요.</span>
+              </div>
+            ) : (
+              <>
+              <div css={s.list} aria-busy={isFetchingNextPage}>
+                {lessons.map((lesson) => {
+                  const region = lesson.mainRegionSummary;
+                  const regionLabel = region
+                    ? [region.region1DepthName, region.region2DepthName, region.region3DepthName]
+                        .filter(Boolean).join(" ")
+                    : null;
+                  return (
+                    <button type="button" key={lesson.lessonId} css={s.card}
+                      onClick={() => { setSelectedId(lesson.lessonId); setOpen(true); }}>
+                      <div css={s.cardTop}>
+                        <span css={s.instrumentBadge}>{lesson.instName}</span>
+                        <span css={s.cardArrow} aria-hidden="true">→</span>
+                      </div>
+                      <h3 css={s.cardTitle}>{lesson.title}</h3>
+                      {lesson.description && <p css={s.cardDescription}>{lesson.description}</p>}
+                      <div css={s.cardMeta}>
+                        <span>{LESSON_MODE_LABEL[lesson.mode]}</span><span aria-hidden="true">·</span>
+                        <span>{lesson.durationMin}분</span><span aria-hidden="true">·</span>
+                        <strong>{lesson.price == null ? "가격 협의" : lesson.price === 0 ? "무료" : formatKRW(lesson.price)}</strong>
+                      </div>
+                      {regionLabel && <span css={s.regionText}>{regionLabel}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+              <div ref={loadMoreRef} css={s.loadMore} aria-live="polite">
+                {isFetchingNextPage
+                  ? "다음 레슨을 불러오는 중..."
+                  : hasNextPage
+                    ? "스크롤하면 더 불러와요"
+                    : lessons.length > 0
+                      ? "모든 레슨을 확인했어요."
+                      : null}
+              </div>
+              </>
+            )}
+          </>
+        )}
+      </section>
+
+      <LessonDetailDrawer open={open} lessonId={selectedId}
+        onClose={() => { setOpen(false); setSelectedId(null); }}
+        initialOpenSlotFilter={initialOpenSlotFilter} />
+    </main>
   );
 }
 

@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import * as s from "./styles";
 import SigninForm from "./SigninForm/SigninForm";
-import OAuth2Button from "../OAuth2Button/OAuth2Button";
 
 function Signin() {
   return (

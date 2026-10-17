@@ -1,136 +1,82 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 
-import type { OpenSlotFilter } from "../../../../Types/searchForTimeTypes";
-import { useEffect, useMemo, useState } from "react";
+import type { OpenSlotFilter, SlotItem } from "../../../../Types/searchForTimeTypes";
+import { useMemo } from "react";
 import { hasTimeFilter } from "../../LessonSearch/SearchTimeFilter/hasTimeFilter";
 import { useQuery } from "@tanstack/react-query";
 import { getOpenTimeSlotsReq } from "../../../../apis/lesson/timeSlotApis";
 import TimeSlotPickerGrouped from "../../../../components/common/TimeSlotPickerGrouped/TimeSlotPickerGroped";
-import { usePrincipalState } from "../../../../stores/usePrincipalState";
-import { useLocation, useNavigate } from "react-router-dom";
 import { timeSlotKeys } from "../../../../hooks/Lesson/timeSlotKeys";
 
 type Props = {
   lessonId: number;
-  // initialOpenSlotFilter: OpenSlotFilter | null;
   filter: OpenSlotFilter | null;
-  onClickReserve: (timeSlotId: number, slotText: string) => void; // 예약버튼 누를 시 전환 트리거
+  // 고른 시간은 상세 창이 관리 (아래 고정 버튼에 선택한 시간을 보여주기 위해)
+  selectedId: number | null;
+  onSelect: (slot: SlotItem | null) => void;
   requireFilterToShow?: boolean; // 필터를 기본으로 보여줄건지 아닌지
 };
 
-function LessonTimeSlotSection({
-  lessonId,
-  filter,
-  onClickReserve,
-  requireFilterToShow = false,
-}: Props) {
-  const isAuthenticated = usePrincipalState((s) => s.isAuthenticated);
-  const navigate = useNavigate();
-  const location = useLocation();
-  // 칩 단일 선택 상태
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-
+// 예약 가능한 시간 목록 (날짜별로 묶어서 칩으로 선택)
+// 예전: 이 안에 예약 버튼 + 로그인 alert 가 있었음 -> 상세 창 아래 고정 영역으로 옮김
+function LessonTimeSlotSection({ lessonId, filter, selectedId, onSelect, requireFilterToShow = false }: Props) {
   // 실제로 적용된 필터만(필터 선택없을 때 전체 검색을 위해서)
   const effectiveFilter = hasTimeFilter(filter) ? filter : null;
-  // 슬롯을 보여줄지 결정
   const shouldShowSlots = requireFilterToShow ? !!effectiveFilter : true;
 
-  // 요청 파라미터 정리
   const params = useMemo(() => {
     if (!effectiveFilter) return undefined;
-
     return {
       from: effectiveFilter.from?.trim() || undefined,
       to: effectiveFilter.to?.trim() || undefined,
-      daysOfWeek: effectiveFilter.daysOfWeek?.length
-        ? effectiveFilter.daysOfWeek
-        : undefined,
-      timeParts: effectiveFilter.timeParts?.length
-        ? effectiveFilter.timeParts
-        : undefined,
+      daysOfWeek: effectiveFilter.daysOfWeek?.length ? effectiveFilter.daysOfWeek : undefined,
+      timeParts: effectiveFilter.timeParts?.length ? effectiveFilter.timeParts : undefined,
     };
   }, [effectiveFilter]);
 
-  // 필터가 바뀌면 선택은 풀어주는게 UX 안전(다른 목록이니까)
-  useEffect(() => {
-    setSelectedId(null);
-  }, [filter]);
-
-  // openSlots 조회(레슨 검색 시간 필터 존재할 때)
-  const { data, isFetching, isError } = useQuery({
+  const { data, isFetching, isError, refetch } = useQuery({
     queryKey: timeSlotKeys.openSlots(lessonId, params),
     queryFn: async () => (await getOpenTimeSlotsReq(lessonId, params)).data,
     enabled: !!lessonId && shouldShowSlots,
   });
 
-  const slots = data?.data ?? [];
+  const slots = useMemo(() => data?.data ?? [], [data]);
 
-  // 예약 화면에서 보여줄 선택한 슬롯
-  const selectedSlot =
-    slots.find((slot) => slot.timeSlotId === selectedId) ?? null;
+  if (!shouldShowSlots) {
+    return (
+      <div css={s.emptyBox}>
+        <div css={s.emptyTitle}>레슨 시간을 검색해주세요</div>
+        <div css={s.emptyDesc}>위의 시간 필터에서 기간/요일/시간대를 선택하고 “적용”을 눌러주세요.</div>
+      </div>
+    );
+  }
 
-  const handleReserveClick = () => {
-    if (!selectedSlot) return;
+  if (isFetching && slots.length === 0) return <div css={s.hint}>예약 가능한 시간을 불러오는 중...</div>;
 
-    if (!isAuthenticated) {
-      alert("로그인 후 예약 가능합니다.");
-      navigate("/signin", { state: { from: location }, replace: false });
-      return;
-    }
-
-    const start = new Date(selectedSlot.startDt);
-
-    const yyyy = start.getFullYear();
-    const mm = String(start.getMonth() + 1).padStart(2, "0");
-    const dd = String(start.getDate()).padStart(2, "0");
-    const hh = String(start.getHours()).padStart(2, "0");
-    const min = String(start.getMinutes()).padStart(2, "0");
-
-    const slotText = `${yyyy}/${mm}/${dd} ${hh}:${min}`;
-
-    onClickReserve(selectedSlot.timeSlotId, slotText);
-  };
+  if (isError) {
+    return (
+      <div css={s.hint} role="alert">
+        시간을 불러오지 못했어요.{" "}
+        <button type="button" css={s.linkBtn} onClick={() => refetch()}>
+          다시 불러오기
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <section css={s.wrap}>
-      {!shouldShowSlots ? (
-        <div css={s.emptyBox}>
-          <div css={s.emptyTitle}>레슨 시간을 검색해주세요</div>
-          <div css={s.emptyDesc}>
-            위의 시간 필터에서 기간/요일/시간대를 선택하고 “적용”을 눌러주세요.
-          </div>
-        </div>
-      ) : (
-        <div css={s.resultBox}>
-          {isFetching && <div css={s.hint}>불러오는 중...</div>}
-          {isError && (
-            <div css={s.hint}>타임슬롯 조회 중 오류가 발생했어요.</div>
-          )}
-
-          {!isFetching && !isError && (
-            <>
-              <TimeSlotPickerGrouped
-                slots={slots}
-                selectedId={selectedId}
-                onChangeSelectedId={setSelectedId}
-                isDisabled={(s) => s.state === "BOOKED" || s.active === false}
-                emptyText="조건에 맞는 타임슬롯이 없어요."
-              />
-
-              <button
-                type="button"
-                css={s.reserveBtn}
-                disabled={selectedId == null}
-                onClick={handleReserveClick}
-              >
-                예약하기
-              </button>
-            </>
-          )}
-        </div>
-      )}
-    </section>
+    <TimeSlotPickerGrouped
+      slots={slots}
+      selectedId={selectedId}
+      onChangeSelectedId={(id) => onSelect(id == null ? null : (slots.find((x) => x.timeSlotId === id) ?? null))}
+      isDisabled={(x) => x.state === "BOOKED" || x.active === false}
+      emptyText={
+        effectiveFilter
+          ? "조건에 맞는 시간이 없어요. 시간대 조건을 바꾸거나 해제해보세요."
+          : "지금 예약할 수 있는 시간이 없어요."
+      }
+    />
   );
 }
 

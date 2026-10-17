@@ -10,6 +10,7 @@ import {
   upsertMyLessonRecurrenceReq,
 } from "../../apis/lesson/lessonApis";
 import { lessonKeys } from "./useLessonEdit";
+import { artistKeys } from "../artistSearch/artistKeys";
 
 export function useUpdateLessonWithSlots(
   lessonId: number,
@@ -45,7 +46,9 @@ export function useUpdateLessonWithSlots(
       return true;
     },
 
-    onSuccess: async () => {
+    // 레슨 정보는 저장되고 시간 추가만 실패해도 화면이 최신 상태를 다시 읽도록 성공/실패 모두 갱신
+    onSettled: async () => {
+      await qc.invalidateQueries({ queryKey: artistKeys.all }); // 공개 아티스트 화면도 최신으로
       await qc.invalidateQueries({ queryKey: lessonKeys.myDetail(lessonId) });
       await qc.invalidateQueries({ queryKey: lessonKeys.myList() });
       await qc.invalidateQueries({

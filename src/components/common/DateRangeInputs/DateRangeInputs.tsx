@@ -21,6 +21,7 @@ function DateRangeInputs({ from, to, onChange, disabled = false }: Props) {
       <input
         css={s.input}
         type="date"
+        aria-label="검색 시작 날짜"
         value={fromYmd}
         onChange={(e) => {
           const ymd = e.target.value;
@@ -32,6 +33,7 @@ function DateRangeInputs({ from, to, onChange, disabled = false }: Props) {
       <input
         css={s.input}
         type="date"
+        aria-label="검색 종료 날짜"
         value={toYmd}
         onChange={(e) => {
           const ymd = e.target.value;

@@ -1,7 +1,7 @@
 // 카카오맵 window 타입
 declare global {
   interface Window {
-    kekao?: {
+    kakao?: {
       maps?: {
         services?: {
           Status: {

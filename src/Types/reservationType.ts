@@ -1,6 +1,3 @@
-import { all } from "axios";
-import { tab } from "./../components/common/MypageTabBar/styles";
-import { page } from "./../pages/MyPage/Reservations/pageStyles";
 import type { SortOrder } from "./commonTypes";
 import type { TimeSlotResp } from "./lessonTypes";
 export type ReservationStatus =
@@ -9,7 +6,8 @@ export type ReservationStatus =
   | "CANCELED"
   | "COMPLETION_PENDING"
   | "REJECTED"
-  | "COMPLETED";
+  | "COMPLETED"
+  | "EXPIRED"; // 아티스트가 응답하지 않은 채 레슨 시간이 지나 자동 만료
 
 // 예약 관리 상단 탭
 export type ReservationTab =
@@ -36,7 +34,7 @@ export function tabToStatuses(
     case "completed":
       return ["COMPLETED"];
     case "canceled":
-      return ["CANCELED", "REJECTED"]; // REJECTED까지 묶고 싶으면 백엔드에서 statusIn으로 확장 필요
+      return ["CANCELED", "REJECTED", "EXPIRED"]; // 프론트에서 묶어서 필터링
 
     case "all":
     case "today":

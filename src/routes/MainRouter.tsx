@@ -7,6 +7,8 @@ import MyPageRouter from "./MyPageRouter";
 import OAuth2Redirect from "../pages/Auth/OAuth2Redirect/OAuth2Redirect";
 import LessonRouter from "./LessonRouter";
 import ArtistRouter from "./ArtistRouter";
+import MailVerifyResult from "../pages/Auth/MailVerifyResult/MailVerifyResult";
+import NotFound from "../pages/NotFound/NotFound";
 
 function MainRouter() {
   return (
@@ -19,6 +21,8 @@ function MainRouter() {
         <Route path="/artists/*" element={<ArtistRouter />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/mail/verify-result" element={<MailVerifyResult />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

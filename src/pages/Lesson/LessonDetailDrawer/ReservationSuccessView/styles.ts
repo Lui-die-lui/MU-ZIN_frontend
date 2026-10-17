@@ -1,37 +1,60 @@
 import { css } from "@emotion/react";
-import { baseBtn } from "../RequestReservationView/styles";
 
-export const section = css`
+export const wrap = css`
   display: grid;
-  gap: 12px;
-  margin-top: 20px;
-`;
-
-export const successBox = css`
-  border: 1px solid #eee;
-  border-radius: 14px;
-  background: #fff;
-  padding: 18px 14px;
-  display: grid;
-  gap: 10px;
+  justify-items: center;
+  gap: 8px;
+  padding: 28px 4px 8px;
   text-align: center;
 `;
 
-export const successTitle = css`
-  font-size: 18px;
-  font-weight: 900;
+export const check = css`
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ecfdf3;
+  color: #047857;
+  font-size: 26px;
+  font-weight: 800;
 `;
 
-export const successDesc = css`
+export const title = css`
+  margin: 8px 0 0;
+  font-size: 19px;
+  color: #1b1d20;
+`;
+
+export const desc = css`
+  margin: 0;
   font-size: 14px;
-  color: #666;
-  line-height: 1.45;
+  color: #697078;
 `;
 
-export const okBtn = css`
-  ${baseBtn};
-  border: none;
-  background: #111;
-  color: #fff;
-  margin-top: 6px;
+export const summary = css`
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid #e2e5e9;
+  border-radius: 14px;
+  background: #fafafa;
+  font-size: 14px;
+  color: #1b1d20;
+  text-align: left;
+  box-sizing: border-box;
+`;
+
+export const meta = css`
+  font-size: 13px;
+  color: #697078;
+`;
+
+export const note = css`
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #697078;
 `;

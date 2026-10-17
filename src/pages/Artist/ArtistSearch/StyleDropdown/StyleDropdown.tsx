@@ -5,7 +5,6 @@ import {
 } from "../../../../Types/lessonTypes";
 import {
   getLessonStyleTags,
-  getLessonStyleTagsReq,
 } from "../../../../apis/lesson/lessonApis";
 import MultiSelectDropdown from "../../../../components/common/MultiSelectDropdown/MultiSelectDropdown";
 type Props = {

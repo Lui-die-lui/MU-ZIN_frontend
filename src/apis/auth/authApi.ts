@@ -15,7 +15,7 @@ export const getPrincipalReq = () =>
   instance.get<PrincipalResp>("/auth/principal");
 
 // 로그인
-export type SigninResp = ApiRespDto<string | null>;
+export type SigninResp = ApiRespDto<string>;
 export const signinReq = (payload: SigninPayload) =>
   instance.post<SigninResp>("/auth/signin", payload);
 

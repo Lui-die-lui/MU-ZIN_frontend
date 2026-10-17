@@ -9,6 +9,8 @@ export type ArtistSearchReq = {
   region1DepthName?: string;
   region2DepthName?: string;
   region3DepthName?: string;
+  page?: number;
+  size?: number;
 };
 
 export type SearchMainRegionSummary = {
@@ -33,8 +35,7 @@ export type ArtistSearchResp = {
   artistProfileId: number;
   username: string;
   majorName: string;
-  email: string;
-  profileImgUrl: string;
+  profileImgUrl: string | null;
   mainRegion: SearchMainRegionSummary | null;
   serviceRegions: SearchServiceRegionResp[];
   instruments: ArtistInstrumentSummary[];

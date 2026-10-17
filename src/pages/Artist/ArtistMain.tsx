@@ -1,143 +1,138 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useMemo, useState } from "react";
-import * as s from "./styles";
-import ArtistSearch from "./ArtistSearch/ArtistSearch";
-import {
-  DEFAULT_ARTIST_SEARCH_DRAFT,
-  type ArtistSearchDraft,
-} from "../../Types/artistSearchTypes";
-import { useArtistSearch } from "../../hooks/artistSearch/useArtistSearch";
-import ArtistList from "./ArtistList/ArtistList";
+import { useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import type { ArtistSearchDraft } from "../../Types/artistSearchTypes";
+import { INSTRUMENT_CATEGORIES, type InstrumentCategory } from "../../Types/instrumentTypes";
+import { useArtistSearch } from "../../hooks/artistSearch/useArtistSearch";
 import { makeArtistSearchParams } from "../../utils/artistSearchUtils";
+import { getErrorMessage } from "../../utils/errorUtils";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import ArtistSearch from "./ArtistSearch/ArtistSearch";
+import ArtistList from "./ArtistList/ArtistList";
+import * as s from "./styles";
 
 function ArtistMain() {
-  // 뒤로가기 버튼 누를 시 검색 정보 그대로 유지를 위해 사용
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // 현재 지역만 따로 연결하면서 리셋이 안먹음
   const [regionResetKey, setRegionResetKey] = useState(0);
 
-  const searchParamsKey = searchParams.toString();
-
-  // 실제 검색에 반영된 값
-  // applied를 state에 저장하지 않고 URL에서 읽어서 계산 - 진짜 적용된 검색조건 = URL
   const applied: ArtistSearchDraft = useMemo(() => {
+    const category = searchParams.get("instCategory");
+    const validCategory = INSTRUMENT_CATEGORIES.includes(category as InstrumentCategory)
+      ? (category as InstrumentCategory)
+      : "ALL";
+
     return {
       keyword: searchParams.get("keyword") ?? "",
-      instCategory:
-        (searchParams.get(
-          "instCategory",
-        ) as ArtistSearchDraft["instCategory"]) ?? "ALL",
-      // URL에서 꺼내면 string이라 타입 맞춰줘야함
-      styleTagIds: searchParams
-        .getAll("styleTagIds")
-        .map(Number)
-        // Number 필터링 하는데 숫자가 아닌 값이 오면 안되기 때문에
-        // 숫자로 변환 가능한 값만 계산
-        .filter((id) => !Number.isNaN(id)),
-      instIds: searchParams
-        .getAll("instIds")
-        .map(Number)
-        .filter((id) => !Number.isNaN(id)),
+      instCategory: validCategory,
+      styleTagIds: searchParams.getAll("styleTagIds").map(Number).filter(Number.isFinite),
+      instIds: searchParams.getAll("instIds").map(Number).filter(Number.isFinite),
       region1DepthName: searchParams.get("region1DepthName") ?? "",
       region2DepthName: searchParams.get("region2DepthName") ?? "",
       region3DepthName: searchParams.get("region3DepthName") ?? "",
     };
-    // searchParams 가 바뀔 대만 applied를 계산
-  }, [searchParamsKey]);
+  }, [searchParams]);
 
-  // 사용자가 조작중인 임시 값
-  const [draft, setDraft] = useState<ArtistSearchDraft>(
-    DEFAULT_ARTIST_SEARCH_DRAFT,
-  );
-
-  useEffect(() => {
-    setDraft(applied);
-  }, [applied]);
-
-  // 파라미터가 하나라도 존재하는가
-  // const hasSearched =
-  //   searchParams.has("keyword") ||
-  //   searchParams.has("instCategory") ||
-  //   searchParams.has("styleTagIds") ||
-  //   searchParams.has("instIds");
-
-  // 사용자가 검색 버튼을 눌러 searched=true를 URL에 남겼나
   const hasSearched = searchParams.get("searched") === "true";
-
   const {
-    data: artistList = [],
-    isLoading,
+    data: artistPages,
+    isPending,
     isError,
+    error,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useArtistSearch(applied, hasSearched);
+  const artistList = useMemo(
+    () => artistPages?.pages.flatMap((page) => page) ?? [],
+    [artistPages],
+  );
+  const isInitialLoading = hasSearched && isPending;
+  const loadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) void fetchNextPage();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  const loadMoreRef = useInfiniteScroll({
+    enabled: hasSearched && !!hasNextPage && !isFetchingNextPage && !isError,
+    onLoadMore: loadMore,
+  });
 
-  const handleSearch = () => {
+  const handleSearch = (draft: ArtistSearchDraft) => {
     const query = makeArtistSearchParams(draft);
-    // 검색 조건이 전부 상태값에 의존하고 있어서 URL query string으로 바꿈
-    const params = new URLSearchParams();
-
-    params.set("searched", "true");
-
-    if (query.keyword) {
-      params.set("keyword", draft.keyword.trim());
-    }
-
-    if (query.instCategory) {
-      params.set("instCategory", draft.instCategory);
-    }
-
-    if (query.region1DepthName) {
-      params.set("region1DepthName", draft.region1DepthName);
-    }
-
-    if (query.region2DepthName) {
-      params.set("region2DepthName", draft.region2DepthName);
-    }
-
-    if (query.region3DepthName) {
-      params.set("region3DepthName", draft.region3DepthName);
-    }
-
-    query.styleTagIds?.forEach((id) => {
-      params.append("styleTagIds", String(id));
-    });
-
-    query.instIds?.forEach((id) => {
-      params.append("instIds", String(id));
-    });
-
+    const params = new URLSearchParams({ searched: "true" });
+    if (query.keyword) params.set("keyword", query.keyword);
+    if (query.instCategory) params.set("instCategory", query.instCategory);
+    if (query.region1DepthName) params.set("region1DepthName", query.region1DepthName);
+    if (query.region2DepthName) params.set("region2DepthName", query.region2DepthName);
+    if (query.region3DepthName) params.set("region3DepthName", query.region3DepthName);
+    query.styleTagIds?.forEach((id) => params.append("styleTagIds", String(id)));
+    query.instIds?.forEach((id) => params.append("instIds", String(id)));
     setSearchParams(params);
   };
 
   const handleReset = () => {
     setSearchParams({});
-    setRegionResetKey((prev) => prev + 1);
+    setRegionResetKey((value) => value + 1);
   };
 
-  return (
-    <div css={s.page}>
-      <ArtistSearch
-        draft={draft}
-        onChangeDraft={setDraft}
-        onSearch={handleSearch}
-        onReset={handleReset}
-        resetKey={regionResetKey}
-      />
+  const appliedFilterCount = [
+    applied.keyword,
+    applied.instCategory !== "ALL" ? applied.instCategory : null,
+    applied.instIds.length,
+    applied.styleTagIds.length,
+    applied.region1DepthName,
+  ].filter(Boolean).length;
 
-      <div css={s.resultSection}>
-        {!hasSearched && (
-          <div css={s.message}>검색어 또는 조건을 입력한 뒤 검색해주세요.</div>
+  return (
+    <main css={s.page}>
+      <header css={s.pageHeader}>
+        <span css={s.eyebrow}>ARTIST SEARCH</span>
+        <h1 css={s.pageTitle}>나와 잘 맞는 아티스트 찾기</h1>
+        <p css={s.pageDescription}>전공과 악기, 레슨 스타일과 활동 지역을 기준으로 찾아보세요.</p>
+      </header>
+
+      <ArtistSearch key={searchParams.toString()} initialValue={applied} onSearch={handleSearch}
+        onReset={handleReset} resetKey={regionResetKey} isSearching={isInitialLoading} />
+
+      <section css={s.resultSection} aria-live="polite">
+        {!hasSearched ? (
+          <div css={s.emptyState}>
+            <strong>함께할 아티스트를 찾아보세요.</strong>
+            <span>조건 없이 검색하면 현재 활동 중인 모든 아티스트를 볼 수 있어요.</span>
+          </div>
+        ) : (
+          <>
+            <div css={s.resultHeader}>
+              <div>
+                <span css={s.resultLabel}>검색 결과</span>
+                <h2 css={s.resultTitle}>{isInitialLoading ? "아티스트를 찾고 있어요" : `${artistList.length}명 불러옴`}</h2>
+              </div>
+              {appliedFilterCount > 0 && <span css={s.filterCount}>{appliedFilterCount}개 조건 적용</span>}
+            </div>
+            {isError ? (
+              <div css={s.emptyState}>
+                <strong>{getErrorMessage(error, "검색 중 오류가 발생했어요.")}</strong>
+                <button type="button" css={s.retryButton} onClick={() => refetch()}>다시 시도</button>
+              </div>
+            ) : isInitialLoading && artistList.length === 0 ? (
+              <div css={s.loadingState}>검색 결과를 불러오는 중이에요.</div>
+            ) : (
+              <div css={s.resultBody} aria-busy={isFetchingNextPage}>
+                <ArtistList artists={artistList} />
+                <div ref={loadMoreRef} css={s.loadMore} aria-live="polite">
+                  {isFetchingNextPage
+                    ? "다음 아티스트를 불러오는 중..."
+                    : hasNextPage
+                      ? "스크롤하면 더 불러와요"
+                      : artistList.length > 0
+                        ? "모든 아티스트를 확인했어요."
+                        : null}
+                </div>
+              </div>
+            )}
+          </>
         )}
-        {hasSearched && isLoading && <div css={s.message}>불러오는 중...</div>}
-        {hasSearched && isError && (
-          <div css={s.message}>검색 중 오류가 발생했습니다.</div>
-        )}
-        {hasSearched && !isLoading && !isError && (
-          <ArtistList artists={artistList} />
-        )}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
 

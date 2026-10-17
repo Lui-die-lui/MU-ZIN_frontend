@@ -7,7 +7,8 @@ export type LessonMode = "ONLINE" | "OFFLINE" | "VISIT" | "REQUEST_ONLY";
 export type LessonStatus = "ACTIVE" | "INACTIVE";
 
 // 레슨 타임 슬롯 예약 가능/예약중/불가 상태
-export type TimeSlotStatus = "OPEN" | "BOOKED" | "CLOSED";
+// PENDING = 예약 요청이 들어와 아티스트 응답을 기다리는 시간
+export type TimeSlotStatus = "OPEN" | "PENDING" | "BOOKED" | "CLOSED";
 
 // 드로어 내 컴포넌트(페이지) 전환
 export type Mode = "pick" | "request" | "success";
@@ -57,7 +58,26 @@ export interface LessonSummary extends LessonBase {
   description: string | null;
 }
 
-export type LessonSearchResp = ApiRespDto<LessonSummary[]>;
+export interface LessonSearchItem extends LessonSummary {
+  instId: number;
+  instName: string;
+  instCategory: string;
+  mainRegionSummary: {
+    region1DepthName: string | null;
+    region2DepthName: string | null;
+    region3DepthName: string | null;
+    addressLabel: string | null;
+  } | null;
+}
+
+export const LESSON_MODE_LABEL: Record<LessonMode, string> = {
+  ONLINE: "온라인",
+  OFFLINE: "대면",
+  VISIT: "방문",
+  REQUEST_ONLY: "일정 협의",
+};
+
+export type LessonSearchResp = ApiRespDto<LessonSearchItem[]>;
 
 // 레슨 단일 조회
 // 상세 페이지
@@ -68,6 +88,8 @@ export interface LessonDetail extends LessonBase {
   createDt: string;
   updateDt: string;
   artist: ArtistSummaryResponse;
+  // "시간이 없으면 자동 비공개" 레슨인데 예약 가능한 시간이 없어 검색에서 빠진 상태
+  autoClosed?: boolean;
 }
 
 export type LessonDetailResp = ApiRespDto<LessonDetail>;
@@ -178,6 +200,14 @@ export interface MyLessonDetail {
   updateDt: string;
 
   instId: number;
+  instName: string;
+  // 진행 중인 예약(요청 대기/확정/완료 대기) 수 - 0 보다 크면 핵심 정보 수정·레슨 삭제 불가
+  activeReservationCount: number;
+  deleted: boolean;
+  // 수락/거절을 기다리는 예약 요청 수
+  pendingRequestCount: number;
+  // 앞으로 예약 가능한(OPEN) 시간 수
+  upcomingOpenSlotCount: number;
 }
 
 export type MyLessonDetailResp = ApiRespDto<MyLessonDetail>;

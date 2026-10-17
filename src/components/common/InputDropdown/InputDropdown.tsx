@@ -60,20 +60,6 @@ function InputDropdown<T extends string | number>({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    if (!showDropdown) {
-      setHighlightedIndex(-1);
-      return;
-    }
-
-    if (!canHighlight) {
-      setHighlightedIndex(-1);
-      return;
-    }
-
-    setHighlightedIndex(0);
-  }, [showDropdown, canHighlight, options]);
-
   const highlightedOption = useMemo(() => {
     if (highlightedIndex < 0 || highlightedIndex >= options.length) return null;
     return options[highlightedIndex];
@@ -130,23 +116,32 @@ function InputDropdown<T extends string | number>({
         css={[s.input, error && s.errorText]}
         value={value}
         placeholder={placeholder}
+        aria-label={placeholder}
+        role="combobox"
+        aria-expanded={showDropdown}
+        aria-autocomplete="list"
         disabled={disabled}
         autoComplete="off"
-        onFocus={() => setOpen(true)}
+        onFocus={() => {
+          setOpen(true);
+          setHighlightedIndex(canHighlight ? 0 : -1);
+        }}
         onChange={(e) => {
           onChange(e.target.value);
           setOpen(true);
+          setHighlightedIndex(-1);
         }}
         onBlur={onBlur}
         onKeyDown={handleKeyDown}
       />
+      <span css={s.inputCaret(showDropdown)} aria-hidden="true" />
 
       {helperText ? (
         <p css={error ? s.errorText : s.helperText}>{helperText}</p>
       ) : null}
 
       {showDropdown ? (
-        <div css={s.dropdown}>
+        <div css={s.dropdown} role="listbox">
           {loading ? (
             <div css={s.stateText}>불러오는 중...</div>
           ) : !hasOptions ? (
@@ -156,16 +151,16 @@ function InputDropdown<T extends string | number>({
               <button
                 key={option.value}
                 type="button"
-                css={[
-                  s.optionButton,
-                  index === highlightedIndex && s.optionButtonActive,
-                ]}
+                role="option"
+                aria-selected={index === highlightedIndex}
+                css={s.optionButton(index === highlightedIndex)}
                 onMouseDown={(e) => e.preventDefault()}
                 onMouseEnter={() => setHighlightedIndex(index)}
                 onClick={() => handleSelect(option)}
               >
                 <span css={s.optionLabel}>{option.label}</span>
-                {option.subLabel ? (
+                {/* 보조 문구가 이름과 같으면 중복이라 숨김 (예: 강원특별자치도 / 강원특별자치도) */}
+                {option.subLabel && option.subLabel !== option.label ? (
                   <span css={s.optionSubLabel}>{option.subLabel}</span>
                 ) : null}
               </button>

@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 
 // 모달 뒤 명도 낮아지게 오버레이
 export const Overlay = styled.div`

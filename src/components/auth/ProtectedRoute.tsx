@@ -1,27 +1,20 @@
 import type React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { usePrincipalState } from "../../stores/usePrincipalState";
-import { useEffect, useState } from "react";
 
+// 로그인 복구(App의 bootstrap)가 끝난 뒤 판단. 여기서 다시 bootstrap 하지 않음
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const loc = useLocation();
-  const { isAuthenticated, bootstrap } = usePrincipalState();
-  const [ready, setReady] = useState(false);
+  const hydrated = usePrincipalState((s) => s.hydrated);
+  const isAuthenticated = usePrincipalState((s) => s.isAuthenticated);
 
-  useEffect(() => {
-    (async () => {
-      await bootstrap(); // 토큰 존재 시 principal 복구 시도
-      setReady(true);
-    })();
-  }, []); // 의존성 배열 없이 마운트 1회만
-
-  if (!ready) return <div style={{ padding: 16 }}>로딩중...</div>;
+  if (!hydrated) return <div style={{ padding: 16 }}>로딩중...</div>;
 
   if (!isAuthenticated) {
     return <Navigate to="/signin" replace state={{ from: loc }} />;
   }
 
- return <>{children}</>;
+  return <>{children}</>;
 }
 
 export default ProtectedRoute;

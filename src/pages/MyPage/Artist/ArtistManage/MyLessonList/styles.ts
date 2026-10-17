@@ -1,197 +1,238 @@
-// src/pages/myPage/lessons/styles.ts
-import { css } from "@emotion/react";
-import type { LessonStatus } from "../../../../../Types/lessonTypes";
-// 리스트
+import { css, keyframes } from "@emotion/react";
+
 export const list = css`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 `;
 
-export const skeleton = css`
-  height: 96px;
-  border-radius: 14px;
-  background: #f3f3f3;
+const shimmer = keyframes`
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
 `;
 
+export const skeleton = css`
+  height: 132px;
+  border-radius: 18px;
+  background: linear-gradient(90deg, #f3f4f6 0%, #f9fafb 50%, #f3f4f6 100%);
+  background-size: 800px 100%;
+  animation: ${shimmer} 1.2s linear infinite;
+`;
+
+// 빈 목록 / 검색 결과 없음 / 오류
 export const empty = css`
-  border: 1px dashed #ddd;
-  border-radius: 14px;
-  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 20px;
+  border: 1px dashed #d1d5db;
+  border-radius: 18px;
   background: #fafafa;
+  text-align: center;
 `;
 
 export const emptyTitle = css`
-  font-weight: 700;
-  margin-bottom: 6px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
 `;
 
-// 카드 관련
-export const card = css`
-  text-align: left;
-  border: 1px solid #eee;
-  background: #fff;
-  border-radius: 14px;
-  padding: 14px;
+export const emptyDesc = css`
+  margin: 0;
+  font-size: 14px;
+  color: #6b7280;
+`;
+
+export const emptyBtn = (primary: boolean) => css`
+  margin-top: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid ${primary ? "#111827" : "#d1d5db"};
+  background: ${primary ? "#111827" : "#fff"};
+  color: ${primary ? "#fff" : "#111827"};
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
   cursor: pointer;
+`;
+
+export const card = (busy: boolean) => css`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 22px;
+  border: 1px solid #e8e8e8;
+  border-radius: 18px;
+  background: #fff;
+  cursor: pointer;
+  opacity: ${busy ? 0.7 : 1};
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
   &:hover {
-    border-color: #ddd;
+    border-color: #d1d5db;
+    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #111827;
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 600px) {
+    padding: 16px;
   }
 `;
 
 export const cardTop = css`
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 `;
 
-export const cardTitleRow = css`
+export const titleBlock = css`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+`;
+
+export const titleRow = css`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
 `;
 
 export const cardTitle = css`
-  font-size: 15px;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #111827;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 `;
 
-
-export const cardMeta = css`
-  font-size: 13px;
-  opacity: 0.8;
-  display: flex;
-  gap: 6px;
-`;
-
-export const tagRow = css`
-  margin-top: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-`;
-
-export const tagChip = css`
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: #f4f4f4;
-`;
-
-export const tagMore = css`
-  font-size: 12px;
-  opacity: 0.7;
-  padding: 4px 6px;
-`;
-
-// 오른쪽 섹션
-export const rightActions = css`
+export const statusChip = (active: boolean) => css`
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-`;
-
-// 토글 버튼
-export const toggleBtn = (status: LessonStatus) => css` 
-// lesson status에 따라 변하기 때문에 lesson.status 받아줘야함
-  height: 28px;
-  padding: 0 10px;
+  height: 22px;
+  padding: 0 8px;
   border-radius: 999px;
-
+  background: ${active ? "#ecfdf3" : "#f3f4f6"};
+  color: ${active ? "#047857" : "#6b7280"};
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: -0.2px;
-
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: rgba(255, 255, 255, 0.9);
-  color: rgba(0, 0, 0, 0.82);
-
-  cursor: pointer;
-  transition:
-    transform 120ms ease,
-    background-color 120ms ease,
-    border-color 120ms ease,
-    opacity 120ms ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 1);
-    border-color: rgba(0, 0, 0, 0.12);
-  }
-
-  &:active {
-    transform: translateY(0px);
-    opacity: 0.9;
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-    transform: none;
-  }
-
-  /* 상태에 따라 살짝 톤만 */
-  ${status === "ACTIVE"
-    ? css`
-        /* "비활성화" 액션: 살짝 경고 톤 */
-        background: rgba(255, 240, 240, 0.9);
-        border-color: rgba(255, 80, 80, 0.22);
-        color: rgba(200, 40, 40, 0.9);
-
-        &:hover {
-          background: rgba(255, 240, 240, 1);
-          border-color: rgba(255, 80, 80, 0.28);
-        }
-      `
-    : css`
-        /* "활성화" 액션: 살짝 긍정 톤 */
-        background: rgba(240, 250, 244, 0.9);
-        border-color: rgba(30, 160, 90, 0.22);
-        color: rgba(20, 120, 70, 0.92);
-
-        &:hover {
-          background: rgba(240, 250, 244, 1);
-          border-color: rgba(30, 160, 90, 0.28);
-        }
-      `}
 `;
 
+export const cardMeta = css`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #4b5563;
 
+  /* 구분점을 앞 항목 뒤에 붙여서 줄바꿈될 때 점이 줄 맨 앞에 오지 않게 */
+  span {
+    white-space: nowrap;
+  }
 
+  span:not(:last-child)::after {
+    content: "·";
+    margin-left: 6px;
+    color: #d1d5db;
+  }
+`;
 
-export const rightControls = css`
+// 공개 스위치
+export const switchWrap = css`
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-
-  /* ✅ 우측 영역 폭 고정: 리스트 줄맞춤 */
-  flex: 0 0 150px;
-`;
-
-export const badge = (active: boolean) => css`
-  min-width: 62px; /* ✅ "비활성" 때문에 폭 고정 */
-  padding: 6px 10px;
+  gap: 8px;
+  padding: 4px 4px 4px 10px;
   border-radius: 999px;
+  cursor: default;
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: -0.2px;
-
-  background: ${active ? "#E7F9EF" : "#FFEAEA"};
-  color: ${active ? "#1F7A4A" : "#B42318"};
-  border: 1px solid ${active ? "#A7E3C0" : "#FDA29B"};
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+  }
 `;
 
+export const cardBottom = css`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+`;
 
-// 스위치 + 배지 묶음(이 래퍼에 stopPropagation 걸면 깔끔)
-export const statusControl = css`
+export const infoRow = css`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+`;
+
+type Tone = "neutral" | "good" | "warn" | "alert" | "info";
+const TONES: Record<Tone, { bg: string; color: string }> = {
+  neutral: { bg: "#f3f4f6", color: "#4b5563" },
+  good: { bg: "#ecfdf3", color: "#047857" },
+  warn: { bg: "#fffbeb", color: "#b45309" },
+  alert: { bg: "#fff7ed", color: "#c2410c" },
+  info: { bg: "#eff6ff", color: "#1d4ed8" },
+};
+
+export const infoChip = (tone: Tone) => css`
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  height: 26px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: ${TONES[tone].bg};
+  color: ${TONES[tone].color};
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+`;
+
+export const chipButton = css`
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const manageBtn = css`
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  color: #111827;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    border-color: #111827;
+  }
 `;

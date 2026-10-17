@@ -3,7 +3,7 @@ import { type InstrumentCategory } from "../../Types/instrumentTypes";
 import type {
   LessonDetail,
   LessonMode,
-  LessonSummary,
+  LessonSearchItem,
 } from "../../Types/lessonTypes";
 import type { ApiRespDto } from "../../Types/responseType";
 import type { TimePart, Weekday } from "../../Types/searchForTimeTypes";
@@ -15,17 +15,22 @@ export type LessonSearchParams = {
   styleTagIds?: number[];
   instIds?: number[];
   instCategory?: InstrumentCategory;
+  region1DepthName?: string;
+  region2DepthName?: string;
+  region3DepthName?: string;
   from?: string;
   to?: string;
 
   daysOfWeek?: Weekday[]; // 1~ 7(월~일)
   timeParts?: TimePart[];
+  page?: number;
+  size?: number;
 };
 
 
 export const searchLessonReq = async (
   params: LessonSearchParams,
-): Promise<ApiRespDto<LessonSummary[]>> => {
+): Promise<ApiRespDto<LessonSearchItem[]>> => {
   const normalizedParams: LessonSearchParams = {
     ...params,
     keyword: params.keyword?.trim() || undefined,

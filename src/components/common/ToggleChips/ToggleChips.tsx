@@ -27,6 +27,7 @@ function ToggleChips<T extends string | number>({
           <button
             key={String(v)}
             type="button"
+            aria-pressed={active}
             css={s.chip(active)}
             onClick={() => onToggle(v)}
             disabled={itemDisabled}

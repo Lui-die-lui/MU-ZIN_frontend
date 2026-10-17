@@ -2,22 +2,25 @@ import { create } from "zustand";
 import type { Principal } from "../Types/auth";
 import { queryClient } from "../configs/queryClient";
 import { getPrincipalReq, signinReq } from "../apis/auth/authApi";
-import { hydrate } from "@fullcalendar/core/preact.js";
+import { ApiError } from "../utils/errorUtils";
 
 type PrincipalStore = {
   principal: Principal | null;
   isAuthenticated: boolean;
-  hydrated: boolean;
+  hydrated: boolean; // 앱 시작 시 로그인 복구 시도가 끝났는지
 
   setPrincipal: (p: Principal | null) => void;
 
   updatePrincipal: (patch: Partial<Principal>) => void;
 
-  signin: (email: string, password: string) => Promise<void>; // 이거 왜 이렇게 되는거임?
+  signin: (email: string, password: string) => Promise<void>;
   bootstrap: () => Promise<void>; // 앱 시작시 principal 상태 관리
 
-  logout: (redirectTo?: string) => void;
+  logout: () => void;
 };
+
+// 진행 중인 bootstrap 공유 (여러 곳에서 동시에 불러도 요청은 1번)
+let bootstrapPromise: Promise<void> | null = null;
 
 export const usePrincipalState = create<PrincipalStore>((set) => ({
   principal: null,
@@ -38,69 +41,51 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
       };
     }),
 
-  // principal 재조회(앱 시작, 인증 또는 어디서나)
-  // refreshPrincipal: async () => {
-
+  // 실패 시 ApiError(백엔드 메시지)를 그대로 던짐
   signin: async (email, password) => {
-    // 1. 로그인 요청 -> ApiRespDto<string|null>
+    // 1. 로그인 요청 -> ApiRespDto<string>
     const signinRes = await signinReq({ email, password });
-    const { status, message, data: accessToken } = signinRes.data;
-
-    if (status !== "success" || !accessToken) {
-      // 백엔드에서 떨어지는 메시지
-      throw new Error(message);
-    }
+    const accessToken = signinRes.data.data;
 
     // 2. 토큰 저장
     localStorage.setItem("accessToken", accessToken);
 
-    // 3. Principal 조회 -> ApiRespDto<Principal>
-    const PrincipalRes = await getPrincipalReq();
-    const {
-      status: pStatus,
-      message: pMsg,
-      data: principal,
-    } = PrincipalRes.data;
-
-    if (pStatus !== "success") {
-      // 토큰은 저장됐지만 principal이 실패하면 ux가 이상해짐 - 로그인 상태인데 로그인이 안됐다던가
-      localStorage.removeItem("accessToken");
-      throw new Error(pMsg);
-    }
-
-    // 4. 전역 상태 세팅
-    set({ principal, isAuthenticated: true, hydrated: true });
-  },
-
-  bootstrap: async () => {
-    // 앱 시작/새로고침 시 토큰 있으면 principal 복구
-    const token = localStorage.getItem("accessToken");
-    if (!token) {
-      set({
-        principal: null,
-        isAuthenticated: false,
-        hydrated: true,
-      });
-      return;
-    }
-
+    // 3. Principal 조회 -> 실패하면 토큰도 지워서 "로그인됐는데 정보 없음" 상태를 막음
     try {
       const principalRes = await getPrincipalReq();
-      const { status, data: principal } = principalRes.data;
+      set({ principal: principalRes.data.data, isAuthenticated: true, hydrated: true });
+    } catch (e) {
+      localStorage.removeItem("accessToken");
+      throw e;
+    }
+  },
 
-      if (status !== "success") {
-        localStorage.removeItem("accessToken");
+  bootstrap: () => {
+    if (bootstrapPromise) return bootstrapPromise;
+
+    bootstrapPromise = (async () => {
+      // 앱 시작/새로고침 시 토큰 있으면 principal 복구
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
         set({ principal: null, isAuthenticated: false, hydrated: true });
         return;
       }
 
-      // 성공시 principal 객체 / 인증 상태 true로 세팅해줌
-      set({ principal, isAuthenticated: true, hydrated: true });
-    } catch {
-      // 네트워크/401 등
-      localStorage.removeItem("accessToken");
-      set({ principal: null, isAuthenticated: false, hydrated: true });
-    }
+      try {
+        const principalRes = await getPrincipalReq();
+        set({ principal: principalRes.data.data, isAuthenticated: true, hydrated: true });
+      } catch (e) {
+        // 토큰이 무효(401/정지)일 때만 지움. 서버가 잠깐 꺼진 경우엔 토큰을 남겨서 새로고침하면 복구되게
+        if (e instanceof ApiError && (e.httpStatus === 401 || e.httpStatus === 403)) {
+          localStorage.removeItem("accessToken");
+        }
+        set({ principal: null, isAuthenticated: false, hydrated: true });
+      }
+    })().finally(() => {
+      bootstrapPromise = null;
+    });
+
+    return bootstrapPromise;
   },
 
   logout: () => {

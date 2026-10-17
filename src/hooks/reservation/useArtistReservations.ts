@@ -1,4 +1,3 @@
-import { body } from "./../../pages/Lesson/LessonDetailDrawer/styles";
 import {
   cancelByArtistReq,
   completeReservationByArtistReq,
@@ -12,6 +11,7 @@ import type {
   ArtistReservationListFilter,
 } from "../../Types/reservationType";
 import { reservationKeys } from "./reservationKeys";
+import { invalidateReservationRelated } from "./invalidateReservationRelated";
 import { getArtistReservationListReq } from "../../apis/reservation/reservationApis";
 import { buildArtistReservationParams } from "../../utils/filters/buildArtistReservationParams";
 
@@ -52,6 +52,7 @@ export function useConfirmReservation() {
   return useMutation({
     mutationFn: (reservationId: number) => confirmReservationReq(reservationId),
     onSuccess: (_res, reservationId) => {
+      invalidateReservationRelated(qc);
       // qc.invalidateQueries({ queryKey: reservationKeys.artistList(status) }); // 리스트 내 상태 변경
       qc.invalidateQueries({
         queryKey: reservationKeys.artistDetail(reservationId),
@@ -67,6 +68,7 @@ export function useRejectReservation() {
   return useMutation({
     mutationFn: (reservationId: number) => rejectReservationReq(reservationId),
     onSuccess: (_res, reservationId) => {
+      invalidateReservationRelated(qc);
       qc.invalidateQueries({ queryKey: reservationKeys.artist() });
       qc.invalidateQueries({
         queryKey: reservationKeys.artistDetail(reservationId),
@@ -92,6 +94,7 @@ export function useCancelByArtistReservation() {
     },
 
     onSuccess: (_res, vars) => {
+      invalidateReservationRelated(qc);
       qc.invalidateQueries({ queryKey: reservationKeys.artist() });
       qc.invalidateQueries({
         queryKey: reservationKeys.artistDetail(vars.reservationId),
@@ -118,6 +121,7 @@ export const useCompleteReservationByArtist = () => {
     },
 
     onSuccess: () => {
+      invalidateReservationRelated(qc);
       qc.invalidateQueries({
         queryKey: reservationKeys.artist(),
       });

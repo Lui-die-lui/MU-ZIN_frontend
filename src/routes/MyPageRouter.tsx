@@ -58,9 +58,31 @@ function MyPageRouter() {
           <Route index element={<ArtistPage />} />
           <Route path="apply" element={<ArtistApplyPage />} />
           <Route path="pending" element={<ArtistPendingPage />} />
-          <Route path="manage" element={<ArtistManagePage />} />
-          <Route path="manage/:lessonId" element={<EditLessonPage />} />
-          <Route path="new" element={<CreateLessonPage />} />
+          {/* 레슨 관리 - 승인된 아티스트만 (아니면 상태별 분기 페이지로) */}
+          <Route
+            path="manage"
+            element={
+              <ApprovdeArtistGuard redirectTo="/mypage/artist">
+                <ArtistManagePage />
+              </ApprovdeArtistGuard>
+            }
+          />
+          <Route
+            path="manage/:lessonId"
+            element={
+              <ApprovdeArtistGuard redirectTo="/mypage/artist">
+                <EditLessonPage />
+              </ApprovdeArtistGuard>
+            }
+          />
+          <Route
+            path="new"
+            element={
+              <ApprovdeArtistGuard redirectTo="/mypage/artist">
+                <CreateLessonPage />
+              </ApprovdeArtistGuard>
+            }
+          />
         </Route>
       </Route>
     </Routes>

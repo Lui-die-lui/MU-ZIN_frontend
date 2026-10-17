@@ -27,6 +27,9 @@ function StatusBadge({ status, onClick, disabled }: Props) {
     );
   }
 
+  // 누를 곳이 없으면 표시용 라벨 (예전엔 항상 버튼이라 카드 안에서 눌러야 할 것처럼 보였음)
+  if (!onClick) return <span css={s.badge(meta.tone)}>{meta.label}</span>;
+
   return (
     <button
       type="button"

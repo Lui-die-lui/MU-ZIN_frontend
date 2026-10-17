@@ -6,6 +6,12 @@ export const wrap = css`
   gap: 20px;
   flex-wrap: wrap;
   width: 100%;
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
 `;
 
 export const row = css`
@@ -14,6 +20,11 @@ export const row = css`
   gap: 10px;
   flex-wrap: wrap;
   min-width: fit-content;
+
+  @media (max-width: 720px) {
+    align-items: flex-start;
+    min-width: 0;
+  }
 `;
 export const label = css`
   font-weight: 700;

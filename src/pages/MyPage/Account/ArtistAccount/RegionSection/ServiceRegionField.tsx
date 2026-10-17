@@ -1,110 +1,102 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
+import { useState } from "react";
 import { useArtistApplyFormStore } from "../../../../../stores/useArtistApplyFormStore";
 import SelectedChips from "../../../../../components/common/SelectedChips/SelectedChips";
 import { useRegionSelector } from "../../../../../hooks/region/useRegionSelector";
 import InputDropdown from "../../../../../components/common/InputDropdown/InputDropdown";
 
+const MAX_REGIONS = 5; // 서버도 같은 제한
+
+type Region = { region1DepthName: string; region2DepthName: string | null; region3DepthName: string | null };
+
+const regionKey = (r: Region) => [r.region1DepthName, r.region2DepthName ?? "", r.region3DepthName ?? ""].join("|");
+const regionLabel = (r: Region) => [r.region1DepthName, r.region2DepthName, r.region3DepthName].filter(Boolean).join(" ");
+
 type Props = {
   disabled?: boolean;
+  onEdit?: () => void;
+  hideHeader?: boolean; // 바깥에서 제목을 보여줄 때 (아티스트 프로필 행)
 };
 
-function ServiceRegionField({ disabled = false }: Props) {
+// 서비스 가능 지역 (방문/출장 레슨 가능 지역) - 아티스트 프로필 / 아티스트 신청 화면 공용
+function ServiceRegionField({ disabled = false, onEdit, hideHeader = false }: Props) {
   const serviceRegions = useArtistApplyFormStore((s) => s.serviceRegions);
   const setField = useArtistApplyFormStore((s) => s.setField);
+  // 예전엔 alert 창으로 안내 -> 칸 아래 문구로
+  const [notice, setNotice] = useState<string | null>(null);
 
   const {
     sidoInput,
     sigunguInput,
     emdInput,
-
     selectedSido,
     selectedSigungu,
-
     sidoOptions,
     sigunguOptions,
     emdOptions,
-
     isSidoLoading,
     isSigunguLoading,
     isEmdLoading,
-
     sidoError,
     sigunguError,
     emdError,
-
     handleChangeSido,
     handleChangeSigungu,
     handleChangeEmd,
-
     handleSelectSido,
     handleSelectSigungu,
     handleSelectEmd,
-
     validateSido,
     validateSigungu,
     validateEmd,
     validateAll,
-
     buildRegionItem,
     resetInputs,
   } = useRegionSelector();
 
+  const full = serviceRegions.length >= MAX_REGIONS;
+
   const handleAddRegion = () => {
     if (disabled) return;
-
-    const isValid = validateAll();
-    if (!isValid) return;
-
+    setNotice(null);
+    if (full) {
+      setNotice(`서비스 지역은 최대 ${MAX_REGIONS}개까지 등록할 수 있어요.`);
+      return;
+    }
+    if (!validateAll()) return;
     const nextItem = buildRegionItem();
     if (!nextItem) return;
 
-    if (serviceRegions.length >= 5) {
-      alert("최대 5개까지 지정 가능합니다.");
+    if (serviceRegions.some((r) => regionKey(r) === regionKey(nextItem))) {
+      setNotice(`'${regionLabel(nextItem)}'은(는) 이미 추가된 지역이에요.`);
       return;
     }
-
-    const isDuplicate = serviceRegions.some(
-      (region) =>
-        region.region1DepthName === nextItem.region1DepthName &&
-        (region.region2DepthName ?? null) ===
-          (nextItem.region2DepthName ?? null) &&
-        (region.region3DepthName ?? null) ===
-          (nextItem.region3DepthName ?? null),
-    );
-    if (isDuplicate) {
-      alert("이미 추가된 지역입니다.");
-      return;
-    }
-
     setField("serviceRegions", [...serviceRegions, nextItem]);
     resetInputs();
+    onEdit?.();
   };
 
-  const handleRemoveRegion = (target: {
-    region1DepthName: string;
-    region2DepthName: string | null;
-    region3DepthName: string | null;
-  }) => {
+  const handleRemoveRegion = (target: Region) => {
     if (disabled) return;
-
-    const next = serviceRegions.filter(
-      (region) =>
-        !(
-          region.region1DepthName === target.region1DepthName &&
-          (region.region2DepthName ?? null) ===
-            (target.region2DepthName ?? null) &&
-          (region.region3DepthName ?? null) ===
-            (target.region3DepthName ?? null)
-        ),
-    );
-
-    setField("serviceRegions", next);
+    setNotice(null);
+    setField("serviceRegions", serviceRegions.filter((r) => regionKey(r) !== regionKey(target)));
+    onEdit?.();
   };
 
   return (
     <div css={s.section}>
-      <h4>서비스 가능 지역</h4>
+      {!hideHeader && (
+        <div css={s.sectionHeader}>
+          <h4 css={s.title}>
+            서비스 가능 지역
+            <span css={s.countBadge}>
+              {serviceRegions.length}/{MAX_REGIONS}
+            </span>
+          </h4>
+          <p css={s.desc}>방문·출장 레슨이 가능한 지역이에요. 시/도만 골라도 되고, 동까지 좁혀도 돼요.</p>
+        </div>
+      )}
 
       <div css={s.regionInputRow}>
         <div css={s.fieldItem}>
@@ -113,7 +105,7 @@ function ServiceRegionField({ disabled = false }: Props) {
             options={sidoOptions}
             placeholder="시/도"
             loading={isSidoLoading}
-            disabled={disabled}
+            disabled={disabled || full}
             error={!!sidoError}
             helperText={sidoError}
             onChange={handleChangeSido}
@@ -121,14 +113,13 @@ function ServiceRegionField({ disabled = false }: Props) {
             onBlur={validateSido}
           />
         </div>
-
         <div css={s.fieldItem}>
           <InputDropdown
             value={sigunguInput}
             options={sigunguOptions}
-            placeholder="시/군/구"
+            placeholder="시/군/구 (선택)"
             loading={isSigunguLoading}
-            disabled={disabled || !selectedSido}
+            disabled={disabled || full || !selectedSido}
             error={!!sigunguError}
             helperText={sigunguError}
             onChange={handleChangeSigungu}
@@ -136,14 +127,13 @@ function ServiceRegionField({ disabled = false }: Props) {
             onBlur={validateSigungu}
           />
         </div>
-
         <div css={s.fieldItem}>
           <InputDropdown
             value={emdInput}
             options={emdOptions}
-            placeholder="읍/면/동"
+            placeholder="읍/면/동 (선택)"
             loading={isEmdLoading}
-            disabled={disabled || !selectedSigungu}
+            disabled={disabled || full || !selectedSigungu}
             error={!!emdError}
             helperText={emdError}
             onChange={handleChangeEmd}
@@ -151,46 +141,32 @@ function ServiceRegionField({ disabled = false }: Props) {
             onBlur={validateEmd}
           />
         </div>
-
-        <button
-          type="button"
-          css={s.addButton}
-          disabled={disabled}
-          onClick={handleAddRegion}
-        >
-          지역 추가
+        <button type="button" css={s.addButton} disabled={disabled || full} onClick={handleAddRegion}>
+          추가
         </button>
       </div>
 
-      {serviceRegions.length === 0 ? (
-        <p css={s.emptyText}>선택된 서비스 지역이 없습니다.</p>
-      ) : (
-        <SelectedChips
-          items={serviceRegions}
-          getKey={(region) =>
-            [
-              region.region1DepthName,
-              region.region2DepthName,
-              region.region3DepthName,
-            ]
-              .filter(Boolean)
-              .join("-")
-          }
-          getLabel={(region) =>
-            [
-              region.region1DepthName,
-              region.region2DepthName,
-              region.region3DepthName,
-            ]
-              .filter(Boolean)
-              .join(" ")
-          }
-          onRemove={handleRemoveRegion}
-          title="클릭 시 삭제"
-        />
+      {notice && (
+        <p css={s.noticeText} role="status">
+          {notice}
+        </p>
       )}
+      {full && !notice && <p css={s.hintText}>최대 {MAX_REGIONS}개를 모두 채웠어요. 바꾸려면 기존 지역을 먼저 빼주세요.</p>}
 
-      <p css={s.countText}>{serviceRegions.length}/5</p>
+      {serviceRegions.length === 0 ? (
+        <p css={s.emptyText}>아직 등록한 지역이 없어요.</p>
+      ) : (
+        <div css={s.chipArea}>
+          <SelectedChips
+            items={serviceRegions}
+            disabled={disabled}
+            getKey={regionKey}
+            getLabel={regionLabel}
+            onRemove={handleRemoveRegion}
+            title="눌러서 빼기"
+          />
+        </div>
+      )}
     </div>
   );
 }

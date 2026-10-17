@@ -5,6 +5,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { ReservationTab } from "../../Types/reservationType";
 import { reservationKeys } from "./reservationKeys";
+import { invalidateReservationRelated } from "./invalidateReservationRelated";
 import { getMyReservationListReq } from "../../apis/reservation/reservationApis";
 
 export function useMyReservationList(tab: ReservationTab) {
@@ -36,6 +37,7 @@ export function useCancelMyReservation() {
       return res.data;
     },
     onSuccess: () => {
+      invalidateReservationRelated(qc);
       qc.invalidateQueries({ queryKey: reservationKeys.me() });
     },
   });

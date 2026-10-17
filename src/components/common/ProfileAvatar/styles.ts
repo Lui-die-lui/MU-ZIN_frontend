@@ -15,12 +15,14 @@ export const img = css`
   display: block;
 `;
 
-export const fallback = css`
+// 사진이 없을 때 이름 첫 글자 (예전 배경은 흰 화면에서 거의 안 보여서 빈 칸처럼 보였음)
+export const fallback = (size: number) => css`
   width: 100%;
   height: 100%;
   display: grid;
   place-items: center;
+  background: #eef0f2;
+  color: #4c5157;
+  font-size: ${Math.max(12, Math.round(size * 0.4))}px;
   font-weight: 700;
-  /* 배경/색은 너 프로젝트 톤에 맞게 */
-  background: rgba(255, 255, 255, 0.08);
 `;

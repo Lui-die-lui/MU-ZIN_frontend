@@ -22,13 +22,14 @@ function SigninForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsloading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  // 소셜 로그인 실패 사유가 넘어왔으면 처음부터 보여줌
+  const [errorMsg, setErrorMsg] = useState<string | null>(state?.oauthError ?? null);
 
-    useEffect(() => {
+  useEffect(() => {
     if (isAuthenticated) {
       navigate(fromPath, { replace: true });
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate, fromPath]);
 
   // 제출
   const onSubmit = async () => {

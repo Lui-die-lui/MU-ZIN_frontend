@@ -1,220 +1,153 @@
-// from/to + 요일 + start/end + interval로 여러개 startDts를 미리 계산해서 추가
-// 미리보기 개수 보여주기, 추가 누르면 onAdd
-
+/** @jsxImportSource @emotion/react */
+// 기간 + 요일 + 하루 운영 시간 + 쉬는 시간으로 여러 시간을 미리 계산해서 한 번에 추가
 import { useMemo, useState } from "react";
 import {
   addDaysYmd,
+  formatSlotLabel,
   generateRecurrenceStartDts,
   MAX_DAYS_AHEAD,
+  MAX_SLOTS_PER_SAVE,
   todayYmd,
 } from "../../../../../../utils/timeSlotUtils";
 import { getErrorMessage } from "../../../../../../utils/errorUtils";
+import * as s from "./slotStyles";
 
 type Props = {
-  durationMin: number; // createLesson에서 온 값
+  durationMin: number; // 폼에 입력된 수업 시간
   onAddMany: (dts: string[]) => void;
+  checkConflict?: (dt: string) => string | null;
 };
 
+// 월요일부터 (화면 표시 순서) - 값은 Date.getDay() 기준 인덱스
+const DOW_ORDER = [1, 2, 3, 4, 5, 6, 0];
 const DOW_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
+const PREVIEW_LIMIT = 12;
 
-function RecurrenceTimeSlotInput({ durationMin, onAddMany }: Props) {
+function RecurrenceTimeSlotInput({ durationMin, onAddMany, checkConflict }: Props) {
   const today = todayYmd();
-  // 오늘 날짜 + 최대 90일까지 생성
   const maxTo = useMemo(() => addDaysYmd(today, MAX_DAYS_AHEAD), [today]);
 
   const [fromYmd, setFromYmd] = useState(today);
-  const [toYmd, setToYmd] = useState(maxTo);
-
-  const [daysOfWeek, setDaysOfWeek] = useState<boolean[]>([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
+  const [toYmd, setToYmd] = useState(addDaysYmd(today, 27)); // 기본 4주
+  const [daysOfWeek, setDaysOfWeek] = useState<boolean[]>(Array(7).fill(false));
   const [startTime, setStartTime] = useState("10:00");
   const [endTime, setEndTime] = useState("18:00");
-  const [intervalMin, setIntervalMin] = useState(90);
+  const [breakMin, setBreakMin] = useState("0");
+  const [added, setAdded] = useState<string | null>(null);
 
-  // lessonForm에서 입력된 진행 시간
   const durationOk = Number.isFinite(durationMin) && durationMin > 0;
+  const anyDay = daysOfWeek.some(Boolean);
 
-  // 미리보기 - 계산된 startDts
+  // 미리보기: 생성될 시간 + 겹쳐서 제외될 시간
   const preview = useMemo(() => {
-    if (!durationOk) {
-      return {
-        dts: [] as string[],
-        error: "수업 시간(분)을 먼저 입력해주세요.",
-      };
-    }
+    if (!durationOk) return { dts: [] as string[], excluded: 0, error: "기본 정보에서 수업 시간을 먼저 입력해주세요." };
+    if (!anyDay) return { dts: [] as string[], excluded: 0, error: "" };
     try {
-      const dts = generateRecurrenceStartDts({
-        fromYmd,
-        toYmd,
-        daysOfWeek,
-        startTime,
-        endTime,
-        intervalMin,
+      const all = generateRecurrenceStartDts({
+        fromYmd, toYmd, daysOfWeek, startTime, endTime,
+        intervalMin: Number(breakMin) || 0,
         durationMin,
       });
-      return { dts, error: "" };
+      const dts = checkConflict ? all.filter((dt) => !checkConflict(dt)) : all;
+      return { dts, excluded: all.length - dts.length, error: "" };
     } catch (e: unknown) {
-      return { dts: [] as string[], error: getErrorMessage(e) };
+      return { dts: [] as string[], excluded: 0, error: getErrorMessage(e) };
     }
-  }, [
-    durationOk,
-    fromYmd,
-    toYmd,
-    daysOfWeek,
-    startTime,
-    endTime,
-    intervalMin,
-    durationMin,
-  ]);
-
-  // 미리보기 계산이 실패했는지(throw) 사용자에게 보여줄 메시지
+  }, [durationOk, anyDay, fromYmd, toYmd, daysOfWeek, startTime, endTime, breakMin, durationMin, checkConflict]);
 
   const toggleDow = (idx: number) => {
+    setAdded(null);
     setDaysOfWeek((prev) => prev.map((v, i) => (i === idx ? !v : v)));
   };
 
-//   const handleAdd = () => {
-//     if (!durationOk) return;
-//     if (preview.dts.length === 0) {
-//       alert(preview.error || "생성할 슬롯이 없습니다.");
-//       return;
-//     }
-//   };
-const handleAdd = () => {
-  if (!durationOk) return;
-  if (preview.dts.length === 0) {
-    alert(preview.error || "생성할 슬롯이 없습니다.");
-    return;
-  }
-  const normalized = preview.dts.map((s) =>
-    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(s) ? `${s}:00` : s,
-  ); // "YYYY-MM-DDTHH:mm:ss" 로 비교 전송 되어야하는데 아니어서 터졌었음
+  const tooMany = preview.dts.length > MAX_SLOTS_PER_SAVE;
 
-  onAddMany(normalized);
-};
+  const handleAdd = () => {
+    if (preview.dts.length === 0 || tooMany) return;
+    onAddMany(preview.dts);
+    setAdded(`${preview.dts.length}개 시간을 추가했어요. 저장하면 반영돼요.`);
+  };
 
   return (
-    <section style={{ display: "grid", gap: 10 }}>
-      <h4 style={{ margin: 0 }}>반복으로 여러 슬롯 생성</h4>
-
-      {!durationOk && (
-        <p style={{ margin: 0, opacity: 0.7 }}>
-          수업시간(분)을 먼저 입력하면 반복 생성이 활성화 됩니다.
-        </p>
-      )}
-
-      <div style={{ display: "grid", gap: 8 }}>
-        <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={{ width: 70 }}>시작일</span>
-          <input
-            type="date"
-            value={fromYmd}
-            min={today}
-            onChange={(e) => setFromYmd(e.target.value)}
-          />
+    <div style={{ display: "grid", gap: 14 }}>
+      <div css={s.inlineRow}>
+        <label css={s.miniField}>
+          <span css={s.miniLabel}>시작일</span>
+          <input type="date" css={s.control} value={fromYmd} min={today} max={maxTo}
+            onChange={(e) => { setFromYmd(e.target.value); setAdded(null); }} />
         </label>
-
-        <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={{ width: 70 }}>종료일</span>
-          <input
-            type="date"
-            value={toYmd}
-            min={fromYmd}
-            max={maxTo}
-            onChange={(e) => setToYmd(e.target.value)}
-          />
-          <span style={{ opacity: 0.7, fontSize: 12 }}>
-            (최대 {MAX_DAYS_AHEAD}일)
-          </span>
+        <label css={s.miniField}>
+          <span css={s.miniLabel}>종료일 (최대 {MAX_DAYS_AHEAD}일 이내)</span>
+          <input type="date" css={s.control} value={toYmd} min={fromYmd} max={maxTo}
+            onChange={(e) => { setToYmd(e.target.value); setAdded(null); }} />
         </label>
+      </div>
 
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {DOW_LABELS.map((label, idx) => (
-            <button
-              key={label}
-              type="button"
-              onClick={() => toggleDow(idx)}
-              style={{
-                padding: "6px 10px",
-                borderRadius: 999,
-                border: "1px solid #444",
-                opacity: daysOfWeek[idx] ? 1 : 0.4,
-              }}
-            >
-              {label}
+      <div css={s.miniField}>
+        <span css={s.miniLabel}>요일</span>
+        <div css={s.dowGroup} role="group" aria-label="반복 요일">
+          {DOW_ORDER.map((idx) => (
+            <button key={idx} type="button" css={s.dowChip(daysOfWeek[idx])} aria-pressed={daysOfWeek[idx]} onClick={() => toggleDow(idx)}>
+              {DOW_LABELS[idx]}
             </button>
           ))}
         </div>
-
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <span>전체 수업 시작 시간</span>
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-            />
-          </label>
-
-          <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <span>전체 수업 종료 시간</span>
-            <input
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-            />
-          </label>
-
-          <label style={{ display: "flex", gap: 8, alignItems: "center" }}>
-            <span>수업 사이 간격(분)</span>
-            <input
-              type="number"
-              min={1}
-              value={intervalMin}
-              onChange={(e) => setIntervalMin(Number(e.target.value) || 0)}
-              style={{ width: 90 }}
-            />
-          </label>
-        </div>
       </div>
 
-      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-        <div style={{ opacity: 0.8 }}>
-          미리보기: <b>{preview.dts.length}</b> 개
-        </div>
+      <div css={s.inlineRow}>
+        <label css={s.miniField}>
+          <span css={s.miniLabel}>하루 운영 시작</span>
+          <input type="time" css={s.control} value={startTime} step={600}
+            onChange={(e) => { setStartTime(e.target.value); setAdded(null); }} />
+        </label>
+        <label css={s.miniField}>
+          <span css={s.miniLabel}>하루 운영 종료</span>
+          <input type="time" css={s.control} value={endTime} step={600}
+            onChange={(e) => { setEndTime(e.target.value); setAdded(null); }} />
+        </label>
+        <label css={s.miniField}>
+          <span css={s.miniLabel}>수업 사이 쉬는 시간 (분)</span>
+          <input css={s.control} inputMode="numeric" value={breakMin} style={{ width: 120 }}
+            onChange={(e) => { setBreakMin(e.target.value.replace(/[^\d]/g, "").slice(0, 3)); setAdded(null); }} />
+        </label>
+      </div>
 
-        <button
-          type="button"
-          onClick={handleAdd}
-          disabled={!durationOk || preview.dts.length === 0}
-        >
-          추가
-        </button>
+      {durationOk && anyDay && !preview.error && (
+        <p css={s.message("info")}>
+          {startTime}부터 {durationMin}분 수업{Number(breakMin) > 0 ? ` + ${breakMin}분 휴식` : ""}으로 {endTime} 전까지 이어서 만들어요.
+        </p>
+      )}
 
-        {preview.error && (
-          <span style={{ color: "#ff6b6b", fontSize: 12 }}>
-            {preview.error}
-          </span>
+      {/* 미리보기 */}
+      <div css={s.previewBox}>
+        {preview.error ? (
+          <p css={s.message("error")}>{preview.error}</p>
+        ) : !anyDay ? (
+          <p css={s.message("info")}>반복할 요일을 선택하면 만들어질 시간을 미리 보여드려요.</p>
+        ) : (
+          <>
+            <p css={s.message("info")}>
+              <b>{preview.dts.length}개</b> 시간이 만들어져요.
+              {preview.excluded > 0 && <span css={s.message("warn")}> 이미 있거나 겹치는 {preview.excluded}개는 제외했어요.</span>}
+              {tooMany && <span css={s.message("error")}> 한 번에 {MAX_SLOTS_PER_SAVE}개까지 추가할 수 있어요. 기간이나 요일을 줄여주세요.</span>}
+            </p>
+            {preview.dts.length > 0 && (
+              <ul css={s.previewList}>
+                {preview.dts.slice(0, PREVIEW_LIMIT).map((dt) => <li key={dt} css={s.previewChip}>{formatSlotLabel(dt)}</li>)}
+                {preview.dts.length > PREVIEW_LIMIT && <li css={s.previewChip}>외 {preview.dts.length - PREVIEW_LIMIT}개</li>}
+              </ul>
+            )}
+          </>
         )}
       </div>
 
-      {/* (선택) 너무 많으면 10개만 보여주는 미리보기 */}
-      {preview.dts.length > 0 && (
-        <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.85 }}>
-          {preview.dts.slice(0, 10).map((dt) => (
-            <li key={dt}>{dt}</li>
-          ))}
-          {preview.dts.length > 10 && <li>... (총 {preview.dts.length}개)</li>}
-        </ul>
-      )}
-    </section>
+      <div css={s.inlineRow}>
+        <button type="button" css={s.btn("primary")} onClick={handleAdd} disabled={preview.dts.length === 0 || tooMany}>
+          {preview.dts.length > 0 ? `${preview.dts.length}개 시간 추가` : "추가"}
+        </button>
+        {added && <p css={s.message("info")}>{added}</p>}
+      </div>
+    </div>
   );
 }
 

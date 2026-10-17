@@ -4,11 +4,12 @@ export const wrap = css`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  text-align: left;
 `;
 
 export const label = css`
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   color: #111827;
 `;
 
@@ -19,50 +20,78 @@ export const helperText = css`
 `;
 
 export const optionGroup = css`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const optionCard = css`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 14px 16px;
-  border: 1px solid #d7dfe7;
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  column-gap: 12px;
+  row-gap: 4px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid #e2e5e9;
   border-radius: 14px;
-  background-color: #ffffff;
+  background-color: #fff;
   cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 
   &:hover {
-    border-color: #9fb3c8;
-    background-color: #fafcff;
+    border-color: #9ca3af;
+  }
+
+  /* 키보드로 이동했을 때 */
+  &:focus-within {
+    outline: 3px solid rgba(17, 24, 39, 0.1);
   }
 `;
 
 export const optionCardSelected = css`
-  border-color: #4f7cff;
-  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.12);
-  background-color: #f8fbff;
+  border-color: #111827;
+  background-color: #f9fafb;
 `;
 
+export const optionCardDisabled = css`
+  cursor: not-allowed;
+  opacity: 0.6;
+`;
+
+// 화면에선 숨기되 키보드·스크린리더로는 선택 가능
 export const hiddenRadio = css`
-  display: none;
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+`;
+
+// 라디오 동그라미
+export const dot = (selected: boolean) => css`
+  grid-row: 1 / span 2;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: ${selected ? "5px solid #111827" : "1.5px solid #9ca3af"};
+  background: #fff;
 `;
 
 export const optionTitle = css`
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: #111827;
 `;
 
 export const optionDescription = css`
   font-size: 13px;
   color: #6b7280;
-  line-height: 1.45;
+  line-height: 1.5;
 `;

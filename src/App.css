@@ -9,3 +9,9 @@ html,body {
   margin: 0;
   padding: 0;
 }
+
+/* 페이지마다 내용 길이가 달라 세로 스크롤바가 생겼다 사라지면 화면 폭이 바뀌어
+   가운데 정렬된 화면 전체가 좌우로 덜그럭거림 -> 스크롤바 자리를 항상 확보 */
+html {
+  scrollbar-gutter: stable;
+}

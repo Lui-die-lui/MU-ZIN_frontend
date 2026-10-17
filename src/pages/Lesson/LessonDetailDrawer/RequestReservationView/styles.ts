@@ -1,78 +1,125 @@
 import { css } from "@emotion/react";
 
-export const section = css`
+const border = "#e2e5e9";
+const text = "#1b1d20";
+const muted = "#697078";
+
+export const wrap = css`
   display: grid;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 18px;
 `;
 
-export const requestBox = css`
-  border: 1px solid #eee;
+export const summaryCard = css`
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid ${border};
   border-radius: 14px;
-  background: #fff;
-  padding: 14px;
-  display: grid;
-  gap: 12px;
+  background: #fafafa;
 `;
 
-export const requestTitle = css`
-  font-weight: 800;
+export const summaryLabel = css`
+  font-size: 12px;
+  font-weight: 700;
+  color: ${muted};
+`;
+
+export const summaryTitle = css`
+  font-size: 16px;
+  color: ${text};
+  word-break: keep-all;
+`;
+
+export const summaryWhen = css`
+  margin-top: 4px;
   font-size: 15px;
+  font-weight: 700;
+  color: ${text};
 `;
 
-export const requestSub = css`
+export const summaryMeta = css`
   font-size: 13px;
-  color: #666;
+  color: ${muted};
+`;
+
+export const field = css`
+  display: grid;
+  gap: 8px;
+`;
+
+export const labelRow = css`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+`;
+
+export const label = css`
+  font-size: 14px;
+  font-weight: 700;
+  color: ${text};
+`;
+
+export const optional = css`
+  font-weight: 500;
+  color: ${muted};
+`;
+
+export const counter = css`
+  font-size: 12px;
+  color: #9aa0a6;
 `;
 
 export const textarea = css`
   width: 100%;
-  border: 1px solid #ddd;
-  border-radius: 12px;
   padding: 12px;
+  border: 1px solid ${border};
+  border-radius: 12px;
+  background: #fff;
+  color: ${text};
+  font: inherit;
   font-size: 14px;
-  line-height: 1.4;
-  resize: none;
-  outline: none;
+  line-height: 1.6;
+  box-sizing: border-box;
+  resize: vertical;
+
+  &::placeholder {
+    color: #9aa0a6;
+  }
 
   &:focus {
-    border-color: #bbb;
+    outline: none;
+    border-color: ${text};
   }
 `;
 
-export const errorText = css`
-  color: #d32f2f;
-  font-size: 13px;
-`;
-
-export const requestBtnRow = css`
+export const errorBox = css`
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 10px;
-`;
-
-export const baseBtn = css`
-  height: 44px;
+  gap: 6px;
+  justify-items: start;
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
   border-radius: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+  line-height: 1.5;
+`;
+
+export const linkBtn = css`
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #991b1b;
+  font: inherit;
   font-weight: 700;
+  text-decoration: underline;
   cursor: pointer;
-
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
 `;
 
-export const backBtn = css`
-  ${baseBtn};
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #111;
-`;
-
-export const submitBtn = css`
-  ${baseBtn};
-  border: none;
-  background: #111;
-  color: #fff;
+export const notes = css`
+  margin: 0;
+  padding-left: 18px;
+  color: ${muted};
+  font-size: 13px;
+  line-height: 1.7;
 `;

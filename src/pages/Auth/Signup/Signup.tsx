@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import * as s from "./styles";
 import { useNavigate } from "react-router-dom";
 import type { SignupErrors, SignupPayload } from "../../../Types/auth";
 import { useState } from "react";
 import SignupForm from "./SignupForm/SignupForm";
 import { signupReq } from "../../../apis/auth/authApi";
-import axios from "axios";
+import { toApiError } from "../../../utils/errorUtils";
+import { toast } from "../../../stores/useToastStore";
 
 function Signup() {
   const [form, setForm] = useState<SignupPayload>({
@@ -18,10 +18,10 @@ function Signup() {
 
   const [errors, setErrors] = useState<SignupErrors>({});
 
-  const [emailTaken, setEmailTaken] = useState(false);
 
   // 정규식: 기본 이메일 형식, 비밀번호는 영문/숫자/특수문자 포함 8~15자
-  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  // + 별칭(name+tag@...)과 4자 넘는 도메인(.design 등)도 허용 (백엔드 @Email 과 맞춤)
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const pwRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
 
   const validate = (f: SignupPayload): SignupErrors => {
@@ -45,7 +45,6 @@ function Signup() {
 
   const onChange = (name: keyof SignupPayload, value: string) => {
     setForm((prev) => ({ ...prev, [name]: value }));
-    if (name === "email") setEmailTaken(false);
   };
 
   const onSubmit = async () => {
@@ -56,19 +55,24 @@ function Signup() {
 
     try {
       await signupReq(form);
+      toast.success("회원가입이 완료되었습니다. 로그인해주세요.");
       navigate("/signin", { replace: true });
     } catch (e) {
-      if (axios.isAxiosError(e)) {
-        if (e.response?.status === 409) {
-          setEmailTaken(true);
-          setErrors((prev) => ({
-            ...prev,
-            email: "이미 사용중인 이메일입니다.",
-          }));
-          return;
-        }
-        setErrors((prev) => ({ ...prev, email: "회원가입에 실패했습니다." }));
+      const err = toApiError(e);
+
+      // 이메일 중복 (소셜 가입 이메일이면 어떤 소셜인지 백엔드 메시지에 포함)
+      if (err.code === "EMAIL_ALREADY_REGISTERED") {
+        setErrors((prev) => ({ ...prev, email: err.message }));
+        return;
       }
+
+      // 서버 검증 실패 -> 필드별 메시지
+      if (err.fieldErrors) {
+        setErrors((prev) => ({ ...prev, ...err.fieldErrors }));
+        return;
+      }
+
+      setErrors((prev) => ({ ...prev, email: err.message || "회원가입에 실패했습니다." }));
     }
   };
   return (

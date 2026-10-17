@@ -1,5 +1,5 @@
 import type { EventInput } from "@fullcalendar/core";
-import type { ArtistReservationSummaryResp, CalendarReservationItem } from "../Types/reservationType";
+import type { CalendarReservationItem } from "../Types/reservationType";
 import { RESERVATION_STATUS_META } from "../pages/MyPage/Reservations/ReservationCard/StatusBadge/badgeUi";
 import { toneVars } from "../pages/MyPage/Reservations/ReservationCard/StatusBadge/styles";
 // reservation DTO -> FullCalendar event 변환

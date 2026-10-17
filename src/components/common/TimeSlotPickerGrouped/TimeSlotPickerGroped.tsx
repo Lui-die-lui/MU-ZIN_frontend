@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import type { SlotItem } from "../../../Types/searchForTimeTypes";
 import * as s from "./styles";
 import { groupByMonthDay, toTimeLabel } from "../../../utils/groupByMonthDayUtils";
-import ToggleChips from "../ToggleChips/ToggleChips";
 
 type Props = {
   slots: SlotItem[];
@@ -15,6 +14,12 @@ type Props = {
   emptyText?: string;
 };
 
+const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+const weekday = (ym: string, day: string) =>
+  WEEKDAYS[new Date(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)) - 1, Number(day)).getDay()];
+
+// 예약 가능한 시간을 월 > 일 로 묶어서 시간 버튼으로 보여줌 (레슨 상세 창 전용)
+// 예전엔 검색 필터용 둥근 칩(ToggleChips)을 같이 써서 크기가 들쭉날쭉했음 -> 같은 크기의 시간 버튼으로
 function TimeSlotPickerGrouped({
   slots,
   selectedId,
@@ -22,53 +27,51 @@ function TimeSlotPickerGrouped({
   isDisabled,
   emptyText = "조건에 맞는 타임슬롯이 없어요.",
 }: Props) {
-  const disabledFn =
-    isDisabled ?? ((s) => s.state === "BOOKED" || s.active === false);
+  const disabledFn = isDisabled ?? ((x) => x.state === "BOOKED" || x.active === false);
 
-  // slotItem[]을 월/일로 그룹핑
-  const grouped = useMemo(
-    () => groupByMonthDay(slots, (s) => s.startDt),
-    [slots],
-  );
+  const grouped = useMemo(() => groupByMonthDay(slots, (x) => x.startDt), [slots]);
 
   if (slots.length === 0) {
     return <p css={s.emptyText}>{emptyText}</p>;
   }
 
-  // dt -> slot 매핑
   return (
     <div css={s.wrap}>
       {Object.entries(grouped).map(([ym, days]) => (
-        <section key={ym} css={s.monthCard}>
+        <section key={ym} css={s.month}>
           <div css={s.monthTitle}>
-            {ym.slice(0, 4)}년 {ym.slice(5, 7)}월
+            {ym.slice(0, 4)}년 {Number(ym.slice(5, 7))}월
           </div>
 
-          <div css={s.dayGrid}>
-            {Object.entries(days).map(([day, daySlots]) => {
-              // ToggleChips는 string|number만 받으니까 옵션을 id로 넘김
-              const optionIds = daySlots.map((x) => x.timeSlotId);
-
-              // id -> SlotItem lookup (label/disabled용)
-              const idToSlot = new Map(daySlots.map((x) => [x.timeSlotId, x] as const));
-
-              return (
-                <div key={`${ym}-${day}`} css={s.dayRow}>
-                  <div css={s.dayLabel}>{Number(day)}일</div>
-
-                  <ToggleChips
-                    options={optionIds}
-                    selected={selectedId == null ? [] : [selectedId]} // 단일을 배열로 표현
-                    getLabel={(id) => toTimeLabel(idToSlot.get(id)!.startDt)}
-                    isDisabled={(id) => disabledFn(idToSlot.get(id)!)}
-                    onToggle={(id) => {
-                      // 단일 토글: 같으면 해제, 다르면 교체
-                      onChangeSelectedId(selectedId === id ? null : id);
-                    }}
-                  />
+          <div css={s.dayList}>
+            {Object.entries(days).map(([day, daySlots]) => (
+              <div key={`${ym}-${day}`} css={s.dayRow}>
+                <div css={s.dayLabel}>
+                  <strong>{Number(day)}일</strong>
+                  <span>{weekday(ym, day)}요일</span>
                 </div>
-              );
-            })}
+
+                <div css={s.timeGrid}>
+                  {daySlots.map((slot) => {
+                    const active = selectedId === slot.timeSlotId;
+                    const disabled = disabledFn(slot);
+                    return (
+                      <button
+                        key={slot.timeSlotId}
+                        type="button"
+                        css={s.timeBtn(active)}
+                        aria-pressed={active}
+                        disabled={disabled}
+                        // 같은 시간을 다시 누르면 선택 해제
+                        onClick={() => onChangeSelectedId(active ? null : slot.timeSlotId)}
+                      >
+                        {toTimeLabel(slot.startDt)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       ))}

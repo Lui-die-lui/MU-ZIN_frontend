@@ -4,6 +4,8 @@ import * as s from "./styles";
 import CommonModal from "../../../../../../components/common/CommonModal/CommonModal";
 import { usePrincipalState } from "../../../../../../stores/usePrincipalState";
 import { useNavigate } from "react-router-dom";
+import { getErrorMessage } from "../../../../../../utils/errorUtils";
+import { toast } from "../../../../../../stores/useToastStore";
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -27,11 +29,11 @@ function ChangePasswordModal({ open, onClose, onSubmit }: Props) {
   // 모달 닫힐 때 초기화
   useEffect(() => {
     if (!open) {
-      setCurrentPassword(""),
-        setNewPassword(""),
-        setConfirm(""),
-        setError(""),
-        setIsLoading(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirm("");
+      setError("");
+      setIsLoading(false);
     }
   }, [open]);
 
@@ -59,11 +61,12 @@ function ChangePasswordModal({ open, onClose, onSubmit }: Props) {
       await onSubmit({ currentPassword, newPassword });
       onClose();
 
-      alert("비밀번호가 변경되었습니다. 다시 로그인 해주세요.");
+      toast.success("비밀번호가 변경되었습니다. 다시 로그인 해주세요.");
       logout();
       navigate("/signin");
     } catch (e) {
-      setError("변경 실패");
+      // 현재 비밀번호 불일치 등 백엔드 메시지 표시
+      setError(getErrorMessage(e, "비밀번호 변경에 실패했습니다."));
     } finally {
       setIsLoading(false);
     }
