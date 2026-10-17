@@ -1,5 +1,4 @@
 import {
-  LESSON_CLOSING_POLICY_LABEL,
   type LessonCreateReq,
   type LessonCreateResp,
   type LessonDetail,
@@ -24,7 +23,6 @@ export const createMyTimeSlotsReq = (
   body: TimeSlotCreateReq,
 ) =>
   instance.post<ApiRespDto<null>>(`/lessons/me/${lessonId}/time-slots`, body);
-  closingPolicy: Object.keys(LESSON_CLOSING_POLICY_LABEL)
 
 // 내 레슨 수정
 export const updateMyLessonReq = (lessonId: number, body: LessonUpdateReq) =>
@@ -36,7 +34,7 @@ export const deleteLessonReq = (lessonId: number) =>
 
 // 내 레슨 리스트
 export const getMyLessonsReq = () =>
-  instance.get<ApiRespDto<LessonDetail[]>>("/lessons/me");
+  instance.get<ApiRespDto<MyLessonDetail[]>>("/lessons/me");
 
 // 내 레슨 상세 (단일 조회)
 export const getMyLessonDetailReq = (lessonId: number) =>

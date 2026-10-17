@@ -1,6 +1,4 @@
-import { Avatar } from "./styles";
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 
 // 프로필 카드 전체 섹션
 export const Card = styled.section`

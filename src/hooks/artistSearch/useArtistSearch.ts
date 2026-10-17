@@ -2,7 +2,7 @@ import {
   getArtistLessonCardReq,
   getArtistLessonDetailReq,
 } from "./../../apis/artist/artistApi";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import type { ArtistSearchDraft } from "../../Types/artistSearchTypes";
 import { makeArtistSearchParams } from "../../utils/artistSearchUtils";
 import { artistKeys } from "./artistKeys";
@@ -16,10 +16,15 @@ export const useArtistSearch = (
   enabled: boolean,
 ) => {
   const params = makeArtistSearchParams(applied);
+  const pageSize = 12;
 
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: artistKeys.search(params),
-    queryFn: () => searchArtistsReq(params),
+    queryFn: ({ pageParam }) =>
+      searchArtistsReq({ ...params, page: pageParam, size: pageSize }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _pages, lastPageParam) =>
+      lastPage.length === pageSize ? lastPageParam + 1 : undefined,
     enabled,
   });
 };

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLessonForm } from "../../../../../hooks/Lesson/useLessonForm";
 import { useStartDts } from "../../../../../hooks/Lesson/useStartDts";
@@ -15,6 +15,8 @@ import type {
 import TimeSlotSelectedList from "../common/TimeSlots/TimeSlotSelectedList/TimeSlotSelectedList";
 import TimeSlotCreatePanel from "../common/TimeSlots/TimeSlotCreatePanel/TimeSlotCreatePanel";
 import ClosingPolicyRadio from "../common/ClosingPolicyRadio/ClosingPolicyRadio";
+import { toast } from "../../../../../stores/useToastStore";
+import { MAX_SLOTS_PER_SAVE } from "../../../../../utils/timeSlotUtils";
 
 // 변환 함수 - form 재사용을 위해서
 const toCreateReq = (v: LessonFormValues): LessonCreateReq => ({
@@ -63,18 +65,24 @@ function CreateLessonPage() {
 
     if (!lessonDraft.instId) return alert("악기를 선택하세요.");
 
+    if (startDts.length > MAX_SLOTS_PER_SAVE)
+      return alert(`시간은 한 번에 ${MAX_SLOTS_PER_SAVE}개까지 추가할 수 있어요.`);
+
     mutate(
       { lesson: toCreateReq(lessonDraft), startDts },
       {
-        onSuccess: () => {
+        onSuccess: ({ warnings }) => {
           reset();
           clear();
+          // 레슨은 만들어졌지만 시간 추가 일부가 실패한 경우 안내 (수정 화면에서 다시 추가 가능)
+          if (warnings.length > 0) {
+            toast.warning(`레슨이 생성되었지만 일부 작업이 실패했어요.\n${warnings.join("\n")}`);
+          } else {
+            toast.success("레슨이 생성되었습니다.");
+          }
           navigate("/mypage/artist/manage");
         },
-        onError: (err: any) => {
-          console.log(err.response?.status);
-          console.log(err.response?.data);
-        },
+        // 레슨 생성 자체의 실패는 전역 토스트가 백엔드 메시지로 표시
       },
     );
   };

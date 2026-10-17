@@ -25,9 +25,8 @@ export function buildArtistReservationParams(
     case "requested":
       status = "REQUESTED";
       break;
-    case "confirmed":
-      status = "CONFIRMED";
-      break;
+    // inProgress(CONFIRMED + COMPLETION_PENDING), canceled(CANCELED/REJECTED/EXPIRED) 처럼
+    // 여러 상태를 묶는 탭은 전체를 받아서 화면에서 필터링
     default:
       status = undefined;
   }

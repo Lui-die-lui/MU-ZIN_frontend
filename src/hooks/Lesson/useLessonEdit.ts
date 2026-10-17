@@ -1,3 +1,4 @@
+import { artistKeys } from "../artistSearch/artistKeys";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createMyTimeSlotsReq,
@@ -10,7 +11,7 @@ import {
 } from "../../apis/lesson/lessonApis";
 import type {
   LessonRecurrenceUpsertReq,
-  LessonSummary,
+  MyLessonDetail,
   LessonUpdateReq,
   TimeSlotCreateReq,
 } from "../../Types/lessonTypes";
@@ -51,6 +52,7 @@ export function useUpdateMyLesson(lessonId: number) {
     mutationFn: (body: LessonUpdateReq) =>
       updateMyLessonReq(lessonId, body).then((resp) => resp.data.data),
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: artistKeys.all }); // 공개 아티스트 화면(레슨 카드/상세)도 최신으로
       qc.invalidateQueries({ queryKey: lessonKeys.myDetail(lessonId) });
       qc.invalidateQueries({ queryKey: lessonKeys.myList() });
     },
@@ -68,8 +70,9 @@ export function useDeleteMyLesson(lessonId: number) {
     },
 
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: artistKeys.all }); // 공개 아티스트 화면(레슨 카드/상세)도 최신으로
       // 목록 갱신
-      qc.invalidateQueries({ queryKey: ["myLessons"] });
+      qc.invalidateQueries({ queryKey: lessonKeys.myList() });
 
       // 해당 레슨 detail 하위 캐시 정리
       qc.removeQueries({
@@ -102,6 +105,7 @@ export function useCreateMyTimeSlots(
     mutationFn: (body: TimeSlotCreateReq) =>
       createMyTimeSlotsReq(lessonId, body).then((resp) => resp.data),
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: artistKeys.all }); // 공개 아티스트 화면(레슨 카드/상세)도 최신으로
       qc.invalidateQueries({
         queryKey: lessonKeys.myTimeSlots(lessonId, from, to),
       });
@@ -124,6 +128,7 @@ export function useToggleMyTimeSlot(
         : openMyTimeSlotsReq(p.timeSlotId);
     },
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: artistKeys.all }); // 공개 아티스트 화면(레슨 카드/상세)도 최신으로
       qc.invalidateQueries({
         queryKey: lessonKeys.myTimeSlots(lessonId, from, to),
       });
@@ -141,6 +146,7 @@ export function useDeleteMyTimeSlot(
   return useMutation({
     mutationFn: (timeSlotId: number) => deleteMyTimeSlotsReq(timeSlotId),
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: artistKeys.all }); // 공개 아티스트 화면(레슨 카드/상세)도 최신으로
       qc.invalidateQueries({
         queryKey: lessonKeys.myTimeSlots(lessonId, from, to),
       });
@@ -173,6 +179,7 @@ export function useUpsertMyRecurrence(
       upsertMyLessonRecurrenceReq(lessonId, body).then((resp) => resp.data),
 
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: artistKeys.all }); // 공개 아티스트 화면(레슨 카드/상세)도 최신으로
       qc.invalidateQueries({ queryKey: lessonKeys.myRecurrence(lessonId) });
       qc.invalidateQueries({
         queryKey: lessonKeys.myTimeSlots(lessonId, from, to),
@@ -195,6 +202,7 @@ export function useToggleMyLessonStatus(
       ),
 
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: artistKeys.all }); // 공개 아티스트 화면(레슨 카드/상세)도 최신으로
       // 내 레슨 디테일/리스트 최신화
       qc.invalidateQueries({ queryKey: lessonKeys.myDetail(lessonId) });
       qc.invalidateQueries({ queryKey: lessonKeys.myList() });
@@ -212,14 +220,15 @@ export function useToggleMyLessonStatus(
   });
 }
 
-// 내 레슨 목록을 가져오는 규칙 고정(any 방지)
-// 캐시에 저장되는 데이터 형태를 LessonSummary로 통일(아니면 any 들어가게 됨)
+// 내 레슨 목록 (정렬/필터는 화면에서 처리 - 서버는 항상 최신순 전체 목록)
+// 수정/삭제/생성 화면이 모두 lessonKeys.myList() 를 갱신하므로 목록도 같은 키를 써야 바로 반영됨
 export function useMyLessonList() {
   return useQuery({
     queryKey: lessonKeys.myList(),
-    queryFn: async (): Promise<LessonSummary[]> => {
+    queryFn: async (): Promise<MyLessonDetail[]> => {
       const resp = await getMyLessonsReq();
       return resp.data.data; // 배열만 캐시 저장
     },
+    staleTime: 10_000,
   });
 }

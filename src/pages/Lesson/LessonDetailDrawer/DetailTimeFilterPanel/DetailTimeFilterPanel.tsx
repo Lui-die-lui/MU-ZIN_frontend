@@ -26,10 +26,7 @@ function DetailTimeFilterPanel({ initial, onApply }: Props) {
     setDraft(initial ?? EMPTY_OPEN_SLOT_FILTER);
   }, [initial]);
 
-  // 입력 초기화
-  const resetDraft = () => setDraft(EMPTY_OPEN_SLOT_FILTER);
-
-  // 전체 초기화
+  // 초기화 = 입력도 비우고 적용된 조건도 해제 (예전엔 "입력 초기화"/"전체 초기화"/"적용" 3개라 차이를 알기 어려웠음)
   const resetAll = () => {
     setDraft(EMPTY_OPEN_SLOT_FILTER);
   onApply(null); // 시간필터 자체 제거
@@ -45,14 +42,11 @@ function DetailTimeFilterPanel({ initial, onApply }: Props) {
       <SearchTimeFilter value={draft} onChange={setDraft} />
 
       <div css={s.btnRow}>
-        <button type="button" css={s.ghostBtn} onClick={resetDraft}>
-          입력 초기화
-        </button>
         <button type="button" css={s.ghostBtn} onClick={resetAll}>
-          전체 초기화
+          초기화
         </button>
-        <button type="button" css={s.ghostBtn} onClick={apply}>
-          적용
+        <button type="button" css={s.solidBtn} onClick={apply}>
+          이 조건으로 보기
         </button>
       </div>
     </div>

@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import InputDropdown from "../../../../components/common/InputDropdown/InputDropdown";
-import type { ArtistSearchDraft } from "../../../../Types/artistSearchTypes";
 import type { Option } from "../../../../Types/commonTypes";
 import * as s from "./styles";
 import { useRegionSelector } from "../../../../hooks/region/useRegionSelector";
@@ -50,8 +49,6 @@ function RegionSearchInput({ value, onChange }: Props) {
     handleSelectSigungu,
     handleSelectEmd,
 
-    clearSido,
-    clearSigungu,
     clearEmd,
   } = useRegionSelector({
     region1DepthName: value.region1DepthName,

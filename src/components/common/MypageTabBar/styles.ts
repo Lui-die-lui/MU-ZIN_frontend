@@ -11,9 +11,19 @@ export const wrap = css`
   border: 1px solid #eee;
   background: #fafafa;
   border-radius: 14px;
+  box-sizing: border-box;
+  /* 좁은 화면: 탭 이름이 한 글자씩 줄바꿈되던 문제 -> 한 줄 유지 + 옆으로 스크롤 */
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const tab = (active: boolean) => css`
+  flex-shrink: 0;
+  white-space: nowrap;
   border: 1px solid ${active ? "#d6e4ff" : "transparent"};
   background: ${active ? "#eef4ff" : "transparent"};
   color: ${active ? "#1e3a8a" : "rgba(0,0,0,0.78)"};

@@ -1,6 +1,7 @@
+import type { Location } from "react-router-dom";
 
-// signin 이후 뒤로가기 했을때 다시 signin 화면이 뜨는 등의 상황을 막기위해 지정
-// ProtectedRoute에서 넘겨준 location 지정
 export type AuthRedirectState = {
-    from?: Location;
-}
+  from?: Location;
+  // 소셜 로그인 실패 사유 (OAuth2Redirect -> 로그인 화면)
+  oauthError?: string;
+};

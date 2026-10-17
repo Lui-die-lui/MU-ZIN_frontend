@@ -79,9 +79,10 @@ function MultiSelectDropdown<T>({
 
   return (
     <div css={s.dropdownRoot} ref={rootRef}>
-      <button type="button" css={s.trigger} onClick={() => setOpen((v) => !v)}>
+      <button type="button" css={s.trigger} onClick={() => setOpen((v) => !v)}
+        aria-expanded={open} aria-haspopup="listbox">
         {selectedCount ? selectedCountLabel(selectedCount) : label}
-        <span css={s.caret(open)}>▾</span>
+        <span css={s.caret(open)} aria-hidden="true" />
       </button>
 
       {open && (
@@ -92,6 +93,7 @@ function MultiSelectDropdown<T>({
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder={searchPlaceholder}
+              aria-label={searchPlaceholder}
             />
             <button type="button" css={s.clearBtn} onClick={clear}>
               전체 해제

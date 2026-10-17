@@ -49,7 +49,7 @@ function SearchTimeFilter({ value, onChange, disabled = false }: Props) {
           from={value.from}
           to={value.to}
           disabled={disabled}
-          onChange={(next) => onChange({ ...value, ...next })}
+          onChange={onChangeDate}
         />
       </div>
 

@@ -1,22 +1,38 @@
 import { css } from "@emotion/react";
 
 export const card = css`
+  width: 100%;
   display: flex;
   gap: 16px;
-  align-items: flex-start;
-  padding: 18px;
-  border: 1px solid #ececec;
-  border-radius: 16px;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #e2e5e9;
+  border-radius: 14px;
   background: #fff;
-`;
+  color: #1b1d20;
+  text-align: left;
+  transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 
-export const image = css`
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #f3f3f3;
-  flex-shrink: 0;
+  &:hover {
+    border-color: #aeb4bc;
+    box-shadow: 0 10px 24px rgba(20, 25, 30, 0.07);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(17, 24, 39, 0.16);
+    outline-offset: 2px;
+  }
+
+  > div:first-of-type {
+    background: #eef0f2;
+    color: #535a62;
+  }
+
+  @media (max-width: 560px) {
+    align-items: flex-start;
+    padding: 16px;
+  }
 `;
 
 export const content = css`
@@ -41,7 +57,7 @@ export const username = css`
 
 export const major = css`
   font-size: 14px;
-  color: #666;
+  color: #697078;
 `;
 
 export const chips = css`
@@ -51,8 +67,23 @@ export const chips = css`
 `;
 
 export const chip = css`
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #f5f5f5;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #f0f1f2;
+  color: #4c5157;
   font-size: 13px;
+`;
+
+export const regions = css`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #767c83;
+  font-size: 12px;
+`;
+
+export const arrow = css`
+  margin-left: auto;
+  color: #6e747b;
+  font-size: 18px;
 `;

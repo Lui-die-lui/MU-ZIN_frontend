@@ -19,9 +19,6 @@ function MyPageLayout() {
   const { data: notifications = [] } = useMyNotifications({
     enabled: canFetchNotifications,
   });
-  console.log("notifications:", notifications);
-  console.log("isArray:", Array.isArray(notifications));
-  console.log("type:", typeof notifications);
 
   const badgeMap = useMemo(() => {
     // 내 예약 알림

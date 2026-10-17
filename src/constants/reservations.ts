@@ -1,5 +1,4 @@
 import type { TabItem } from "../components/common/MypageTabBar/MypageTabBar";
-import { label } from "../pages/MyPage/Account/AccountInfoRow/styles";
 import type { Option, SortOrder } from "../Types/commonTypes";
 import type {
   DateBasis,
@@ -13,7 +12,7 @@ export const ARTIST_TAB_ITEMS: readonly TabItem<ReservationTab>[] = [
   { key: "requested", label: "요청" },
   { key: "inProgress", label: "확정" },
   { key: "completed", label: "완료" },
-  { key: "canceled", label: "취소/거절" },
+  { key: "canceled", label: "취소/거절/만료" },
   { key: "today", label: "오늘" },
   { key: "all", label: "전체" },
 ] as const;
@@ -23,7 +22,7 @@ export const MY_TAB_ITEMS: readonly TabItem<ReservationTab>[] = [
   { key: "requested", label: "요청" },
   { key: "inProgress", label: "확정" },
   { key: "completed", label: "완료" },
-  { key: "canceled", label: "취소/거절" },
+  { key: "canceled", label: "취소/거절/만료" },
   { key: "today", label: "오늘" },
   { key: "all", label: "전체" },
 ] as const;

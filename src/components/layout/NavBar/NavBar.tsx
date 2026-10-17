@@ -2,7 +2,7 @@
 import * as s from "./styles";
 
 import { PiBellSimpleThin } from "react-icons/pi";
-import { IoChevronDown } from "react-icons/io5";
+import { dropdownCaret } from "../../common/dropdownStyles";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
@@ -17,9 +17,28 @@ import {
 import { useMenuAnchor } from "../../../hooks/useMenuAnchor";
 import type { NotificationResponse } from "../../../Types/notificationTypes";
 import Menu from "@mui/material/Menu";
-import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
+
+const formatNotificationTime = (value: string) => {
+  const createdAt = new Date(value);
+  if (Number.isNaN(createdAt.getTime())) return "";
+
+  const diffMinutes = Math.floor(
+    Math.max(0, Date.now() - createdAt.getTime()) / 60_000,
+  );
+  if (diffMinutes < 1) return "방금 전";
+  if (diffMinutes < 60) return `${diffMinutes}분 전`;
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) return `${diffHours}시간 전`;
+
+  const options: Intl.DateTimeFormatOptions =
+    createdAt.getFullYear() === new Date().getFullYear()
+      ? { month: "long", day: "numeric" }
+      : { year: "numeric", month: "long", day: "numeric" };
+  return new Intl.DateTimeFormat("ko-KR", options).format(createdAt);
+};
 
 function NavBar() {
   const navigate = useNavigate();
@@ -81,6 +100,7 @@ function NavBar() {
 
   // 안읽은 알림
   const unread = unreadQ.data ?? 0;
+  const notifications = notiListQ.data ?? [];
 
   // 예약 관리로 일단 보냄
   // 나중에 refType / refId 로 switch 해서 분기 나누기
@@ -130,7 +150,13 @@ function NavBar() {
             {/* <s.Btn onClick={onLogout}>로그아웃</s.Btn> */}
 
             {/* 알림 */}
-            <s.IconBtn onClick={notiMenu.onOpen} aria-label="notifications">
+            <s.IconBtn
+              onClick={notiMenu.onOpen}
+              aria-label={unread > 0 ? `알림, 읽지 않은 알림 ${unread}개` : "알림"}
+              aria-haspopup="menu"
+              aria-expanded={notiMenu.open}
+              data-open={notiMenu.open}
+            >
               <PiBellSimpleThin />
               {unread > 0 && <s.Badge>{unread > 99 ? "99+" : unread}</s.Badge>}
             </s.IconBtn>
@@ -139,48 +165,96 @@ function NavBar() {
               anchorEl={notiMenu.anchorEl}
               open={notiMenu.open}
               onClose={notiMenu.onClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
               slotProps={{
-                paper: { sx: { borderRadius: 2, minWidth: 320 } },
+                paper: {
+                  sx: {
+                    width: "min(380px, calc(100vw - 24px))",
+                    maxHeight: "min(560px, calc(100vh - 80px))",
+                    mt: 0.75,
+                    border: "1px solid #e2e5e9",
+                    borderRadius: "14px",
+                    boxShadow: "0 18px 45px rgba(17, 24, 39, 0.14)",
+                    overflow: "hidden",
+                  },
+                },
+                list: { sx: { p: 0 } },
               }}
             >
               <s.MenuHeader>
-                <span>알림</span>
+                <div>
+                  <strong>알림</strong>
+                  <span>
+                    {unread > 0
+                      ? `읽지 않은 알림 ${unread}개`
+                      : "새 알림이 없습니다"}
+                  </span>
+                </div>
                 <button
                   type="button"
                   onClick={() => markAllReadM.mutate()}
-                  disabled={markAllReadM.isPending}
+                  disabled={unread === 0 || markAllReadM.isPending}
                 >
-                  모두 읽음
+                  {markAllReadM.isPending ? "처리 중" : "모두 읽음"}
                 </button>
               </s.MenuHeader>
-              <Divider />
 
-              {notiListQ.isPending || notiListQ.isFetching ? (
-                <s.MenuEmpty>불러오는 중...</s.MenuEmpty>
-              ) : (notiListQ.data?.length ?? 0) === 0 ? (
-                <s.MenuEmpty>알림이 없습니다.</s.MenuEmpty>
+              {notiListQ.isPending ? (
+                <s.NotificationLoading aria-label="알림을 불러오는 중">
+                  {[0, 1, 2].map((item) => (
+                    <div key={item}>
+                      <span />
+                      <span />
+                    </div>
+                  ))}
+                </s.NotificationLoading>
+              ) : notiListQ.isError ? (
+                <s.MenuEmpty>
+                  <PiBellSimpleThin aria-hidden="true" />
+                  <strong>알림을 불러오지 못했습니다</strong>
+                  <span>잠시 후 다시 시도해 주세요.</span>
+                  <button type="button" onClick={() => notiListQ.refetch()}>
+                    다시 시도
+                  </button>
+                </s.MenuEmpty>
+              ) : notifications.length === 0 ? (
+                <s.MenuEmpty>
+                  <PiBellSimpleThin aria-hidden="true" />
+                  <strong>아직 도착한 알림이 없습니다</strong>
+                  <span>예약 진행 상황을 이곳에서 알려드릴게요.</span>
+                </s.MenuEmpty>
               ) : (
-                notiListQ.data!.slice(0, 8).map((n) => (
-                  <MenuItem key={n.notificationId} onClick={() => goByNoti(n)}>
-                    <s.NotiItem>
-                      <div>
-                        <b>{n.title}</b>
-                        <div>{n.content}</div>
-                      </div>
-                      {!n.isRead && <s.Dot />}
-                    </s.NotiItem>
-                  </MenuItem>
-                ))
+                <s.NotificationList>
+                  {notifications.slice(0, 8).map((n) => (
+                    <s.NotificationButton
+                      key={n.notificationId}
+                      type="button"
+                      onClick={() => goByNoti(n)}
+                      data-unread={!n.isRead}
+                    >
+                      <s.NotificationStatus aria-hidden="true" />
+                      <s.NotiItem>
+                        <s.NotificationMeta>
+                          <strong>{n.title}</strong>
+                          <time dateTime={n.createDt}>
+                            {formatNotificationTime(n.createDt)}
+                          </time>
+                        </s.NotificationMeta>
+                        <p>{n.content}</p>
+                      </s.NotiItem>
+                    </s.NotificationButton>
+                  ))}
+                </s.NotificationList>
               )}
-              <Divider />
-              <MenuItem
-                onClick={() => {
-                  // navigate("/mypage/notifications"); // 아직 안만듦 알림 전체보기
-                  notiMenu.onClose();
-                }}
-              >
-                전체 보기
-              </MenuItem>
+
+              {!notiListQ.isPending &&
+                !notiListQ.isError &&
+                notifications.length > 0 && (
+                  <s.NotificationFooter>
+                    알림을 누르면 관련 일정으로 이동합니다
+                  </s.NotificationFooter>
+                )}
             </Menu>
 
             {/* 프로필 */}
@@ -195,7 +269,7 @@ function NavBar() {
               >
                 {principal?.username?.[0] ?? "U"}
               </Avatar>
-              <IoChevronDown css={s.chevron(profileMenu.open)} />
+              <span css={dropdownCaret(profileMenu.open)} aria-hidden="true" />
             </s.ProfileBtn>
 
             {/* 프로필 드롭다운 메뉴 */}

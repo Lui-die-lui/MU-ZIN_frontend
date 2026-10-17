@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import * as s from "./styles";
 
 import { useArtistApplyFormStore } from "../../../../stores/useArtistApplyFormStore";
 import SelectedChips from "../../../../components/common/SelectedChips/SelectedChips";

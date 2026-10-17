@@ -68,13 +68,15 @@ export const resolveRegionFromCoords = (
       return;
     }
 
-    const geocoder = new kakao.maps.services.Geocoder();
+    // 위에서 존재 확인한 값을 지역 변수로 잡아둬야 콜백 안에서도 타입이 좁혀짐
+    const services = kakao.maps.services;
+    const geocoder = new services.Geocoder();
 
     geocoder.coord2RegionCode(
       longitude,
       latitude,
       (result: KakaoRegionCodeResult[], status: string) => {
-        if (status !== kakao.maps.services.Status.OK || !result?.length) {
+        if (status !== services.Status.OK || !result?.length) {
           reject(new Error("좌표를 지역 정보로 변환하지 못했습니다."));
           return;
         }

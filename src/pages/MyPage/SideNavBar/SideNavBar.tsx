@@ -3,8 +3,7 @@ import * as s from "./styles";
 import type { ArtistStatus } from "../../../Types/auth";
 import { buildMyPageNavItems, type NavItem } from "./navItems";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
-import { item } from "../../Lesson/InstFilterDropdown/styles";
+import { useMemo, useState } from "react";
 
 type Props = {
   artistStatus: ArtistStatus;
@@ -52,16 +51,15 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
     );
   }, [loc.pathname]);
 
-  // 현재 url이 예약관리쪽이면 자동으로 탭 열어둠
-  useEffect(() => {
-    setOpenKeys((prev) => {
-      if (shouldOpenReservations && !prev.includes("reservations")) {
-        return [...prev, "reservations"];
-      }
-      // 강제로 닫거나 열지 않음
-      return prev;
-    });
-  }, [shouldOpenReservations]);
+  // 현재 url이 예약관리쪽으로 바뀌면 자동으로 탭 열어둠 (닫는 건 사용자에게 맡김)
+  // effect 대신 렌더 중에 이전 값과 비교해서 조정 (React 권장 패턴, 렌더 한 번 줄어듦)
+  const [prevShouldOpen, setPrevShouldOpen] = useState(false);
+  if (shouldOpenReservations !== prevShouldOpen) {
+    setPrevShouldOpen(shouldOpenReservations);
+    if (shouldOpenReservations && !openKeys.includes("reservations")) {
+      setOpenKeys([...openKeys, "reservations"]);
+    }
+  }
 
   // 부모 메뉴 클릭 시 열림 / 닫힘
   const toggle = (key: string) => {

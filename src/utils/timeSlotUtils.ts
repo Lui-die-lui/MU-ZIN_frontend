@@ -41,6 +41,8 @@ export function getMinLocalDateTime(minutesAhead = 1) {
 
 // 날짜/문자열 util
 export const MAX_DAYS_AHEAD = 90;
+// 한 번 저장할 때 추가할 수 있는 시간 개수 (서버 MAX_SLOTS_PER_REQUEST 와 동일)
+export const MAX_SLOTS_PER_SAVE = 500;
 
 // 숫자를 2자리 문자열로 맞춤 (1 = 01, 12 = 12)
 // 날짜/시간 문자열 만들때 일관성 때문에
@@ -99,8 +101,8 @@ export function generateRecurrenceStartDts(params: {
     durationMin,
   } = params;
 
-  if (intervalMin <= 0)
-    throw new Error("수업 준비 시간은 1분 이상이어야 합니다.");
+  if (intervalMin < 0)
+    throw new Error("쉬는 시간은 0분 이상이어야 합니다.");
   if (durationMin <= 0) throw new Error("수업 시간은 1분 이상이어야 합니다.");
 
   // 0  = 초기값(initial)이라는 뜻
@@ -125,6 +127,9 @@ export function generateRecurrenceStartDts(params: {
 
   // NaN = Not a Number - 숫자가 아닌 다른 이상한 값이 들어오면 그냥 빈 배열 return
   if (isNaN(from.getTime()) || isNaN(to.getTime())) return [];
+
+  // 오늘 이미 지난 시간은 제외 (포함되면 저장 시 서버가 전체를 거부함)
+  const nowLocal = toLocalDateTimeString(today, `${pad2(new Date().getHours())}:${pad2(new Date().getMinutes())}`);
 
   // 결과로 반환할 startDts 배열
   // "YYYY-MM-DDTHH:mm:ss" 문자열이 담김
@@ -160,7 +165,8 @@ export function generateRecurrenceStartDts(params: {
       // 분으로 계산된 값을 시간 / 분으로 다시 맞춰줌
       const hm = `${pad2(Math.floor(curMin / 60))}:${pad2(curMin % 60)}`;
       // 합쳐서 "YYYY-MM-DDTHH:mm:ss" 로 만들고 결과 배열에 넣음
-      out.push(toLocalDateTimeString(ymd, hm));
+      const startDt = toLocalDateTimeString(ymd, hm);
+      if (startDt > nowLocal) out.push(startDt);
 
       // 진행 시간 + 쉬는시간 = 수업진행 후 쉬는시간까지 합쳐서 timeslot chip을 생성
       const stepMin = durationMin + intervalMin;
@@ -190,4 +196,29 @@ export function toDowMask(daysOfWeek: boolean[]) {
   if (daysOfWeek[6]) mask |= 32;
   if (daysOfWeek[0]) mask |= 64;
   return mask;
+}
+
+// ---------- 레슨 시간 겹침 검사 (서버 TimeSlotPolicy 와 같은 규칙) ----------
+// 한 시간 = 시작 ~ 시작 + 수업시간(분). 두 시간이 조금이라도 겹치면 같은 레슨에 둘 수 없음
+
+const toMinutes = (dt: string) => new Date(dt.slice(0, 16)).getTime() / 60000;
+
+/** 새 시각 dt 가 기존 시각들과 겹치면 겹치는 기존 시각을 반환 (같은 시각 포함), 없으면 null */
+export function findOverlappingStart(dt: string, others: string[], durationMin: number) {
+  const t = toMinutes(dt);
+  return others.find((o) => Math.abs(toMinutes(o) - t) < durationMin) ?? null;
+}
+
+/** "10월 19일 (일) 10:00" 형식 */
+export function formatSlotLabel(dt: string) {
+  const d = new Date(dt.slice(0, 16));
+  const dow = ["일", "월", "화", "수", "목", "금", "토"][d.getDay()];
+  return `${d.getMonth() + 1}월 ${d.getDate()}일 (${dow}) ${dt.slice(11, 16)}`;
+}
+
+/** 시작 시각 + 수업시간 -> "10:00 – 11:00" */
+export function formatSlotRange(dt: string, durationMin: number) {
+  const d = new Date(dt.slice(0, 16));
+  d.setMinutes(d.getMinutes() + durationMin);
+  return `${dt.slice(11, 16)} – ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
 }

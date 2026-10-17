@@ -63,3 +63,13 @@ export const reserveBtn = css`
     cursor: not-allowed;
   }
 `;
+export const linkBtn = css`
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #1b1d20;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+`;

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as s from "./styles";
 
 type AvatarProps = {
@@ -14,27 +14,22 @@ function ProfileAvatar({
   alt = "프로필",
   size = 44,
 }: AvatarProps) {
-  // 이미지 깨졌을 때
-  const [imgError, setImgError] = useState(false);
-
-  // src가 바뀌면 에러 상태 초기화 (다른 사람/다른 이미지로 바뀔 때 중요함)
-  useEffect(() => {
-    setImgError(false);
-  }, [src]);
+  // 깨진 이미지 주소를 기억 -> src가 다른 이미지로 바뀌면 자동으로 다시 시도 (effect로 초기화할 필요 없음)
+  const [erroredSrc, setErroredSrc] = useState<string | null>(null);
 
   const fallbackChar = name?.trim()?.[0]?.toUpperCase() ?? "?"; // 이미지 못찾을 경우?
-  const showImg = !!src && !imgError; // src가 있고 에러가 안났을 때 이미지를 보여줌
+  const showImg = !!src && erroredSrc !== src; // src가 있고 에러가 안났을 때 이미지를 보여줌
   return (
   <div css={s.circle(size)}>
     {showImg ? (
       <img
       src={src!}
       alt={alt}
-      onError={() => setImgError(true)}
+      onError={() => setErroredSrc(src ?? null)}
       css={s.img}
       />
     ):(
-      <div css={s.fallback}>{fallbackChar}</div>
+      <div css={s.fallback(size)}>{fallbackChar}</div>
     )}
   </div>
   );

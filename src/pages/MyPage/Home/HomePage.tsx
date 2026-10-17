@@ -1,4 +1,3 @@
-import React from "react";
 import ProfileHeaderCard from "./ProfileHeaderCard/ProfileHeaderCard";
 import NotificationSummary from "./NotificationSummary/NotificationSummary";
 

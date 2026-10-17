@@ -1,6 +1,8 @@
-import { useMemo, useState } from "react";
+/** @jsxImportSource @emotion/react */
+import { useState } from "react";
 import SingleTimeslotInput from "../SingleTimeslotInput";
 import RecurrenceTimeSlotInput from "../RecurrenceTimeSlotInput";
+import * as s from "../slotStyles";
 
 type Mode = "single" | "recurrence";
 
@@ -8,74 +10,29 @@ type Props = {
   durationMin: number;
   onAdd: (dtLocal: string) => void;
   onAddMany: (dts: string[]) => void;
+  // 추가하려는 시각이 문제면 이유를 반환 (이미 있는 시간, 겹치는 시간 등). 없으면 null
+  checkConflict?: (dt: string) => string | null;
 };
 
-export default function TimeSlotCreatePanel({
-  durationMin,
-  onAdd,
-  onAddMany,
-}: Props) {
+export default function TimeSlotCreatePanel({ durationMin, onAdd, onAddMany, checkConflict }: Props) {
   const [mode, setMode] = useState<Mode>("single");
 
-  const title = useMemo(() => {
-    return mode === "single" ? "단일 타임슬롯 추가" : "반복 일정 타임슬롯 생성";
-    
-  }, [mode]);
-
   return (
-    <section style={{ display: "grid", gap: 12 }}>
-      {/* 헤더 */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <h3 style={{ margin: 0 }}>타임슬롯 추가</h3>
-
-        <div style={{ display: "flex", gap: 6 }}>
-          <button
-            type="button"
-            onClick={() => setMode("single")}
-            style={{
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: "1px solid #444",
-              opacity: mode === "single" ? 1 : 0.5,
-            }}
-          >
-            단일
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode("recurrence") }
-            style={{
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: "1px solid #444",
-              opacity: mode === "recurrence" ? 1 : 0.5,
-            }}
-          >
-            
-            반복
-          </button>
-        </div>
+    <section css={s.panel}>
+      <div css={s.segment} role="tablist" aria-label="시간 추가 방식">
+        <button type="button" role="tab" aria-selected={mode === "single"} css={s.segmentBtn(mode === "single")} onClick={() => setMode("single")}>
+          하루씩 추가
+        </button>
+        <button type="button" role="tab" aria-selected={mode === "recurrence"} css={s.segmentBtn(mode === "recurrence")} onClick={() => setMode("recurrence")}>
+          반복으로 추가
+        </button>
       </div>
 
-      {/* 입력 패널 */}
-      <div
-        style={{
-          padding: 12,
-          border: "1px solid #333",
-          borderRadius: 12,
-        }}
-      >
-        <h4 style={{ margin: 0, marginBottom: 10 }}>{title}</h4>
-
-        {mode === "single" ? (
-          <SingleTimeslotInput onAdd={onAdd} />
-        ) : (
-          <RecurrenceTimeSlotInput
-            durationMin={durationMin}
-            onAddMany={onAddMany}
-          />
-        )}
-      </div>
+      {mode === "single" ? (
+        <SingleTimeslotInput onAdd={onAdd} checkConflict={checkConflict} />
+      ) : (
+        <RecurrenceTimeSlotInput durationMin={durationMin} onAddMany={onAddMany} checkConflict={checkConflict} />
+      )}
     </section>
   );
 }

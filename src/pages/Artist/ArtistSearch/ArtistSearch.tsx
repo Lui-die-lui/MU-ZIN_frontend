@@ -1,110 +1,90 @@
 /** @jsxImportSource @emotion/react */
-import * as s from "./styles";
-import { type ArtistSearchDraft } from "../../../Types/artistSearchTypes";
+import { useState, type FormEvent } from "react";
+import { DEFAULT_ARTIST_SEARCH_DRAFT, type ArtistSearchDraft } from "../../../Types/artistSearchTypes";
 import ArtistSearchInput from "./ArtistSearchInput/ArtistSearchInput";
 import StyleDropdown from "./StyleDropdown/StyleDropdown";
 import InstFilterDropdown from "../../Lesson/InstFilterDropdown/InstFilterDropdown";
 import RegionSearchInput from "./RegionSearchInput/RegionSearchInput";
+import * as s from "./styles";
 
 type Props = {
-  draft: ArtistSearchDraft;
-  onChangeDraft: (
-    updater: (prev: ArtistSearchDraft) => ArtistSearchDraft,
-  ) => void;
-  onSearch: () => void;
+  initialValue: ArtistSearchDraft;
+  onSearch: (draft: ArtistSearchDraft) => void;
   onReset: () => void;
   resetKey: number;
+  isSearching?: boolean;
 };
 
-function ArtistSearch({
-  draft,
-  onChangeDraft,
-  onSearch,
-  onReset,
-  resetKey,
-}: Props) {
+function ArtistSearch({ initialValue, onSearch, onReset, resetKey, isSearching = false }: Props) {
+  const [draft, setDraft] = useState(initialValue);
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    onSearch(draft);
+  };
+
   return (
-    <div css={s.searchSection}>
-      <div css={s.searchBar}>
+    <form css={s.searchSection} onSubmit={submit}>
+      <label css={s.keywordGroup}>
+        <span css={s.fieldLabel}>검색어</span>
         <ArtistSearchInput
           value={draft.keyword}
-          onChangeValue={(value) =>
-            onChangeDraft((prev) => ({
-              ...prev,
-              keyword: value,
-            }))
-          }
-          onEnter={onSearch}
+          onChangeValue={(value) => setDraft((prev) => ({ ...prev, keyword: value }))}
         />
-        <StyleDropdown
-          lessonStyleTagIds={draft.styleTagIds}
-          onChangeStyleTagIds={(ids) =>
-            onChangeDraft((prev) => ({
-              ...prev,
-              styleTagIds: ids,
-            }))
-          }
-        />
+      </label>
 
-        <InstFilterDropdown
-          category={draft.instCategory}
-          onChangeCategory={(value) =>
-            onChangeDraft((prev) => ({
-              ...prev,
-              instCategory: value,
-            }))
-          }
-          instIds={draft.instIds}
-          onChangeInstIds={(ids) =>
-            onChangeDraft((prev) => ({
-              ...prev,
-              instIds: ids,
-            }))
-          }
-          resetOnCategoryChange
-        />
-        <div css={s.searchSection}>
-          <div css={s.regionArea}>
-            <RegionSearchInput
-              key={resetKey}
-              value={{
-                region1DepthName: draft.region1DepthName,
-                region2DepthName: draft.region2DepthName,
-                region3DepthName: draft.region3DepthName,
-              }}
-              onChange={(updater) => {
-                onChangeDraft((prev) => {
-                  const nextRegion =
-                    typeof updater === "function"
-                      ? updater({
-                          region1DepthName: prev.region1DepthName,
-                          region2DepthName: prev.region2DepthName,
-                          region3DepthName: prev.region3DepthName,
-                        })
-                      : updater;
-
-                  return {
-                    ...prev,
-                    region1DepthName: nextRegion.region1DepthName,
-                    region2DepthName: nextRegion.region2DepthName,
-                    region3DepthName: nextRegion.region3DepthName,
-                  };
-                });
-              }}
-            />
-          </div>
-
-          <div css={s.buttonGroup}>
-            <button type="button" css={s.searchButton} onClick={onSearch}>
-              검색
-            </button>
-            <button type="button" css={s.resetButton} onClick={onReset}>
-              초기화
-            </button>
-          </div>
+      <div css={s.filterGrid}>
+        <div css={s.filterGroup}>
+          <span css={s.fieldLabel}>레슨 스타일</span>
+          <StyleDropdown
+            lessonStyleTagIds={draft.styleTagIds}
+            onChangeStyleTagIds={(ids) => setDraft((prev) => ({ ...prev, styleTagIds: ids }))}
+          />
+        </div>
+        <div css={s.instrumentGroup}>
+          <span css={s.fieldLabel}>악기</span>
+          <InstFilterDropdown
+            category={draft.instCategory}
+            onChangeCategory={(value) => setDraft((prev) => ({ ...prev, instCategory: value }))}
+            instIds={draft.instIds}
+            onChangeInstIds={(ids) => setDraft((prev) => ({ ...prev, instIds: ids }))}
+            resetOnCategoryChange
+          />
         </div>
       </div>
-    </div>
+
+      <div css={s.regionGroup}>
+        <span css={s.fieldLabel}>활동 지역</span>
+        <RegionSearchInput
+          key={resetKey}
+          value={{
+            region1DepthName: draft.region1DepthName,
+            region2DepthName: draft.region2DepthName,
+            region3DepthName: draft.region3DepthName,
+          }}
+          onChange={(updater) => {
+            setDraft((prev) => {
+              const current = {
+                region1DepthName: prev.region1DepthName,
+                region2DepthName: prev.region2DepthName,
+                region3DepthName: prev.region3DepthName,
+              };
+              const next = typeof updater === "function" ? updater(current) : updater;
+              return { ...prev, ...next };
+            });
+          }}
+        />
+      </div>
+
+      <div css={s.buttonGroup}>
+        <button type="button" css={s.resetButton} onClick={() => {
+          setDraft(DEFAULT_ARTIST_SEARCH_DRAFT);
+          onReset();
+        }}>초기화</button>
+        <button type="submit" css={s.searchButton} disabled={isSearching}>
+          {isSearching ? "검색 중..." : "아티스트 검색"}
+        </button>
+      </div>
+    </form>
   );
 }
 

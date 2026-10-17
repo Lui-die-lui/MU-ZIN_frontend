@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 
 // 사이드 바
 export const Aside = styled.aside`
+  box-sizing: border-box; /* 모바일에서 width 100% + padding 으로 화면보다 24px 넓어지던 문제 */
   width: 240px;
   min-width: 240px;
   padding: 16px 12px;

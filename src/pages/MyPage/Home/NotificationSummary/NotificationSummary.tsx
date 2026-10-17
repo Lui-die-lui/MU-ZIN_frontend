@@ -76,7 +76,7 @@ function SummaryCards({
         {showMsgDot && <span css={s.dot} />}
         <div css={s.titleRow}>
           <div css={s.title}>메시지</div>
-          <span css={s.pill} as="span" style={{ cursor: "default" }}>
+          <span css={s.pill} style={{ cursor: "default" }}>
             읽지 않음
           </span>
         </div>
@@ -108,7 +108,7 @@ function SummaryCards({
         {showResDot && <span css={s.dot} />}
         <div css={s.titleRow}>
           <div css={s.title}>예약</div>
-          <span css={s.pill} as="span" style={{ cursor: "default" }}>
+          <span css={s.pill} style={{ cursor: "default" }}>
             예정
           </span>
         </div>
@@ -140,7 +140,7 @@ function SummaryCards({
         {showLesDot && <span css={s.dot} />}
         <div css={s.titleRow}>
           <div css={s.title}>레슨</div>
-          <span css={s.pill} as="span" style={{ cursor: "default" }}>
+          <span css={s.pill} style={{ cursor: "default" }}>
             내 레슨
           </span>
         </div>

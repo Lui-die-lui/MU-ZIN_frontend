@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { patchMyUsernameReq } from "../../../../../apis/user/userApis";
 import { FaUser } from "react-icons/fa";
 import AccountInfoRow from "../../AccountInfoRow/AccountInfoRow";
+import { getErrorMessage } from "../../../../../utils/errorUtils";
 
 function ChangeUserSection() {
   const { principal, updatePrincipal } = usePrincipalState();
@@ -19,24 +20,20 @@ function ChangeUserSection() {
   }, [current]);
 
   const mut = useMutation({
+    // 입력칸 아래에 직접 메시지를 보여주므로 전역 토스트 생략
+    meta: { skipGlobalError: true },
     mutationFn: (next: string) => patchMyUsernameReq(next),
     onSuccess: (res, next) => {
-      const { status, message, data } = res.data; // apiRespDto 생각하면 됨
-
-      if (status !== "success") {
-        setMessage(message ?? "이미 사용중인 이름입니다.");
-        return;
-      }
-
       // 서버가 username을 다시 내려주면 그 값 우선, 아니면 내가 보낸 값 반영
-      const saved = data?.username ?? next;
+      const saved = res.data.data?.username ?? next;
 
       updatePrincipal({ username: saved });
       setMessage("유저명 변경 완료");
     },
 
-    onError: () => {
-      setMessage("유저명 변경 실패");
+    // 중복 이름(409) 등 백엔드 메시지 그대로 표시
+    onError: (err) => {
+      setMessage(getErrorMessage(err, "유저명 변경 실패"));
     },
   });
 
@@ -49,14 +46,6 @@ function ChangeUserSection() {
   const canSave = validLen && changed && !mut.isPending;
 
   const onSave = () => {
-    console.log("[USERNAME] onSave", {
-      current,
-      username,
-      next,
-      validLen,
-      changed,
-      canSave,
-    });
     setMessage(null);
     if (!canSave) return;
     mut.mutate(next);

@@ -1,227 +1,29 @@
 /** @jsxImportSource @emotion/react */
-import * as s from "../pageStyles";
-import { useMemo, useState } from "react";
-import type {
-  DateBasis,
-  ReservationTab,
-  SearchApplied,
-  SearchDraft,
-} from "../../../../Types/reservationType";
-import {
-  DATE_BASIS_OPTIONS,
-  DEFAULT_SEARCH_DRAFT,
-  MY_TAB_ITEMS,
-  SORT_OPTIONS,
-} from "../../../../constants/reservations";
-import {
-  makeReservationSearchApplied,
-  makeSortComparator,
-} from "../../../../utils/reservationUtils";
-import {
-  useMyReservationDetail,
-  useMyReservationList,
-} from "../../../../hooks/reservation/useMyReservation";
-import { pickYmdFromLocalDateTime } from "../../../../utils/searchForTimeUtils";
-import ReservationCard from "../ReservationCard/ReservationCard";
-import DateRangeSearchBar from "../DateSearchBar/DateRangeSearchBar";
-import MypageTabBar from "../../../../components/common/MypageTabBar/MypageTabBar";
-import ReservationDetailModal from "../ReservationDetailModal/ReservationDetailModal";
-import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
-import { todayYmd } from "../../../../utils/timeSlotUtils";
-import { reservationCalendarUtils } from "../../../../utils/reservationCalendarUtils";
-import ReservationCalendarSection from "../ReservationCalendar/ReservationCalendarSection";
-import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
+import { useMyReservationDetail, useMyReservationList } from "../../../../hooks/reservation/useMyReservation";
+import ReservationBoard, { EmptyLink } from "../ReservationBoard/ReservationBoard";
 
+// 마이페이지 > 레슨/예약 관리 > 내 예약 (수강생)
 function MyReservationsPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const initialTab = (searchParams.get("tab") ?? "today") as ReservationTab;
-
-  const [tab, setTab] = useState<ReservationTab>(initialTab);
-
-  const [draft, setDraft] = useState<SearchDraft>(DEFAULT_SEARCH_DRAFT);
-  const [applied, setApplied] = useState<SearchApplied>(
-    makeReservationSearchApplied(DEFAULT_SEARCH_DRAFT),
-  );
-
-  // 캘린더 상태
-  const [isCalendarOpen, setIsCalendarOpen] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-  // 모달 상태
-  const [detailOpen, setDetailOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  const openDetail = (reservationId: number) => {
-    setSelectedId(reservationId);
-    setDetailOpen(true);
-  };
-
-  const closeDetail = () => {
-    setDetailOpen(false);
-    setSelectedId(null);
-  };
-
-  // tab 바꿀 시 기본 상태로 set 해줌
-  const onChangeTab = (next: ReservationTab) => {
-    setTab(next);
-    setSearchParams({ tab: next });
-
-    setSelectedDate(null);
-    setDraft(DEFAULT_SEARCH_DRAFT);
-    setApplied(makeReservationSearchApplied(DEFAULT_SEARCH_DRAFT));
-  };
-
-  const onClickSearch = () => {
-    setApplied(makeReservationSearchApplied(draft));
-  };
-
-  // 유저 예약 목록 가져오기
-  const { data = [], isLoading, isFetching } = useMyReservationList(tab);
-
-  // 유저 예약 상세(선택된 id로) - 현재 아티스트 디테일이랑 동일하게 받아오고있음
-  const { data: detail } = useMyReservationDetail(selectedId);
-
-  const viewItems = useMemo(() => {
-    let items = [...data];
-
-    // 유저 기준 tab 필터
-    if (tab === "today") {
-      const ymd = todayYmd();
-      items = items.filter(
-        (r) =>
-          (r.status === "CONFIRMED" || r.status === "COMPLETION_PENDING") &&
-          pickYmdFromLocalDateTime(r.timeSlot.startDt) === ymd,
-      );
-    } else {
-      if (tab === "requested") {
-        items = items.filter((r) => r.status === "REQUESTED");
-      }
-
-      if (tab === "inProgress") {
-        items = items.filter(
-          (r) => r.status === "CONFIRMED" || r.status === "COMPLETION_PENDING",
-        );
-      }
-
-      if (tab === "completed") {
-        items = items.filter((r) => r.status === "COMPLETED");
-      }
-
-      if (tab === "canceled") {
-        items = items.filter(
-          (r) => r.status === "CANCELED" || r.status === "REJECTED",
-        );
-      }
-    }
-
-    // 날짜 범위 필터
-    const getYmd = (r: (typeof data)[number]) =>
-      applied.basis === "REQUESTED_DT"
-        ? pickYmdFromLocalDateTime(r.requestedDt)
-        : pickYmdFromLocalDateTime(r.timeSlot.startDt);
-
-    const { from, to } = applied.range;
-    if (from && to) {
-      items = items.filter((r) => {
-        const ymd = getYmd(r);
-        return from <= ymd && ymd <= to;
-      });
-    }
-
-    // 정렬
-    const getDate = (r: (typeof data)[number], basis: DateBasis) =>
-      basis === "REQUESTED_DT" ? r.requestedDt : r.timeSlot.startDt;
-
-    items.sort(makeSortComparator(applied.basis, applied.sort, getDate));
-
-    return items;
-  }, [
-    tab,
-    data,
-    applied.basis,
-    applied.sort,
-    applied.range.from,
-    applied.range.to,
-    applied.stamp,
-  ]);
-
-  const calendarEvents = useMemo(() => {
-    return reservationCalendarUtils(viewItems);
-  }, [viewItems]);
-
-  const visibleItems = useMemo(() => {
-    if (!selectedDate) return viewItems;
-
-    return viewItems.filter(
-      (item) =>
-        pickYmdFromLocalDateTime(item.timeSlot.startDt) === selectedDate,
-    );
-  }, [viewItems, selectedDate]);
-
-  if (isLoading) {
-    return (
-      <div css={s.list}>
-        <div css={s.skeleton} />
-        <div css={s.skeleton} />
-        <div css={s.skeleton} />
-      </div>
-    );
-  }
+  // 서버는 내 예약 전체를 주고, 탭·기간·정렬은 화면에서 나눔 (탭마다 다시 요청하지 않음)
+  const list = useMyReservationList("all");
+  const detail = useMyReservationDetail(selectedId);
 
   return (
-    <div css={s.page}>
-      <MypageTabBar value={tab} items={MY_TAB_ITEMS} onChange={onChangeTab} />
-
-      <ReservationCalendarSection
-        isOpen={isCalendarOpen}
-        onToggle={() => setIsCalendarOpen((prev) => !prev)}
-        events={calendarEvents}
-        selectedDate={selectedDate}
-        onSelectDate={setSelectedDate}
-        onClickEvent={openDetail}
-      />
-
-      <DateRangeSearchBar
-        draft={draft}
-        onDraftChange={setDraft}
-        onSearch={onClickSearch}
-        basisOptions={DATE_BASIS_OPTIONS}
-        sortOptions={SORT_OPTIONS}
-        disabled={tab === "today"}
-        isSearching={isFetching}
-      />
-
-      {!visibleItems.length ? (
-        <div css={s.empty}>
-          <div css={s.emptyTitle}>예약이 없습니다.</div>
-        </div>
-      ) : (
-        <div css={s.list}>
-          {visibleItems.map((item) => {
-            return (
-              <ReservationCard
-                key={item.reservationId}
-                item={item}
-                onClick={() => openDetail(item.reservationId)}
-                rightActions={
-                  <StatusBadge
-                    status={item.status}
-                    onClick={() => openDetail(item.reservationId)}
-                  />
-                }
-              />
-            );
-          })}
-        </div>
-      )}
-      <ReservationDetailModal
-        open={detailOpen}
-        onClose={closeDetail}
-        reservation={detail ?? null}
-        viewerMode="USER"
-      />
-    </div>
+    <ReservationBoard
+      mode="USER"
+      title="내 예약"
+      desc="요청한 레슨과 확정된 일정을 확인하고, 필요하면 취소할 수 있어요."
+      items={list.data ?? []}
+      isLoading={list.isLoading}
+      isError={list.isError}
+      onRetry={() => list.refetch()}
+      selectedId={selectedId}
+      onSelect={setSelectedId}
+      detail={selectedId ? (detail.data ?? null) : null}
+      emptyAction={<EmptyLink to="/lessons">레슨 찾아보기</EmptyLink>}
+    />
   );
 }
 

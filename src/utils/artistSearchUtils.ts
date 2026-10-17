@@ -5,6 +5,7 @@ import type {
   SearchMainRegionSummary,
   SearchServiceRegionResp,
 } from "../Types/artistSearchTypes";
+import { normalizeRegion1DepthName } from "./regionUtils";
 
 export function makeArtistSearchParams(
   draft: ArtistSearchDraft, // 입력된 값
@@ -16,12 +17,12 @@ export function makeArtistSearchParams(
     instIds: draft.instIds.length ? draft.instIds : undefined,
     styleTagIds: draft.styleTagIds.length ? draft.styleTagIds : undefined,
     region1DepthName: draft.region1DepthName.length
-      ? draft.region1DepthName
+      ? normalizeRegion1DepthName(draft.region1DepthName)
       : undefined,
-    region2DepthName: draft.region2DepthName.length
+    region2DepthName: draft.region2DepthName
       ? draft.region2DepthName
       : undefined,
-    region3DepthName: draft.region3DepthName.length
+    region3DepthName: draft.region3DepthName
       ? draft.region3DepthName
       : undefined,
   };

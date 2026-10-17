@@ -17,6 +17,7 @@ function ArtistSearchInput({
   return (
     <input
       css={s.input}
+      aria-label="아티스트 검색어"
       value={value}
       onChange={(e) => onChangeValue(e.target.value)}
       onKeyDown={(e) => {

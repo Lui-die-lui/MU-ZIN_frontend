@@ -1,5 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import {
+  dropdownCaret,
+  dropdownField,
+  dropdownHint,
+  dropdownList,
+  dropdownMenu,
+  dropdownOption,
+} from "../dropdownStyles";
 
 export const root = css`
   position: relative;
@@ -7,27 +15,20 @@ export const root = css`
   min-width: 0;
 `;
 
+// 공통 드롭다운 상자 디자인 (dropdownStyles.ts) - 아이콘 자리만큼 오른쪽 여백
 export const input = css`
+  ${dropdownField};
   width: 100%;
-  height: 44px;
-  box-sizing: border-box;
-  padding: 0 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  background: #fff;
-  font-size: 14px;
-  color: #111827;
+  padding: 0 34px 0 13px;
+`;
 
-  &:focus {
-    outline: none;
-    border-color: #111827;
-  }
-
-  &:disabled {
-    background: #f3f4f6;
-    color: #9ca3af;
-    cursor: not-allowed;
-  }
+// 아이콘은 select 와 같은 위치(오른쪽 14px, 세로 가운데)
+export const inputCaret = (open: boolean) => css`
+  ${dropdownCaret(open)};
+  position: absolute;
+  top: 20.5px; /* (입력칸 46px - 아이콘 5px) / 2 - 아래 안내 문구가 붙어도 위치 고정 */
+  right: 14px;
+  pointer-events: none;
 `;
 
 export const helperText = css`
@@ -42,50 +43,26 @@ export const errorText = css`
   color: #dc2626;
 `;
 
+// 펼쳐진 목록 (공통 디자인)
 export const dropdown = css`
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
+  ${dropdownMenu};
+  ${dropdownList};
   right: 0;
-  z-index: 30;
-  max-height: 240px;
-  overflow-y: auto;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
 `;
 
-export const stateText = css`
-  padding: 12px;
-  font-size: 14px;
-  color: #6b7280;
-`;
+export const stateText = dropdownHint;
 
-export const optionButton = css`
-  display: flex;
-  width: 100%;
+// 항목 (active: 마우스/키보드로 가리킴) - 보조 문구가 있으면 아래 줄에 표시
+export const optionButton = (active: boolean) => css`
+  ${dropdownOption(false, active)};
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
-  padding: 10px 12px;
-  border: 0;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-
-  &:hover {
-    background: #f9fafb;
-  }
-`;
-
-export const optionButtonActive = css`
-  background: #f3f4f6;
 `;
 
 export const optionLabel = css`
   font-size: 14px;
-  color: #111827;
+  color: #1b1d20;
 `;
 
 export const optionSubLabel = css`
