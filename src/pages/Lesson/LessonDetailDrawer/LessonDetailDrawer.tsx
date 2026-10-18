@@ -22,6 +22,9 @@ import { LESSON_MODE_LABEL, type Mode } from "../../../Types/lessonTypes";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { ApiError } from "../../../utils/errorUtils";
 import { FaSlidersH } from "react-icons/fa";
+import { useLessonReviews } from "../../../hooks/review/useReviews";
+import ReviewSection from "../../../components/review/ReviewSection";
+import { StarDisplay } from "../../../components/review/StarRating";
 
 export type Props = {
   open: boolean;
@@ -76,6 +79,8 @@ function LessonDetailDrawer({
   const id = lessonId ?? 0;
   const { data, isLoading, isError } = usePublicLessonDetail(id);
   const isAuthenticated = usePrincipalState((st) => st.isAuthenticated);
+  // 예약은 이메일 인증 완료 유저만 가능 (서버도 403 EMAIL_NOT_VERIFIED 로 막음)
+  const needsEmailVerify = usePrincipalState((st) => st.isAuthenticated && st.principal?.emailVerified === false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -101,6 +106,11 @@ function LessonDetailDrawer({
   }, [lessonId, initialOpenSlotFilter]);
 
   const createM = useCreateReservation(id);
+  // 레슨 리뷰 (제목 아래 별점 요약 + 아래쪽 리뷰 모음)
+  const reviewsQ = useLessonReviews(lessonId);
+  const reviewSummary = reviewsQ.data?.summary;
+  const scrollToReviews = () =>
+    document.getElementById("lesson-reviews")?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   const durationMin = data?.durationMin ?? 0;
   const metaText = data
@@ -113,6 +123,11 @@ function LessonDetailDrawer({
   const goLogin = () => {
     onClose();
     navigate("/signin", { state: { from: location } });
+  };
+
+  const goVerifyEmail = () => {
+    onClose();
+    navigate("/mypage/account");
   };
 
   const submit = async () => {
@@ -149,12 +164,19 @@ function LessonDetailDrawer({
                 <strong>{formatWhen(selectedSlot.startDt, durationMin)}</strong>
               </>
             ) : (
-              <span css={s.footerHint}>{reserveBlockedReason ?? "위에서 원하는 시간을 골라주세요."}</span>
+              <span css={s.footerHint}>
+                {reserveBlockedReason ??
+                  (needsEmailVerify ? "이메일 인증 후 예약할 수 있어요." : "위에서 원하는 시간을 골라주세요.")}
+              </span>
             )}
           </div>
           {!isAuthenticated ? (
             <button type="button" css={s.primaryBtn} onClick={goLogin}>
               로그인하고 예약하기
+            </button>
+          ) : needsEmailVerify && !reserveBlockedReason ? (
+            <button type="button" css={s.primaryBtn} onClick={goVerifyEmail}>
+              이메일 인증하러 가기
             </button>
           ) : (
             <button
@@ -169,7 +191,9 @@ function LessonDetailDrawer({
               이 시간으로 요청하기
             </button>
           )}
-          {selectedSlot && reserveBlockedReason && <span css={s.footerHint}>{reserveBlockedReason}</span>}
+          {selectedSlot && (reserveBlockedReason || needsEmailVerify) && (
+            <span css={s.footerHint}>{reserveBlockedReason ?? "이메일 인증 후 예약할 수 있어요."}</span>
+          )}
         </div>
       );
     } else if (mode === "request") {
@@ -235,6 +259,13 @@ function LessonDetailDrawer({
           <div>
             <h2 css={s.title}>{data.title}</h2>
             <p css={s.metaLine}>{metaText}</p>
+            {reviewSummary && reviewSummary.reviewCount > 0 && mode === "pick" && (
+              <button type="button" css={s.ratingLine} onClick={scrollToReviews}>
+                <StarDisplay value={reviewSummary.averageRating} size={14} />
+                <strong>{reviewSummary.averageRating.toFixed(1)}</strong>
+                <span>리뷰 {reviewSummary.reviewCount}개</span>
+              </button>
+            )}
           </div>
 
           {/* 검색 결과를 연 뒤 마지막 시간이 마감되는 등으로 자동 비공개된 레슨 */}
@@ -319,6 +350,21 @@ function LessonDetailDrawer({
                   />
                 </section>
               )}
+
+              <section id="lesson-reviews" css={s.reviewSection} aria-labelledby="review-title">
+                <h3 id="review-title" css={s.blockTitle}>
+                  리뷰{reviewSummary?.reviewCount ? ` ${reviewSummary.reviewCount}` : ""}
+                </h3>
+                <ReviewSection
+                  data={reviewsQ.data}
+                  isLoading={reviewsQ.isLoading}
+                  isError={reviewsQ.isError}
+                  onRetry={() => reviewsQ.refetch()}
+                  limit={3}
+                  compact
+                  emptyText="아직 리뷰가 없어요. 레슨을 받은 수강생만 리뷰를 남길 수 있어요."
+                />
+              </section>
             </>
           )}
 

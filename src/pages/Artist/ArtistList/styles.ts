@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 export const list = css`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr; /* 모든 카드 같은 높이 */
   gap: 12px;
   width: 100%;
 

@@ -101,6 +101,7 @@ export const retryButton = css`
 `;
 export const list = css`
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
+  grid-auto-rows: 1fr; /* 모든 카드 같은 높이 (가장 큰 카드 기준) */
   &[aria-busy="true"] { opacity: 0.6; }
   @media (max-width: 720px) { grid-template-columns: 1fr; }
 `;
@@ -117,13 +118,17 @@ export const instrumentBadge = css`
   font-size: 12px; font-weight: 700;
 `;
 export const cardArrow = css`color: #6e747b; font-size: 18px;`;
-export const cardTitle = css`margin: 15px 0 0; font-size: 18px; line-height: 1.4; letter-spacing: -0.02em;`;
+export const cardTitle = css`
+  margin: 15px 0 0; font-size: 18px; line-height: 1.4; letter-spacing: -0.02em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; /* 제목은 한 줄 */
+`;
 export const cardDescription = css`
   display: -webkit-box; overflow: hidden; margin: 7px 0 0; color: ${muted}; font-size: 13px;
   line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  min-height: calc(13px * 1.55 * 2); /* 소개가 짧거나 없어도 2줄 자리 */
 `;
 export const cardMeta = css`
-  display: flex; align-items: center; gap: 7px; margin-top: 18px; color: #5f666d; font-size: 13px;
+  display: flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 18px; color: #5f666d; font-size: 13px; /* 맨 아래로 */
   strong { color: ${text}; }
 `;
 export const regionText = css`margin-top: 9px; color: #7c8289; font-size: 12px;`;

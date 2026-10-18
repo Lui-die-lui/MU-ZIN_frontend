@@ -129,7 +129,7 @@ export const errorText = css`
 export const successText = css`
   margin-top: 6px;
   font-size: 13px;
-  color: #2e7d32;
+  color: #111827;
 `;
 
 
@@ -169,7 +169,7 @@ export const sectionLabel = css`
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
-    color: #64748b;
+    color: #6b7280;
   }
 `;
 
@@ -226,7 +226,7 @@ export const subSectionHeader = css`
   p {
     margin: 0;
     font-size: 13px;
-    color: #64748b;
+    color: #6b7280;
     line-height: 1.5;
   }
 `;

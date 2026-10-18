@@ -1,34 +1,27 @@
-import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
-export const ErrorText = styled.p`
-  margin: 6px 0 0;
-  font-size: 12px;
-  color: #e11d48;
-`;
-
-export const form = css`
+export const ruleList = css`
   display: flex;
-  flex-direction: column;
-  gap: 18px;
-  width: 100%;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 `;
 
-export const formWrap = css`
-  width: 100%;
-  max-width: 420px;
-  margin: 80px auto 0;
-  padding: 0 20px;
+export const ruleItem = (ok: boolean) => css`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: ${ok ? "#111827" : "#8b9096"};
+  font-weight: ${ok ? 600 : 400};
+  transition: color 0.15s ease;
 `;
 
-export const submitButton = css`
-  width: 100%;
-  height: 48px;
-  border: none;
-  border-radius: 14px;
-  background-color: #111827;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
+export const okText = css`
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
 `;

@@ -92,7 +92,7 @@ export const meta = css`
 `;
 
 export const msgTag = css`
-  color: #1d4ed8;
+  color: #111827;
   font-weight: 600;
 `;
 

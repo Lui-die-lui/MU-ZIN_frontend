@@ -121,6 +121,7 @@ export const actions = css`
 export const btn = (variant: "primary" | "ghost") => css`
   display: inline-flex;
   align-items: center;
+  box-sizing: border-box; /* 링크(a)도 버튼과 같은 40px (테두리 포함) */
   height: 40px;
   padding: 0 16px;
   border-radius: 10px;
@@ -178,8 +179,8 @@ export const chip = (tone: "neutral" | "style" | "region") => css`
   height: 28px;
   padding: 0 10px;
   border-radius: 999px;
-  background: ${tone === "style" ? "#eef2ff" : tone === "region" ? "#ecfdf3" : "#f3f4f6"};
-  color: ${tone === "style" ? "#3730a3" : tone === "region" ? "#047857" : "#374151"};
+  background: ${tone === "style" ? "#f3f4f6" : tone === "region" ? "#f3f4f6" : "#f3f4f6"};
+  color: ${tone === "style" ? "#374151" : tone === "region" ? "#111827" : "#374151"};
   font-size: 13px;
   font-weight: 600;
 `;
@@ -226,6 +227,7 @@ export const mutedText = css`
 export const lessonGrid = css`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr; /* 모든 카드 같은 높이 */
   gap: 12px;
 
   @media (max-width: 720px) {
@@ -295,7 +297,8 @@ export const lessonMeta = css`
   align-items: center;
   flex-wrap: wrap;
   gap: 7px;
-  margin-top: 14px;
+  margin-top: auto; /* 제목이 두 줄이어도 정보 줄은 맨 아래로 맞춤 */
+  padding-top: 14px;
   color: #5f666d;
   font-size: 13px;
 
@@ -337,5 +340,63 @@ export const skeleton = (h: number) => css`
   @keyframes shimmer {
     0% { background-position: -400px 0; }
     100% { background-position: 400px 0; }
+  }
+`;
+
+// 이름 아래 별점 요약 (누르면 리뷰로 이동)
+export const ratingLine = css`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 4px 10px 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: #f7f8f9;
+  font: inherit;
+  font-size: 14px;
+  color: #1b1d20;
+  cursor: pointer;
+
+  span {
+    color: #6b7280;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  &:hover {
+    background: #eef0f2;
+  }
+`;
+
+export const reviewCard = css`
+  scroll-margin-top: 16px;
+`;
+
+export const reviewHeader = css`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  h2 {
+    margin-bottom: 12px;
+  }
+`;
+
+// 레슨 N · 팔로워 N (인스타 프로필 숫자 줄)
+export const stats = css`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  color: #262626;
+
+  strong {
+    margin-left: 4px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
   }
 `;

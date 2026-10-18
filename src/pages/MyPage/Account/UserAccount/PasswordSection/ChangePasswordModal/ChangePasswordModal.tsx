@@ -6,6 +6,7 @@ import { usePrincipalState } from "../../../../../../stores/usePrincipalState";
 import { useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../../../../../../utils/errorUtils";
 import { toast } from "../../../../../../stores/useToastStore";
+import { isValidPassword, PASSWORD_RULE_TEXT } from "../../../../../../utils/passwordRules";
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -24,8 +25,6 @@ function ChangePasswordModal({ open, onClose, onSubmit }: Props) {
   const { logout } = usePrincipalState();
   const navigate = useNavigate();
 
-  const pwRegex = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
-
   // 모달 닫힐 때 초기화
   useEffect(() => {
     if (!open) {
@@ -42,8 +41,8 @@ function ChangePasswordModal({ open, onClose, onSubmit }: Props) {
     if (!currentPassword || !newPassword || !confirm)
       return "모든 칸을 입력해주세요.";
     if (newPassword !== confirm) return "새 비밀번호가 일치하지 않습니다.";
-    if (!pwRegex.test(newPassword))
-      return "비밀번호는 영문/숫자/특수문자 포함 8~15자여야 합니다.";
+    // 회원가입과 같은 규칙 (utils/passwordRules)
+    if (!isValidPassword(newPassword)) return PASSWORD_RULE_TEXT;
 
     return null;
   };

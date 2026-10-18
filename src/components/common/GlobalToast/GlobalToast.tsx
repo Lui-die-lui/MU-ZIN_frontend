@@ -21,7 +21,16 @@ function GlobalToast() {
         onClose={close}
         severity={current?.severity ?? "info"}
         variant="filled"
-        sx={{ width: "100%", whiteSpace: "pre-line" }}
+        // 브랜드 톤: 성공·안내·주의는 검정, 오류만 짙은 빨강 (MUI 기본 초록/파랑/주황 대신)
+        sx={{
+          width: "100%",
+          whiteSpace: "pre-line",
+          fontFamily: "inherit",
+          borderRadius: "10px",
+          bgcolor: current?.severity === "error" ? "#b42318" : "#111827",
+          color: "#fff",
+          "& .MuiAlert-icon, & .MuiAlert-action": { color: "#fff" },
+        }}
       >
         {current?.message}
       </Alert>

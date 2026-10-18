@@ -11,6 +11,7 @@ export type ArtistSearchReq = {
   region3DepthName?: string;
   page?: number;
   size?: number;
+  followedOnly?: boolean; // 내가 팔로우한 아티스트만 (로그인 필요)
 };
 
 export type SearchMainRegionSummary = {
@@ -39,6 +40,15 @@ export type ArtistSearchResp = {
   mainRegion: SearchMainRegionSummary | null;
   serviceRegions: SearchServiceRegionResp[];
   instruments: ArtistInstrumentSummary[];
+  followerCount: number; // 팔로워 수 (누가 팔로우했는지는 공개 안 함)
+  followedByMe: boolean; // 로그인한 사람이 팔로우 중인지
+};
+
+// 팔로우 버튼 상태
+export type ArtistFollowResp = {
+  artistProfileId: number;
+  followerCount: number; // 이 아티스트를 팔로우하는 수
+  following: boolean;
 };
 
 // 검색 상태

@@ -15,11 +15,19 @@ type Props = {
   flow: OAuthFlow;
   redirectPath?: string;
 };
+
+// 아이콘만 있는 버튼이라 스크린리더/툴팁용 이름 (가입 여부와 관계없이 같은 흐름이라 "계속하기")
+const LABEL: Record<OAuthProvider, string> = {
+  google: "Google로 계속하기",
+  naver: "네이버로 계속하기",
+  kakao: "카카오로 계속하기",
+};
+
 function OAuth2Button({ provider, flow, redirectPath = "/" }: Props) {
   const href = buildOAuth2AuthUrl({ provider, flow, redirectPath });
   return (
-    <s.OAuthButton provider={provider} href={href}>
-      <span>
+    <s.OAuthButton provider={provider} href={href} aria-label={LABEL[provider]} title={LABEL[provider]}>
+      <span aria-hidden="true">
         {provider === "google" ? (
           <IoLogoGoogle />
         ) : provider === "naver" ? (

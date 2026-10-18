@@ -44,3 +44,34 @@ export const loadMore = css`
   min-height: 48px; display: grid; place-items: center; padding: 8px;
   color: #7c8289; font-size: 13px;
 `;
+
+export const resultTools = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+`;
+
+// 팔로우한 아티스트만 보기
+export const followedChip = (on: boolean) => css`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid ${on ? "#111827" : "#cfd4da"};
+  border-radius: 999px;
+  background: ${on ? "#f3f4f6" : "#fff"};
+  color: ${on ? "#111827" : "#1b1d20"};
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+
+  svg {
+    color: ${on ? "#111827" : "#9ca3af"};
+  }
+  &:hover {
+    border-color: ${on ? "#111827" : "#9ca3af"};
+  }
+`;

@@ -329,15 +329,48 @@ export const closedNotice = css`
   display: grid;
   gap: 4px;
   padding: 14px 16px;
-  border: 1px solid #fde68a;
+  border: 1px solid #e2e5e9;
   border-radius: 14px;
-  background: #fffbeb;
-  color: #78350f;
+  background: #f7f8f9;
+  color: #1b1d20;
   font-size: 13px;
   line-height: 1.6;
 
   strong {
     font-size: 14px;
-    color: #92400e;
+    color: #1b1d20;
   }
+`;
+
+// 제목 아래 별점 요약 (누르면 리뷰로 이동)
+export const ratingLine = css`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 4px 8px 4px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: #f7f8f9;
+  font: inherit;
+  font-size: 13px;
+  color: #1b1d20;
+  cursor: pointer;
+
+  span {
+    color: #6b7280;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  &:hover {
+    background: #eef0f2;
+  }
+`;
+
+export const reviewSection = css`
+  display: grid;
+  gap: 12px;
+  padding-top: 24px;
+  border-top: 1px solid #eef0f2;
+  scroll-margin-top: 12px;
 `;

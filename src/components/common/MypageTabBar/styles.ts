@@ -24,9 +24,9 @@ export const wrap = css`
 export const tab = (active: boolean) => css`
   flex-shrink: 0;
   white-space: nowrap;
-  border: 1px solid ${active ? "#d6e4ff" : "transparent"};
-  background: ${active ? "#eef4ff" : "transparent"};
-  color: ${active ? "#1e3a8a" : "rgba(0,0,0,0.78)"};
+  border: 1px solid ${active ? "#e5e7eb" : "transparent"};
+  background: ${active ? "#f3f4f6" : "transparent"};
+  color: ${active ? "#111827" : "rgba(0,0,0,0.78)"};
 
   border-radius: 999px;
   padding: 8px 12px;
@@ -43,7 +43,7 @@ export const tab = (active: boolean) => css`
 
   &:hover {
     transform: translateY(-1px);
-    background: ${active ? "#e6efff" : "rgba(0,0,0,0.04)"};
+    background: ${active ? "#eef0f2" : "rgba(0,0,0,0.04)"};
   }
   &:active {
     transform: translateY(0);

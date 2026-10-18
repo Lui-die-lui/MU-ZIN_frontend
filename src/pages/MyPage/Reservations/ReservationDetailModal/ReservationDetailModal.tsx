@@ -15,6 +15,10 @@ import type { ViewerMode } from "../../../../Types/myPageTypes";
 import StatusBadge from "../ReservationCard/StatusBadge/StatusBadge";
 import { deadlineBefore, formatDateTime, formatPrice, formatSlotRange } from "../../../../utils/reservationFormat";
 import { toast } from "../../../../stores/useToastStore";
+import { useNavigate } from "react-router-dom";
+import { useMyReviews, useWritableReviews } from "../../../../hooks/review/useReviews";
+import { getChatRoomIdByReservationReq } from "../../../../apis/chat/chatApi";
+import { getErrorMessage } from "../../../../utils/errorUtils";
 
 type Props = {
   open: boolean;
@@ -38,6 +42,12 @@ function ReservationDetailModal({ open, onClose, reservation, viewerMode, cancel
   const cancelArtistMut = useCancelByArtistReservation();
   const cancelMyMut = useCancelMyReservation();
   const completeMut = useCompleteReservationByArtist();
+  const navigate = useNavigate();
+
+  // 수강생의 완료 레슨: 리뷰를 쓸 수 있는지 / 이미 썼는지
+  const reviewCheck = open && viewerMode !== "ARTIST" && reservation?.status === "COMPLETED";
+  const writableQ = useWritableReviews(reviewCheck);
+  const myReviewsQ = useMyReviews(reviewCheck);
 
   const [step, setStep] = useState<Step>(null);
   const [reason, setReason] = useState("");
@@ -212,6 +222,28 @@ function ReservationDetailModal({ open, onClose, reservation, viewerMode, cancel
         레슨 취소
       </button>
     );
+  } else if (!isArtist && r.status === "COMPLETED") {
+    const writable = writableQ.data?.some((w) => w.reservationId === r.reservationId);
+    const reviewed = myReviewsQ.data?.some((v) => v.reservationId === r.reservationId);
+    const goReviews = (query: string) => {
+      close();
+      navigate(`/mypage/reviews?${query}`);
+    };
+    if (writable) {
+      actions = (
+        <button type="button" css={s.btn("primary")} onClick={() => goReviews(`tab=writable&write=${r.reservationId}`)}>
+          리뷰 쓰기
+        </button>
+      );
+    } else if (reviewed) {
+      actions = (
+        <button type="button" css={s.btn("ghost")} onClick={() => goReviews("tab=written")}>
+          내 리뷰 보기
+        </button>
+      );
+    } else if (writableQ.isSuccess && myReviewsQ.isSuccess) {
+      actions = <span css={s.reviewClosed}>리뷰 작성 기간(완료 후 14일)이 지났어요.</span>;
+    }
   } else if (isArtist && r.status === "COMPLETION_PENDING" && r.canMarkCompleted) {
     actions = (
       <button
@@ -225,11 +257,28 @@ function ReservationDetailModal({ open, onClose, reservation, viewerMode, cancel
     );
   }
 
+  // 수락된 예약(확정·완료 확인 중·완료)은 상대와 채팅으로 이동 (방은 수락할 때 생김)
+  const chatEligible = r.status === "CONFIRMED" || r.status === "COMPLETION_PENDING" || r.status === "COMPLETED";
+  const openChat = async () => {
+    try {
+      const roomId = await getChatRoomIdByReservationReq(r.reservationId);
+      close();
+      navigate(`/mypage/chats/${roomId}`);
+    } catch (e) {
+      toast.error(getErrorMessage(e, "채팅방을 열지 못했어요."));
+    }
+  };
+
   const footer = (
     <div css={s.footer}>
       {!step && (
         <button type="button" css={s.btn("ghost")} onClick={close} disabled={busy}>
           닫기
+        </button>
+      )}
+      {!step && chatEligible && (
+        <button type="button" css={s.btn("ghost")} onClick={openChat} disabled={busy}>
+          채팅하기
         </button>
       )}
       {actions && <div css={s.footerRight}>{actions}</div>}

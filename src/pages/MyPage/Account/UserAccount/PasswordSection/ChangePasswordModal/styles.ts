@@ -12,7 +12,7 @@ export const label = css`
   flex-direction: column;
   gap: 6px;
   font-size: 13px;
-  color: #334155;
+  color: #374151;
 `;
 
 export const input = css`
@@ -23,7 +23,7 @@ export const input = css`
   outline: none;
 
   &:focus {
-    border-color: #94a3b8;
+    border-color: #9ca3af;
   }
 `;
 

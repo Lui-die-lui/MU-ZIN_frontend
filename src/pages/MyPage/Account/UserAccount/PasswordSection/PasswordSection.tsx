@@ -39,7 +39,7 @@ function PasswordSection() {
       >
         <div>
           {!canChange && (
-            <p style={{ fontSize: 12, color: "#64748b" }}>
+            <p style={{ fontSize: 12, color: "#6b7280" }}>
               소셜 로그인 계정은 비밀번호 변경이 불가해요.
             </p>
           )}

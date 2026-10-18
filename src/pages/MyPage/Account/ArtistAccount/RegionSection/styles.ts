@@ -229,7 +229,7 @@ export const chipArea = css`
 export const noticeText = css`
   margin: 12px 0 0;
   font-size: 13px;
-  color: #b45309;
+  color: #4b5563;
 `;
 
 export const hintText = css`

@@ -15,3 +15,27 @@ html,body {
 html {
   scrollbar-gutter: stable;
 }
+
+/* 스크롤바 최소한으로 얇게 (Chrome·Edge·Safari: 6px, Firefox: thin)
+   scrollbar-gutter 도 이 폭만큼만 자리를 잡음 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c4c8cd;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+/* Chrome 121+ 는 scrollbar-width 가 있으면 위 ::-webkit-scrollbar 를 무시하므로 Firefox 에만 적용 */
+@supports (-moz-appearance: none) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #c4c8cd transparent;
+  }
+}

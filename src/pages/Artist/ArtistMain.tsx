@@ -10,6 +10,8 @@ import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import ArtistSearch from "./ArtistSearch/ArtistSearch";
 import ArtistList from "./ArtistList/ArtistList";
 import * as s from "./styles";
+import { usePrincipalState } from "../../stores/usePrincipalState";
+import { PiUserCheckBold } from "react-icons/pi";
 
 function ArtistMain() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,6 +35,16 @@ function ArtistMain() {
   }, [searchParams]);
 
   const hasSearched = searchParams.get("searched") === "true";
+  const viewerUserId = usePrincipalState((st) => st.principal?.userId ?? null);
+  // 팔로우한 아티스트만 (로그인했을 때만)
+  const followedOnly = !!viewerUserId && searchParams.get("followed") === "true";
+  const toggleFollowedOnly = () => {
+    const next = new URLSearchParams(searchParams);
+    next.set("searched", "true");
+    if (followedOnly) next.delete("followed");
+    else next.set("followed", "true");
+    setSearchParams(next);
+  };
   const {
     data: artistPages,
     isPending,
@@ -42,7 +54,7 @@ function ArtistMain() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useArtistSearch(applied, hasSearched);
+  } = useArtistSearch(applied, hasSearched, followedOnly, viewerUserId);
   const artistList = useMemo(
     () => artistPages?.pages.flatMap((page) => page) ?? [],
     [artistPages],
@@ -66,6 +78,7 @@ function ArtistMain() {
     if (query.region3DepthName) params.set("region3DepthName", query.region3DepthName);
     query.styleTagIds?.forEach((id) => params.append("styleTagIds", String(id)));
     query.instIds?.forEach((id) => params.append("instIds", String(id)));
+    if (followedOnly) params.set("followed", "true"); // 검색 조건을 바꿔도 팔로우 필터는 유지
     setSearchParams(params);
   };
 
@@ -98,6 +111,12 @@ function ArtistMain() {
           <div css={s.emptyState}>
             <strong>함께할 아티스트를 찾아보세요.</strong>
             <span>조건 없이 검색하면 현재 활동 중인 모든 아티스트를 볼 수 있어요.</span>
+            {viewerUserId && (
+              <button type="button" css={s.followedChip(false)} onClick={toggleFollowedOnly}>
+                <PiUserCheckBold aria-hidden="true" />
+                팔로우한 아티스트 보기
+              </button>
+            )}
           </div>
         ) : (
           <>
@@ -106,7 +125,15 @@ function ArtistMain() {
                 <span css={s.resultLabel}>검색 결과</span>
                 <h2 css={s.resultTitle}>{isInitialLoading ? "아티스트를 찾고 있어요" : `${artistList.length}명 불러옴`}</h2>
               </div>
-              {appliedFilterCount > 0 && <span css={s.filterCount}>{appliedFilterCount}개 조건 적용</span>}
+              <div css={s.resultTools}>
+                {viewerUserId && (
+                  <button type="button" css={s.followedChip(followedOnly)} aria-pressed={followedOnly} onClick={toggleFollowedOnly}>
+                    <PiUserCheckBold aria-hidden="true" />
+                    팔로우한 아티스트만
+                  </button>
+                )}
+                {appliedFilterCount > 0 && <span css={s.filterCount}>{appliedFilterCount}개 조건 적용</span>}
+              </div>
             </div>
             {isError ? (
               <div css={s.emptyState}>
@@ -117,7 +144,14 @@ function ArtistMain() {
               <div css={s.loadingState}>검색 결과를 불러오는 중이에요.</div>
             ) : (
               <div css={s.resultBody} aria-busy={isFetchingNextPage}>
-                <ArtistList artists={artistList} />
+                {followedOnly && artistList.length === 0 && !isInitialLoading ? (
+                  <div css={s.emptyState}>
+                    <strong>조건에 맞는 팔로우한 아티스트가 없어요.</strong>
+                    <span>아티스트 카드나 프로필의 하트를 눌러 팔로우해보세요.</span>
+                  </div>
+                ) : (
+                  <ArtistList artists={artistList} />
+                )}
                 <div ref={loadMoreRef} css={s.loadMore} aria-live="polite">
                   {isFetchingNextPage
                     ? "다음 아티스트를 불러오는 중..."

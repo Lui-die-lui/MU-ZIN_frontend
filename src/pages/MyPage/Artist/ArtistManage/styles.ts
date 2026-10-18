@@ -153,10 +153,10 @@ export const banner = css`
   gap: 12px;
   margin-bottom: 14px;
   padding: 14px 16px;
-  border: 1px solid #fde68a;
+  border: 1px solid #e2e5e9;
   border-radius: 14px;
-  background: #fffbeb;
-  color: #92400e;
+  background: #f7f8f9;
+  color: #1b1d20;
   font-size: 14px;
 
   b {
@@ -169,7 +169,7 @@ export const bannerLink = css`
   padding: 0;
   border: 0;
   background: none;
-  color: #92400e;
+  color: #1b1d20;
   font: inherit;
   font-size: 13px;
   font-weight: 700;

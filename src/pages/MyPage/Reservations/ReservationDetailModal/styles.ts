@@ -43,8 +43,8 @@ export const guide = (tone: "info" | "warn" | "muted") => css`
   margin: 0;
   padding: 12px 14px;
   border-radius: 12px;
-  background: ${tone === "warn" ? "#fffbeb" : tone === "info" ? "#f3f6ff" : "#f6f7f8"};
-  color: ${tone === "warn" ? "#92400e" : tone === "info" ? "#1e3a8a" : "#4b5563"};
+  background: ${tone === "warn" ? "#f7f8f9" : tone === "info" ? "#f7f8f9" : "#f6f7f8"};
+  color: ${tone === "warn" ? "#1b1d20" : tone === "info" ? "#111827" : "#4b5563"};
   font-size: 13px;
   line-height: 1.6;
 `;
@@ -191,4 +191,10 @@ export const btn = (variant: "primary" | "ghost" | "danger") => css`
     opacity: 0.5;
     cursor: not-allowed;
   }
+`;
+
+// 리뷰 작성 기간이 지난 완료 레슨 안내
+export const reviewClosed = css`
+  font-size: 13px;
+  color: #6b7280;
 `;

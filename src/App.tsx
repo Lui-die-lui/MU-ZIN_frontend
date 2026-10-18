@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import GlobalToast from "./components/common/GlobalToast/GlobalToast";
 import ErrorBoundary from "./components/common/ErrorBoundary/ErrorBoundary";
 import SessionWatcher from "./components/auth/SessionWatcher";
+import ChatRealtime from "./realtime/ChatRealtime";
 
 // 경로가 바뀌면 에러 화면을 초기화할 수 있게 경로를 resetKey로 넘김
 function RoutesWithBoundary() {
@@ -30,6 +31,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <SessionWatcher />
+        <ChatRealtime />
         <RoutesWithBoundary />
       </BrowserRouter>
       <GlobalToast />

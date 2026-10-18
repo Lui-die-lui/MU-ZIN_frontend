@@ -137,5 +137,5 @@ export const error = css`
 export const lockNote = css`
   margin: 0;
   font-size: 12px;
-  color: #92400e;
+  color: #1b1d20;
 `;

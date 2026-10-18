@@ -1,7 +1,34 @@
 import { css } from "@emotion/react";
 
+export const cardWrap = css`
+  position: relative;
+  min-width: 0; /* 목록(grid) 칸이 카드 내용 폭만큼 늘어나지 않게 */
+`;
+
+// 오른쪽 가운데 팔로우(하트) 버튼 자리
+export const follow = css`
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+
+  @media (max-width: 560px) {
+    top: 16px;
+    right: 14px;
+    transform: none;
+  }
+`;
+
 export const card = css`
   width: 100%;
+  height: 100%; /* 칸 높이만큼 (옆 카드와 같은 높이) */
+  box-sizing: border-box; /* 하트 자리 여백까지 폭 안에 (없으면 모바일에서 화면보다 넓어짐) */
+  padding-right: 120px !important;
+
+  /* 모바일은 하트가 오른쪽 위로 가서 이름 줄만 비워둠 */
+  @media (max-width: 560px) {
+    padding-right: 16px !important;
+  }
   display: flex;
   gap: 16px;
   align-items: center;
@@ -37,12 +64,17 @@ export const card = css`
 
 export const content = css`
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
 `;
 
 export const topRow = css`
+  @media (max-width: 560px) {
+    padding-right: 96px;
+  }
+
   display: flex;
   align-items: center;
   gap: 10px;
@@ -50,9 +82,16 @@ export const topRow = css`
 `;
 
 export const username = css`
+  min-width: 0;
+  overflow-wrap: anywhere; /* 띄어쓰기 없는 긴 이름도 카드 안에서 줄바꿈 */
   margin: 0;
   font-size: 18px;
   font-weight: 700;
+`;
+
+export const followers = css`
+  font-size: 13px;
+  color: #8e8e8e;
 `;
 
 export const major = css`
@@ -82,8 +121,3 @@ export const regions = css`
   font-size: 12px;
 `;
 
-export const arrow = css`
-  margin-left: auto;
-  color: #6e747b;
-  font-size: 18px;
-`;
