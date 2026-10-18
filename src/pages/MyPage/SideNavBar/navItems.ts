@@ -33,6 +33,10 @@ export const buildMyPageNavItems = (artistStatus: ArtistStatus): NavItem[] => {
           : []),
       ],
     },
+    { key: "chats", label: "채팅", to: "/mypage/chats" },
+    { key: "inquiries", label: "문의", to: "/mypage/inquiries" },
+    { key: "reviews", label: "리뷰 관리", to: "/mypage/reviews" },
+    { key: "follows", label: "팔로잉", to: "/mypage/follows" },
     { key: "account", label: "인증 및 개인정보", to: "/mypage/account" },
   ];
 

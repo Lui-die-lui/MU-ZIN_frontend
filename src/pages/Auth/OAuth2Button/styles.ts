@@ -8,10 +8,22 @@ export const OAuthButton = styled.a<{ provider: "google" | "naver" | "kakao" }>`
   width: 44px;
   height: 44px;
   border-radius:50px;
+  box-sizing: border-box; /* 구글 버튼 테두리까지 44px 로 (다른 버튼과 같은 크기) */
 
 
   /* 공통 */
   text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(17, 24, 39, 0.12);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(17, 24, 39, 0.25);
+    outline-offset: 2px;
+  }
 
   /* provider별 */
   ${({ provider }) =>
@@ -33,4 +45,3 @@ export const OAuthButton = styled.a<{ provider: "google" | "naver" | "kakao" }>`
       color: #000;
     `}
 `;
-

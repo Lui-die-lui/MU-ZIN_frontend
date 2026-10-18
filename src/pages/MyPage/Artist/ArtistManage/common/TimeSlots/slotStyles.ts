@@ -107,7 +107,7 @@ export const dowChip = (active: boolean) => css`
 export const message = (tone: "error" | "info" | "warn") => css`
   margin: 0;
   font-size: 13px;
-  color: ${tone === "error" ? "#dc2626" : tone === "warn" ? "#92400e" : "#4b5563"};
+  color: ${tone === "error" ? "#dc2626" : tone === "warn" ? "#1b1d20" : "#4b5563"};
 `;
 
 export const previewBox = css`

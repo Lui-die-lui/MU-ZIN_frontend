@@ -3,9 +3,9 @@ import { css } from "@emotion/react";
 import type { TimeSlotStatus } from "../../../../../Types/lessonTypes";
 
 const SLOT_STATUS_META: Record<TimeSlotStatus, { label: string; bg: string; color: string }> = {
-  OPEN: { label: "예약 가능", bg: "#ecfdf3", color: "#047857" },
-  PENDING: { label: "요청 대기", bg: "#fff7ed", color: "#c2410c" },
-  BOOKED: { label: "예약 확정", bg: "#eff6ff", color: "#1d4ed8" },
+  OPEN: { label: "예약 가능", bg: "#f3f4f6", color: "#111827" },
+  PENDING: { label: "요청 대기", bg: "#f7f8f9", color: "#4b5563" },
+  BOOKED: { label: "예약 확정", bg: "#f3f4f6", color: "#111827" },
   CLOSED: { label: "닫힘", bg: "#f3f4f6", color: "#6b7280" },
 };
 

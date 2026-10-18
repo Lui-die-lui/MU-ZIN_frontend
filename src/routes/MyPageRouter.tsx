@@ -14,6 +14,10 @@ import CreateLessonPage from "../pages/MyPage/Artist/ArtistManage/CreateLesson/C
 import EditLessonPage from "../pages/MyPage/Artist/ArtistManage/EditLesson/EditLessonPage";
 
 import MyReservationsPage from "../pages/MyPage/Reservations/MyReservation/MyReservationsPage";
+import MyReviewsPage from "../pages/MyPage/Reviews/MyReviewsPage";
+import MyFollowsPage from "../pages/MyPage/Follows/MyFollowsPage";
+import ChatsPage from "../pages/MyPage/Chats/ChatsPage";
+import InquiriesPage from "../pages/MyPage/Inquiries/InquiriesPage";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 function MyPageRouter() {
@@ -39,6 +43,19 @@ function MyPageRouter() {
             </ApprovdeArtistGuard>
           }
         />
+
+        {/* 리뷰 관리 (작성 가능 / 내가 쓴 리뷰 / 받은 리뷰) */}
+        <Route path="reviews" element={<MyReviewsPage />} />
+
+        {/* 팔로잉 (내가 팔로우한 아티스트, 나만 볼 수 있음) */}
+        <Route path="follows" element={<MyFollowsPage />} />
+
+        {/* 채팅 (예약이 수락된 수강생·아티스트) */}
+        <Route path="chats" element={<ChatsPage />} />
+        <Route path="chats/:roomId" element={<ChatsPage />} />
+
+        {/* 레슨 문의 (보낸 문의 / 받은 문의) */}
+        <Route path="inquiries" element={<InquiriesPage />} />
 
         {/* account 중첩 라우트 - 아티스트만 접근 가능한 탭으로 만듦 */}
         <Route path="account" element={<AccountLayout />}>

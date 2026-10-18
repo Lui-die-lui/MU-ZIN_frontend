@@ -7,6 +7,7 @@ import {
   formatArtistServiceRegions,
 } from "../../../../utils/artistSearchUtils";
 import * as s from "./styles";
+import FollowButton from "../../../../components/artist/FollowButton";
 
 type Props = {
   artist: ArtistSearchResp;
@@ -23,31 +24,49 @@ function ArtistCard({ artist }: Props) {
   const serviceRegions = formatArtistServiceRegions(artist.serviceRegions);
 
   return (
-    <button type="button" css={s.card} onClick={handleClickCard}>
-      <ProfileAvatar src={artist.profileImgUrl} name={artist.username} alt={`${artist.username} 프로필`} size={72} />
+    // 팔로우 버튼은 카드 버튼 안에 넣을 수 없어(버튼 안 버튼) 옆에 겹쳐 둠
+    <div css={s.cardWrap}>
+      <button type="button" css={s.card} onClick={handleClickCard}>
+        <ProfileAvatar
+          src={artist.profileImgUrl}
+          name={artist.username}
+          alt={`${artist.username} 프로필`}
+          size={72}
+        />
 
-      <div css={s.content}>
-        <div css={s.topRow}>
-          <h3 css={s.username}>{artist.username}</h3>
-          {artist.majorName && <span css={s.major}>{artist.majorName}</span>}
-        </div>
-
-        <div css={s.chips}>
-          {artist.instruments.map((inst) => (
-            <span key={inst.instId} css={s.chip}>
-              {inst.instName}
-            </span>
-          ))}
-        </div>
-        {(mainRegion || serviceRegions) && (
-          <div css={s.regions}>
-            {mainRegion && <span>주 활동 지역 · {mainRegion}</span>}
-            {serviceRegions && <span>레슨 가능 · {serviceRegions}</span>}
+        <div css={s.content}>
+          <div css={s.topRow}>
+            <h3 css={s.username}>{artist.username}</h3>
+            {artist.majorName && <span css={s.major}>{artist.majorName}</span>}
+          <span css={s.followers}>팔로워 {artist.followerCount.toLocaleString("ko-KR")}</span>
           </div>
-        )}
+
+          <div css={s.chips}>
+            {artist.instruments.map((inst) => (
+              <span key={inst.instId} css={s.chip}>
+                {inst.instName}
+              </span>
+            ))}
+          </div>
+          {(mainRegion || serviceRegions) && (
+            <div css={s.regions}>
+              {mainRegion && <span>주 활동 지역 · {mainRegion}</span>}
+              {serviceRegions && <span>레슨 가능 · {serviceRegions}</span>}
+            </div>
+          )}
+        </div>
+      </button>
+      <div css={s.follow}>
+        <FollowButton
+        key={String(artist.followedByMe)}
+        size="sm"
+        artistProfileId={artist.artistProfileId}
+        artistName={artist.username}
+        profileImgUrl={artist.profileImgUrl}
+        following={artist.followedByMe}
+      />
       </div>
-      <span css={s.arrow} aria-hidden="true">→</span>
-    </button>
+    </div>
   );
 }
 

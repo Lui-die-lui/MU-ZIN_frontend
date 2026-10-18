@@ -14,12 +14,14 @@ import {
 export const useArtistSearch = (
   applied: ArtistSearchDraft,
   enabled: boolean,
+  followedOnly = false, // 내가 팔로우한 아티스트만
+  viewerUserId: number | null = null, // 로그인한 사람마다 팔로우 표시가 달라서 캐시를 나눔
 ) => {
-  const params = makeArtistSearchParams(applied);
+  const params = { ...makeArtistSearchParams(applied), ...(followedOnly ? { followedOnly: true } : {}) };
   const pageSize = 12;
 
   return useInfiniteQuery({
-    queryKey: artistKeys.search(params),
+    queryKey: [...artistKeys.search(params), viewerUserId],
     queryFn: ({ pageParam }) =>
       searchArtistsReq({ ...params, page: pageParam, size: pageSize }),
     initialPageParam: 0,

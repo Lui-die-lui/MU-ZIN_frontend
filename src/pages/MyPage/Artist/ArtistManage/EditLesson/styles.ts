@@ -62,8 +62,8 @@ export const statusBadge = (active: boolean) => css`
   border-radius: 999px;
   font-size: 13px;
   font-weight: 700;
-  background: ${active ? "#ecfdf3" : "#f3f4f6"};
-  color: ${active ? "#047857" : "#6b7280"};
+  background: ${active ? "#f3f4f6" : "#f3f4f6"};
+  color: ${active ? "#111827" : "#6b7280"};
 
   &::before {
     content: "";
@@ -86,9 +86,9 @@ export const banner = css`
   align-items: flex-start;
   padding: 14px 16px;
   border-radius: 14px;
-  border: 1px solid #fde68a;
-  background: #fffbeb;
-  color: #78350f;
+  border: 1px solid #e2e5e9;
+  background: #f7f8f9;
+  color: #1b1d20;
   font-size: 13px;
   line-height: 1.6;
 
@@ -96,7 +96,7 @@ export const banner = css`
     display: block;
     margin-bottom: 2px;
     font-size: 14px;
-    color: #92400e;
+    color: #1b1d20;
   }
 `;
 
@@ -106,7 +106,7 @@ export const bannerLink = css`
   padding: 0;
   border: 0;
   background: none;
-  color: #92400e;
+  color: #1b1d20;
   font: inherit;
   font-size: 13px;
   font-weight: 700;

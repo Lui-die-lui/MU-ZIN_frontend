@@ -3,14 +3,16 @@ import { css } from "@emotion/react";
 import type { StatusTone } from "./badgeUi";
 
 
-export const toneVars: Record<StatusTone, { bg: string; fg: string; bd: string }> = {
-  neutral: { bg: "rgba(0,0,0,0.06)", fg: "rgba(0,0,0,0.72)", bd: "rgba(0,0,0,0.12)" },
-  info:    { bg: "rgba(0,120,255,0.10)", fg: "rgba(0,90,200,1)", bd: "rgba(0,120,255,0.22)" },
-  success: { bg: "rgba(0,180,120,0.12)", fg: "rgba(0,120,80,1)", bd: "rgba(0,180,120,0.24)" },
-  warning: { bg: "rgba(255,170,0,0.14)", fg: "rgba(160,100,0,1)", bd: "rgba(255,170,0,0.28)" },
-  danger:  { bg: "rgba(255,60,80,0.12)", fg: "rgba(190,0,30,1)", bd: "rgba(255,60,80,0.26)" },
-  progress:{ bg: "rgba(0, 150, 200, 0.12)", fg: "rgba(0, 110, 150, 1)", bd: "rgba(0, 150, 200, 0.26)" },
-  confirmed: { bg: "rgba(124, 92, 255, 0.12)", fg: "rgba(88, 56, 220, 1)", bd: "rgba(124, 92, 255, 0.28)" },
+// 브랜드 톤(검정 + 회색): 색 대신 채움/테두리로 구분
+//  확정 = 검정 채움 · 확인 대기 = 검정 테두리 · 완료 확인 중 = 점선 · 완료 = 연회색 채움 · 거절/취소/만료 = 흐린 회색
+export const toneVars: Record<StatusTone, { bg: string; fg: string; bd: string; style?: "dashed" }> = {
+  confirmed: { bg: "#111827", fg: "#ffffff", bd: "#111827" },
+  info: { bg: "#ffffff", fg: "#111827", bd: "#111827" },
+  progress: { bg: "#ffffff", fg: "#374151", bd: "#9ca3af", style: "dashed" },
+  success: { bg: "#eef0f2", fg: "#1b1d20", bd: "#e2e5e9" },
+  warning: { bg: "#f3f4f6", fg: "#111827", bd: "#d1d5db" },
+  danger: { bg: "#ffffff", fg: "#6b7280", bd: "#d1d5db" },
+  neutral: { bg: "#f7f8f9", fg: "#9ca3af", bd: "#eef0f2" },
 };
 
 const basePill = css`
@@ -36,7 +38,7 @@ export const badge = (tone: StatusTone) => {
     ${basePill};
     background: ${v.bg};
     color: ${v.fg};
-    border: 1px solid ${v.bd};
+    border: 1px ${v.style ?? "solid"} ${v.bd};
   `;
 };
 
@@ -46,7 +48,7 @@ export const statusBtn = (tone: StatusTone) => {
     ${basePill};
     background: ${v.bg};
     color: ${v.fg};
-    border: 1px solid ${v.bd};
+    border: 1px ${v.style ?? "solid"} ${v.bd};
     cursor: pointer;
 
     transition: transform 0.08s ease, filter 0.12s ease;
@@ -65,7 +67,7 @@ export const statusBtn = (tone: StatusTone) => {
 
     /* 키보드 접근성: focus 스타일은 꼭 넣자… 나중에 고생함 */
     &:focus-visible {
-      outline: 2px solid ${v.fg};
+      outline: 2px solid #111827;
       outline-offset: 2px;
     }
   `;

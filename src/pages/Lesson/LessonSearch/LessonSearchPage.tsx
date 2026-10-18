@@ -263,7 +263,7 @@ function LessonSearchPage() {
                         <span css={s.cardArrow} aria-hidden="true">→</span>
                       </div>
                       <h3 css={s.cardTitle}>{lesson.title}</h3>
-                      {lesson.description && <p css={s.cardDescription}>{lesson.description}</p>}
+                      <p css={s.cardDescription}>{lesson.description ?? ""}</p>
                       <div css={s.cardMeta}>
                         <span>{LESSON_MODE_LABEL[lesson.mode]}</span><span aria-hidden="true">·</span>
                         <span>{lesson.durationMin}분</span><span aria-hidden="true">·</span>

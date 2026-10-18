@@ -27,7 +27,7 @@ export const AvatarCircle = styled.div`
   border-radius: 999px;
   overflow: hidden;
 
-  background: #5a4038;
+  background: #374151;
   display: grid;
   place-items: center;
 `;

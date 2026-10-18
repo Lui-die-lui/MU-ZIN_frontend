@@ -9,6 +9,7 @@ import LessonRouter from "./LessonRouter";
 import ArtistRouter from "./ArtistRouter";
 import MailVerifyResult from "../pages/Auth/MailVerifyResult/MailVerifyResult";
 import NotFound from "../pages/NotFound/NotFound";
+import HobbyFinderPage from "../pages/HobbyFinder/HobbyFinderPage";
 
 function MainRouter() {
   return (
@@ -16,6 +17,8 @@ function MainRouter() {
       <Route path="/mypage/*" element={<MyPageRouter />} />
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
+        {/* 나와 어울리는 음악 취미 찾기 (로그인 없이) */}
+        <Route path="/hobby-finder" element={<HobbyFinderPage />} />
         <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
         <Route path="/lessons/*" element={<LessonRouter />} />
         <Route path="/artists/*" element={<ArtistRouter />} />

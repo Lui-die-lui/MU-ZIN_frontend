@@ -21,6 +21,11 @@ export const Header = styled.header`
   padding: 0 18px;
   border-bottom: 1px solid #eee;
   background: #fff;
+
+  /* 좁은 화면: 로그인하면 채팅·알림·프로필이 함께 있어 가로로 넘치지 않게 간격만 줄임 */
+  @media (max-width: 480px) {
+    padding: 0 10px;
+  }
 `;
 
 // 왼쪽 영역
@@ -28,6 +33,10 @@ export const Left = styled.div`
   display: flex;
   align-items: center;
   gap: 18px;
+
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
 `;
 
 // 로고
@@ -40,6 +49,10 @@ export const Logo = styled.div`
 export const Nav = styled.nav`
   display: flex;
   gap: 12px;
+
+  @media (max-width: 480px) {
+    gap: 2px;
+  }
 `;
 
 export const link = css`
@@ -65,6 +78,10 @@ export const link = css`
     background: #111827;
     color: #fff;
   }
+
+  @media (max-width: 480px) {
+    padding: 8px 7px;
+  }
 `;
 
 // 메뉴 활성화
@@ -78,6 +95,10 @@ export const Right = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+
+  @media (max-width: 480px) {
+    gap: 2px;
+  }
 `;
 
 // 버튼
@@ -148,8 +169,9 @@ export const ProfileBtn = styled.button`
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 0px;
-  padding: 0 10px;
+  /* 예전엔 height: 0px 이라 메뉴가 버튼 가운데(=프로필 사진 위)에서 열렸음 -> 사진 크기에 맞춤 */
+  height: 36px;
+  padding: 0 6px;
   border-radius: 12px;
   /* border: 1px solid #eee; */
   border: none;
@@ -402,4 +424,74 @@ export const NotificationLoading = styled.div`
       background: #e2e5e8;
     }
   }
+`;
+
+// ---------- 프로필 메뉴 ----------
+// MUI Menu 종이(paper) - 다른 드롭다운 목록(dropdownStyles.dropdownMenu)과 같은 테두리/모서리/그림자/항목 모양
+export const profileMenuPaperSx = {
+  mt: "4px", // 버튼 아래 여백 4px + 4px = 프로필 사진 아래 8px (사진을 가리지 않게)
+  minWidth: 240,
+  maxWidth: 280,
+  borderRadius: "12px",
+  border: "1px solid #e2e5e9",
+  boxShadow: "0 12px 32px rgba(17,24,39,.12)",
+  "& .MuiList-root": { padding: "6px" },
+  "& .MuiMenuItem-root": {
+    minHeight: 40,
+    padding: "0 10px",
+    borderRadius: "8px",
+    fontSize: 14,
+    fontFamily: "inherit",
+    color: "#1b1d20",
+  },
+  "& .MuiMenuItem-root:hover, & .MuiMenuItem-root.Mui-focusVisible": { backgroundColor: "#f3f4f6" },
+};
+
+export const profileMenuHeader = css`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px 6px;
+  list-style: none;
+`;
+
+export const profileMenuWho = css`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  text-align: left;
+`;
+
+export const profileMenuNameRow = css`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+
+  strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 15px;
+    color: #1b1d20;
+  }
+`;
+
+export const profileMenuBadge = css`
+  flex-shrink: 0;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+`;
+
+export const profileMenuEmail = css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: #6b7280;
 `;

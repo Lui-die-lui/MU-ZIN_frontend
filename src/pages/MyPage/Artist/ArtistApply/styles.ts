@@ -100,9 +100,9 @@ export const notice = (tone: "warn" | "error" | "info") => css`
   margin-bottom: 16px;
   padding: 16px 18px;
   border-radius: 14px;
-  border: 1px solid ${tone === "error" ? "#fecaca" : tone === "warn" ? "#fde68a" : "#e5e7eb"};
-  background: ${tone === "error" ? "#fef2f2" : tone === "warn" ? "#fffbeb" : "#f9fafb"};
-  color: ${tone === "error" ? "#991b1b" : tone === "warn" ? "#78350f" : "#374151"};
+  border: 1px solid ${tone === "error" ? "#fecaca" : tone === "warn" ? "#e2e5e9" : "#e5e7eb"};
+  background: ${tone === "error" ? "#fef2f2" : tone === "warn" ? "#f7f8f9" : "#f9fafb"};
+  color: ${tone === "error" ? "#991b1b" : tone === "warn" ? "#1b1d20" : "#374151"};
   font-size: 13px;
   line-height: 1.6;
   white-space: pre-wrap;
@@ -264,7 +264,7 @@ export const pendingIcon = css`
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #fffbeb;
-  color: #b45309;
+  background: #f7f8f9;
+  color: #4b5563;
   font-size: 24px;
 `;

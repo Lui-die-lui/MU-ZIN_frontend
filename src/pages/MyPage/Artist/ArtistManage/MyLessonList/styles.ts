@@ -127,8 +127,8 @@ export const statusChip = (active: boolean) => css`
   height: 22px;
   padding: 0 8px;
   border-radius: 999px;
-  background: ${active ? "#ecfdf3" : "#f3f4f6"};
-  color: ${active ? "#047857" : "#6b7280"};
+  background: ${active ? "#f3f4f6" : "#f3f4f6"};
+  color: ${active ? "#111827" : "#6b7280"};
   font-size: 12px;
   font-weight: 700;
 `;
@@ -191,10 +191,10 @@ export const infoRow = css`
 type Tone = "neutral" | "good" | "warn" | "alert" | "info";
 const TONES: Record<Tone, { bg: string; color: string }> = {
   neutral: { bg: "#f3f4f6", color: "#4b5563" },
-  good: { bg: "#ecfdf3", color: "#047857" },
-  warn: { bg: "#fffbeb", color: "#b45309" },
-  alert: { bg: "#fff7ed", color: "#c2410c" },
-  info: { bg: "#eff6ff", color: "#1d4ed8" },
+  good: { bg: "#f3f4f6", color: "#111827" },
+  warn: { bg: "#f7f8f9", color: "#4b5563" },
+  alert: { bg: "#f7f8f9", color: "#4b5563" },
+  info: { bg: "#f3f4f6", color: "#111827" },
 };
 
 export const infoChip = (tone: Tone) => css`

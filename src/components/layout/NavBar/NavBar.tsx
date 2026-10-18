@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 
-import { PiBellSimpleThin } from "react-icons/pi";
+import { PiBellSimpleThin, PiCalendarDotsThin, PiChatCircleDotsThin } from "react-icons/pi";
+import { useChatUnread } from "../../../hooks/chat/useChat";
 import { dropdownCaret } from "../../common/dropdownStyles";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notificationKeys } from "../../../hooks/notification/notificationKeys";
@@ -19,6 +21,7 @@ import type { NotificationResponse } from "../../../Types/notificationTypes";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
 
 const formatNotificationTime = (value: string) => {
   const createdAt = new Date(value);
@@ -59,7 +62,33 @@ function NavBar() {
   };
 
   const notiMenu = useMenuAnchor<HTMLButtonElement>();
+  const chatUnreadQ = useChatUnread(!!principal);
+  const chatUnread = chatUnreadQ.data ?? 0;
   const profileMenu = useMenuAnchor<HTMLButtonElement>();
+
+  // 화면이 바뀌면 열려 있던 메뉴는 닫음 (뒤로 가기 등 메뉴 밖에서 이동한 경우)
+  const { pathname } = useLocation();
+  const closeNoti = notiMenu.onClose;
+  const closeProfile = profileMenu.onClose;
+  useEffect(() => {
+    closeNoti();
+    closeProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 경로가 바뀔 때만
+  }, [pathname]);
+
+  // 메뉴가 열려 있어도 페이지 스크롤은 막지 않음(disableScrollLock) -> 대신 스크롤하면 닫음
+  // (상단 메뉴가 고정이 아니라서 스크롤하면 버튼과 메뉴가 떨어지기 때문)
+  const anyMenuOpen = notiMenu.open || profileMenu.open;
+  useEffect(() => {
+    if (!anyMenuOpen) return;
+    const onScroll = () => {
+      closeNoti();
+      closeProfile();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 열림 상태가 바뀔 때만
+  }, [anyMenuOpen]);
 
   // 안읽음 상태 뱃지용(unreadCount는 로그인 상태면 항상 가져와도 ok)
   const unreadQ = useQuery({
@@ -102,26 +131,34 @@ function NavBar() {
   const unread = unreadQ.data ?? 0;
   const notifications = notiListQ.data ?? [];
 
-  // 예약 관리로 일단 보냄
-  // 나중에 refType / refId 로 switch 해서 분기 나누기
+  // 알림 종류별 이동: 리뷰 알림은 리뷰 관리(받은 리뷰 / 내가 쓴 리뷰), 그 외는 예약 화면
   const goByNoti = (n: NotificationResponse) => {
-    navigate("/mypage/reservations");
+    if (n.type === "REVIEW_CREATED") navigate("/mypage/reviews?tab=received");
+    else if (n.type === "REVIEW_REPLIED") navigate("/mypage/reviews?tab=written");
+    else if (n.type === "INQUIRY_CREATED") navigate("/mypage/inquiries?tab=received");
+    else if (n.type === "INQUIRY_REPLIED") navigate("/mypage/inquiries?tab=sent");
+    else if (n.type === "INQUIRY_TO_CHAT" && n.refId) navigate(`/mypage/chats/${n.refId}`);
+    else navigate("/mypage/reservations");
     if (!n.isRead) markReadM.mutate(n.notificationId);
     notiMenu.onClose();
   };
 
-  // 내 일정 버튼 분기
-  const goSchedule = () => {
-    const isApprovedArtist = principal?.artistStatus === "APPROVED";
-
-    navigate(
-      isApprovedArtist
-        ? "/mypage/reservations/requests?tab=all"
-        : "/mypage/reservations?tab=all",
-    );
-
+  // 프로필 메뉴: 이동 전에 메뉴를 닫음 (NavBar 는 화면이 바뀌어도 그대로라 안 닫으면 열린 채 남음)
+  const goFromProfile = (path: string) => {
     profileMenu.onClose();
+    navigate(path);
   };
+
+  // 아티스트 상태에 따라 보이는 메뉴
+  const artistMenuItems: { label: string; path: string }[] =
+    principal?.artistStatus === "APPROVED"
+      ? [
+          { label: "예약 요청 관리", path: "/mypage/reservations/requests" },
+          { label: "내 레슨 관리", path: "/mypage/artist/manage" },
+        ]
+      : principal?.artistStatus === "PENDING"
+        ? [{ label: "아티스트 심사 현황", path: "/mypage/artist/pending" }]
+        : [{ label: "아티스트 신청", path: "/mypage/artist/apply" }];
   
   return (
     <s.Header>
@@ -146,11 +183,29 @@ function NavBar() {
       <s.Right>
         {principal ? (
           <>
-            <s.Btn onClick={() => navigate("/mypage/reservations")}>일정</s.Btn>
+            {/* 채팅 - 안 읽은 메시지 수 */}
+            <s.IconBtn
+              onClick={() => navigate("/mypage/chats")}
+              aria-label={chatUnread > 0 ? `채팅, 안 읽은 메시지 ${chatUnread}개` : "채팅"}
+              title="채팅"
+            >
+              <PiChatCircleDotsThin aria-hidden="true" />
+              {chatUnread > 0 && <s.Badge aria-hidden="true">{chatUnread > 99 ? "99+" : chatUnread}</s.Badge>}
+            </s.IconBtn>
+
+            {/* 일정 - 알림 종과 같은 Phosphor Thin 아이콘 */}
+            <s.IconBtn
+              onClick={() => navigate("/mypage/reservations")}
+              aria-label="내 일정"
+              title="내 일정"
+            >
+              <PiCalendarDotsThin aria-hidden="true" />
+            </s.IconBtn>
             {/* <s.Btn onClick={onLogout}>로그아웃</s.Btn> */}
 
             {/* 알림 */}
             <s.IconBtn
+              ref={notiMenu.anchorRef}
               onClick={notiMenu.onOpen}
               aria-label={unread > 0 ? `알림, 읽지 않은 알림 ${unread}개` : "알림"}
               aria-haspopup="menu"
@@ -163,6 +218,8 @@ function NavBar() {
 
             <Menu
               anchorEl={notiMenu.anchorEl}
+              // 열 때 페이지 스크롤을 잠그면 MUI 가 스크롤바만큼 오른쪽 여백을 넣어 화면이 옆으로 흔들림
+              disableScrollLock
               open={notiMenu.open}
               onClose={notiMenu.onClose}
               anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -222,7 +279,7 @@ function NavBar() {
                 <s.MenuEmpty>
                   <PiBellSimpleThin aria-hidden="true" />
                   <strong>아직 도착한 알림이 없습니다</strong>
-                  <span>예약 진행 상황을 이곳에서 알려드릴게요.</span>
+                  <span>예약 진행 상황과 리뷰 소식을 이곳에서 알려드릴게요.</span>
                 </s.MenuEmpty>
               ) : (
                 <s.NotificationList>
@@ -252,15 +309,18 @@ function NavBar() {
                 !notiListQ.isError &&
                 notifications.length > 0 && (
                   <s.NotificationFooter>
-                    알림을 누르면 관련 일정으로 이동합니다
+                    알림을 누르면 관련 화면으로 이동해요
                   </s.NotificationFooter>
                 )}
             </Menu>
 
             {/* 프로필 */}
             <s.ProfileBtn
+              ref={profileMenu.anchorRef}
               onClick={profileMenu.onOpen}
-              aria-label="profile-menu"
+              aria-label="내 계정 메뉴"
+              aria-haspopup="menu"
+              aria-expanded={profileMenu.open}
             >
               <Avatar
                 src={principal.profileImgUrl ?? undefined}
@@ -272,20 +332,57 @@ function NavBar() {
               <span css={dropdownCaret(profileMenu.open)} aria-hidden="true" />
             </s.ProfileBtn>
 
-            {/* 프로필 드롭다운 메뉴 */}
+            {/* 프로필 드롭다운 메뉴 - 다른 드롭다운과 같은 모양 (dropdownStyles.dropdownMenu 값) */}
             <Menu
               anchorEl={profileMenu.anchorEl}
+              disableScrollLock
               open={profileMenu.open}
               onClose={profileMenu.onClose}
-              slotProps={{
-                paper: { sx: { borderRadius: 2, minWidth: 180 } },
-              }}
+              // 화면 오른쪽 끝 버튼이라 메뉴 오른쪽을 버튼 오른쪽에 맞춤
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+              slotProps={{ paper: { sx: s.profileMenuPaperSx } }}
             >
-              <MenuItem onClick={() => navigate("/mypage")}>
-                마이페이지
+              {/* 누가 로그인했는지 (메뉴 항목 아님) */}
+              <li css={s.profileMenuHeader} role="presentation">
+                <Avatar
+                  src={principal.profileImgUrl ?? undefined}
+                  alt=""
+                  sx={{ width: 40, height: 40, fontSize: 16 }}
+                >
+                  {principal.username?.[0] ?? "U"}
+                </Avatar>
+                <div css={s.profileMenuWho}>
+                  <div css={s.profileMenuNameRow}>
+                    <strong>{principal.username}</strong>
+                    {principal.artistStatus === "APPROVED" && <span css={s.profileMenuBadge}>아티스트</span>}
+                  </div>
+                  <span css={s.profileMenuEmail}>{principal.email}</span>
+                </div>
+              </li>
+              <Divider sx={{ my: "6px !important" }} />
+              <MenuItem onClick={() => goFromProfile("/mypage")}>마이페이지</MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/reservations")}>내 예약</MenuItem>
+              {artistMenuItems.map((item) => (
+                <MenuItem key={item.path} onClick={() => goFromProfile(item.path)}>
+                  {item.label}
+                </MenuItem>
+              ))}
+              <MenuItem onClick={() => goFromProfile("/mypage/chats")}>채팅</MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/inquiries")}>문의</MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/reviews")}>리뷰 관리</MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/follows")}>팔로잉</MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/account")}>계정 설정</MenuItem>
+              <Divider sx={{ my: "6px !important" }} />
+              <MenuItem
+                onClick={() => {
+                  profileMenu.onClose();
+                  onLogout();
+                }}
+                sx={{ color: "#6b7280" }}
+              >
+                로그아웃
               </MenuItem>
-              <MenuItem onClick={goSchedule}>내 일정</MenuItem>
-              <MenuItem onClick={onLogout}>로그아웃</MenuItem>
             </Menu>
           </>
         ) : (

@@ -4,9 +4,9 @@ import { css } from "@emotion/react";
 export type CardKey = "message" | "reservation" | "lesson";
 
 const gradients: Record<CardKey, string> = {
-  message: "linear-gradient(135deg, #E8C8F0 0%, #F0D8F0 45%, #F8D8D0 100%)",
-  reservation: "linear-gradient(135deg, #F8D8D0 0%, #F8C8C8 55%, #F0C8E8 100%)",
-  lesson: "linear-gradient(135deg, #F0C8E8 0%, #F8D0D0 55%, #F0D0F0 100%)",
+  message: "linear-gradient(135deg, #eef0f2 0%, #f3f4f6 45%, #f7f8f9 100%)",
+  reservation: "linear-gradient(135deg, #f7f8f9 0%, #f3f4f6 55%, #f3f4f6 100%)",
+  lesson: "linear-gradient(135deg, #f3f4f6 0%, #f7f8f9 55%, #f3f4f6 100%)",
 };
 
 // export const wrap = css`
@@ -103,7 +103,7 @@ export const dot = css`
   width: 14px;
   height: 14px;
   border-radius: 999px;
-  background: #ff2d2d;
+  background: #111827;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
 `;
 

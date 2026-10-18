@@ -6,6 +6,13 @@ import { useArtistLessonCards, useArtistProfileDetail } from "../../../hooks/art
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import ProfileAvatar from "../../../components/common/ProfileAvatar/ProfileAvatar";
 import ArtistLessons from "./ArtistLessons";
+import { useArtistReviews } from "../../../hooks/review/useReviews";
+import ReviewSection from "../../../components/review/ReviewSection";
+import { StarDisplay } from "../../../components/review/StarRating";
+import FollowButton from "../../../components/artist/FollowButton";
+import InquiryModal from "../../../components/chat/InquiryModal";
+import { useState } from "react";
+import { useArtistFollow } from "../../../hooks/artistSearch/useArtistFollow";
 
 const regionText = (r: { region1DepthName: string | null; region2DepthName?: string | null; region3DepthName?: string | null }) =>
   [r.region1DepthName, r.region2DepthName, r.region3DepthName].filter(Boolean).join(" ");
@@ -25,6 +32,11 @@ function ArtistDetail() {
   // 잘못된 주소면 요청하지 않음 (훅 enabled 가 0 을 막음)
   const { data: artist, isLoading, isError } = useArtistProfileDetail(validId ? id : 0);
   const lessonsQ = useArtistLessonCards(validId ? id : 0);
+  // 이 아티스트가 받은 전체 리뷰 (리뷰마다 어떤 레슨인지 표시)
+  const reviewsQ = useArtistReviews(validId ? id : null);
+  // 팔로워 수 + 내가 팔로우 중인지
+  const followQ = useArtistFollow(validId ? id : null);
+  const [inquiryOpen, setInquiryOpen] = useState(0); // 0 = 닫힘, 열 때마다 새 key
 
   // 목록에서 들어왔으면 뒤로, 주소로 바로 들어왔으면 아티스트 찾기로
   const goBack = () => (location.key !== "default" ? navigate(-1) : navigate("/artists"));
@@ -63,6 +75,9 @@ function ArtistDetail() {
 
   const scrollToLessons = () =>
     document.getElementById("artist-lessons")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const scrollToReviews = () =>
+    document.getElementById("artist-reviews")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const reviewSummary = reviewsQ.data?.summary;
 
   return (
     <div css={s.wrap}>
@@ -94,9 +109,34 @@ function ArtistDetail() {
                       <span>{studio}</span>
                     </div>
                   )}
+                  {/* 인스타처럼 숫자만 (누가 팔로우하는지 명단은 비공개) */}
+                  <ul css={s.stats} aria-label="아티스트 숫자">
+                    <li>
+                      레슨 <strong>{lessonCount}</strong>
+                    </li>
+                    <li>
+                      팔로워 <strong>{(followQ.data?.followerCount ?? 0).toLocaleString("ko-KR")}</strong>
+                    </li>
+                  </ul>
+                  {reviewSummary && reviewSummary.reviewCount > 0 && (
+                    <button type="button" css={s.ratingLine} onClick={scrollToReviews}>
+                      <StarDisplay value={reviewSummary.averageRating} size={15} />
+                      <strong>{reviewSummary.averageRating.toFixed(1)}</strong>
+                      <span>리뷰 {reviewSummary.reviewCount}개</span>
+                    </button>
+                  )}
                 </div>
 
                 <div css={s.actions}>
+                  {followQ.data && !isOwner && (
+                    <FollowButton
+                      key={String(followQ.data.following)}
+                      artistProfileId={id}
+                      artistName={artist.username}
+                      profileImgUrl={artist.profileImgUrl}
+                      following={followQ.data.following}
+                    />
+                  )}
                   {isOwner ? (
                     <>
                       <Link css={s.btn("ghost")} to="/mypage/account/artist">
@@ -107,11 +147,21 @@ function ArtistDetail() {
                       </Link>
                     </>
                   ) : (
-                    lessonCount > 0 && (
+                    <>
+                    {/* 레슨이 없어도 문의 가능 */}
+                    <button
+                      type="button"
+                      css={s.btn("ghost")}
+                      onClick={() => (principal ? setInquiryOpen((n) => n + 1) : navigate("/signin", { state: { from: location } }))}
+                    >
+                      문의하기
+                    </button>
+                    {lessonCount > 0 && (
                       <button type="button" css={s.btn("primary")} onClick={scrollToLessons}>
                         레슨 {lessonCount}개 보기
                       </button>
-                    )
+                    )}
+                    </>
                   )}
                 </div>
               </div>
@@ -172,6 +222,33 @@ function ArtistDetail() {
 
         {/* 레슨 */}
         <ArtistLessons artistProfileId={id} isOwner={isOwner} query={lessonsQ} />
+
+        {inquiryOpen > 0 && (
+          <InquiryModal key={inquiryOpen} open artistProfileId={id} artistName={artist.username} onClose={() => setInquiryOpen(0)} />
+        )}
+
+        {/* 리뷰 - 모든 레슨의 리뷰 + 많이 선택된 태그 순위 */}
+        <section id="artist-reviews" css={[s.card, s.reviewCard]} aria-labelledby="artist-reviews-title">
+          <div css={s.reviewHeader}>
+            <h2 id="artist-reviews-title" css={s.sectionTitle}>
+              리뷰 {reviewSummary?.reviewCount ? <span>{reviewSummary.reviewCount}</span> : null}
+            </h2>
+            {isOwner && (
+              <Link css={s.btn("ghost")} to="/mypage/reviews?tab=received">
+                답글 관리
+              </Link>
+            )}
+          </div>
+          <ReviewSection
+            data={reviewsQ.data}
+            isLoading={reviewsQ.isLoading}
+            isError={reviewsQ.isError}
+            onRetry={() => reviewsQ.refetch()}
+            showLesson
+            limit={5}
+            emptyText="아직 받은 리뷰가 없어요. 레슨을 받은 수강생만 리뷰를 남길 수 있어요."
+          />
+        </section>
 
         {/* 경력 (있을 때만) */}
         {artist.career?.trim() && (

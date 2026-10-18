@@ -14,8 +14,8 @@ export const check = css`
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #ecfdf3;
-  color: #047857;
+  background: #f3f4f6;
+  color: #111827;
   font-size: 26px;
   font-weight: 800;
 `;
