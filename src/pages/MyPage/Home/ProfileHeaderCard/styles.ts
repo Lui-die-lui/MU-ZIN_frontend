@@ -91,12 +91,16 @@ export const UserName = styled.div`
   font-weight: 900;
   letter-spacing: -0.6px;
   color: #111827;
+  max-width: 100%;
+  overflow-wrap: anywhere; /* 공백 없는 긴 이름이 좁은 화면에서 옆으로 넘치지 않게 */
 `;
 
 export const Email = styled.div`
   font-size: 15px;
   font-weight: 700;
   color: #374151;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 `;
 
 export const StateText = styled.div`

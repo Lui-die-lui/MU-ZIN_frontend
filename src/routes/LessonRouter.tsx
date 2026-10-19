@@ -7,6 +7,8 @@ function LessonRouter() {
   return (
     <Routes>
       <Route index element={<LessonMain />} />
+      {/* /lessons/:lessonId - 검색 화면 위에 그 레슨 상세(drawer)를 바로 열어 둠 (AI 추천 카드 등에서 링크로 이동) */}
+      <Route path=":lessonId" element={<LessonMain />} />
     </Routes>
   );
 }

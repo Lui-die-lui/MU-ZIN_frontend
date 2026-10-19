@@ -1,3 +1,4 @@
+import { usePrincipalState } from "../../stores/usePrincipalState";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -182,7 +183,7 @@ function useArtistAccount() {
         qc.invalidateQueries({ queryKey: ["artistStyleTags", "me"] }),
         // 공개 프로필/아티스트 검색 캐시 (예전엔 ["artistProfileDetail"] 이라는 쓰이지 않는 키를 지워서 공개 프로필이 3분간 예전 값이었음)
         qc.invalidateQueries({ queryKey: artistKeys.all }),
-        qc.invalidateQueries({ queryKey: ["principal"] }),
+        usePrincipalState.getState().refreshPrincipal(),
       ]);
     },
   });

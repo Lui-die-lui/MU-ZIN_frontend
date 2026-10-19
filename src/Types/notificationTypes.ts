@@ -16,7 +16,9 @@ export type NotificationType =
   | "REVIEW_REPLIED" // 내 리뷰에 아티스트 답글
   | "INQUIRY_CREATED" // 새 레슨 문의 (아티스트)
   | "INQUIRY_REPLIED" // 문의 답변
-  | "INQUIRY_TO_CHAT"; // 문의가 채팅으로 이어짐
+  | "INQUIRY_TO_CHAT" // 문의가 채팅으로 이어짐
+  | "ARTIST_APPROVED" // 아티스트 신청 승인
+  | "ARTIST_REJECTED"; // 아티스트 신청 반려
 
 
 // 알림 resp 타입

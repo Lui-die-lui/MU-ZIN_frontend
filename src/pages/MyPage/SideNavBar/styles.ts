@@ -10,9 +10,10 @@ export const Aside = styled.aside`
   border-right: 1px solid #e5e7eb;
   background: #fff;
 
+  /* 상단 메뉴(64px, 화면에 붙어 있음) 바로 아래에 붙음 */
   position: sticky;
-  top: 0;
-  height: 100dvh;
+  top: 64px;
+  height: calc(100dvh - 64px);
   overflow: auto;
 
   @media (max-width: 900px) {
@@ -149,5 +150,24 @@ export const ChildLinkItem = styled(NavLink)`
   &.active {
     background: #111;
     color: #fff;
+  }
+`;
+
+// 관리자 페이지 <-> 사용자 화면 전환 버튼 (메뉴 아래 따로)
+export const SwitchButton = styled.button`
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px 12px;
+  border: 1px solid #111827;
+  border-radius: 10px;
+  background: #fff;
+  color: #111827;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    background: #f3f4f6;
   }
 `;

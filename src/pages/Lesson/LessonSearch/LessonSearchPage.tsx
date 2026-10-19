@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useCallback, useMemo, useState, type FormEvent } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import type { InstrumentCategory } from "../../../Types/instrumentTypes";
 import { LESSON_MODE_LABEL, type LessonMode } from "../../../Types/lessonTypes";
@@ -46,8 +47,21 @@ const EMPTY_REGION: RegionSearchValue = {
 };
 
 function LessonSearchPage() {
-  const [open, setOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  // /lessons/:lessonId 로 들어오면 그 레슨 상세를 열어 둠. 닫으면 /lessons 로 (뒤로 가기로 다시 열리지 않게 replace)
+  const { lessonId: lessonIdParam } = useParams();
+  const navigate = useNavigate();
+  const urlLessonId = Number(lessonIdParam) > 0 ? Number(lessonIdParam) : null;
+  const [open, setOpen] = useState(urlLessonId != null);
+  const [selectedId, setSelectedId] = useState<number | null>(urlLessonId);
+  // 같은 화면에서 주소의 레슨이 바뀌면 (예: 다른 추천 카드) 렌더 중에 맞춤
+  const [prevUrlLessonId, setPrevUrlLessonId] = useState(urlLessonId);
+  if (urlLessonId !== prevUrlLessonId) {
+    setPrevUrlLessonId(urlLessonId);
+    if (urlLessonId != null) {
+      setSelectedId(urlLessonId);
+      setOpen(true);
+    }
+  }
   const [draftKeyword, setDraftKeyword] = useState("");
   const [draftMode, setDraftMode] = useState<LessonMode | "ALL">("ALL");
   const [draftTagIds, setDraftTagIds] = useState<number[]>([]);
@@ -290,7 +304,11 @@ function LessonSearchPage() {
       </section>
 
       <LessonDetailDrawer open={open} lessonId={selectedId}
-        onClose={() => { setOpen(false); setSelectedId(null); }}
+        onClose={() => {
+          setOpen(false);
+          setSelectedId(null);
+          if (urlLessonId != null) navigate("/lessons", { replace: true });
+        }}
         initialOpenSlotFilter={initialOpenSlotFilter} />
     </main>
   );

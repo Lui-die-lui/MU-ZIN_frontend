@@ -138,7 +138,7 @@ function ArtistApplyPage() {
     submitMut.mutate(payload, {
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: ["myArtistProfile"] });
-        qc.invalidateQueries({ queryKey: ["principal"] });
+        usePrincipalState.getState().refreshPrincipal();
         setConfirmOpen(false);
         toast.success("신청서를 제출했어요. 심사 결과는 알림으로 알려드려요.");
         navigate("/mypage/artist/pending", { replace: true });
@@ -169,8 +169,10 @@ function ArtistApplyPage() {
 
       {status === "REJECTED" && (
         <div css={s.notice("error")} role="status">
-          <strong>{profile?.rejectReasonTitle || "신청이 반려됐어요"}</strong>
-          {profile?.rejectedReason || "아래 내용을 보완한 뒤 다시 제출해주세요."}
+          <strong>신청이 반려됐어요</strong>
+          {profile?.rejectReasonTitle && <span css={s.rejectTitle}>반려 사유 · {profile.rejectReasonTitle}</span>}
+          {profile?.rejectedReason && <span css={s.rejectReason}>{profile.rejectedReason}</span>}
+          <span>아래 신청서를 고쳐 다시 제출하면 다시 심사해요. 전공·경력·악기 모두 수정할 수 있어요.</span>
         </div>
       )}
       {status === "PENDING" && (

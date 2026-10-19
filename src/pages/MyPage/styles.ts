@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 
 export const Wrap = styled.div`
   display: flex;
-  min-height: 100dvh;
+  min-height: calc(100dvh - 64px); /* 상단 메뉴(64px) 아래 */
   background: #fff;
 
   @media (max-width: 900px) {

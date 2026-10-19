@@ -6,8 +6,9 @@ import { useChatUnread } from "../../../hooks/chat/useChat";
 import { dropdownCaret } from "../../common/dropdownStyles";
 
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
+import { useIsAdmin } from "../../../hooks/admin/useAdmin";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { notificationKeys } from "../../../hooks/notification/notificationKeys";
 import {
@@ -77,7 +78,7 @@ function NavBar() {
   }, [pathname]);
 
   // 메뉴가 열려 있어도 페이지 스크롤은 막지 않음(disableScrollLock) -> 대신 스크롤하면 닫음
-  // (상단 메뉴가 고정이 아니라서 스크롤하면 버튼과 메뉴가 떨어지기 때문)
+  // (상단 메뉴는 화면에 붙어 있지만 MUI 메뉴는 문서 위치에 그려져서, 스크롤하면 버튼과 메뉴가 떨어짐)
   const anyMenuOpen = notiMenu.open || profileMenu.open;
   useEffect(() => {
     if (!anyMenuOpen) return;
@@ -89,6 +90,14 @@ function NavBar() {
     return () => window.removeEventListener("scroll", onScroll);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 열림 상태가 바뀔 때만
   }, [anyMenuOpen]);
+
+  // 스크롤을 내렸을 때만 상단 메뉴 아래 옅은 그림자
+  const [scrolled, setScrolled] = useState(() => window.scrollY > 4);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // 안읽음 상태 뱃지용(unreadCount는 로그인 상태면 항상 가져와도 ok)
   const unreadQ = useQuery({
@@ -129,6 +138,12 @@ function NavBar() {
 
   // 안읽은 알림
   const unread = unreadQ.data ?? 0;
+
+  // 새 알림이 오면(안 읽은 개수 변화) 목록도 새로 - 종 메뉴와 마이페이지 뱃지가 3분 캐시에 머물지 않게
+  useEffect(() => {
+    if (principal) qc.invalidateQueries({ queryKey: notificationKeys.list() });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 개수가 바뀔 때만
+  }, [unread]);
   const notifications = notiListQ.data ?? [];
 
   // 알림 종류별 이동: 리뷰 알림은 리뷰 관리(받은 리뷰 / 내가 쓴 리뷰), 그 외는 예약 화면
@@ -138,6 +153,12 @@ function NavBar() {
     else if (n.type === "INQUIRY_CREATED") navigate("/mypage/inquiries?tab=received");
     else if (n.type === "INQUIRY_REPLIED") navigate("/mypage/inquiries?tab=sent");
     else if (n.type === "INQUIRY_TO_CHAT" && n.refId) navigate(`/mypage/chats/${n.refId}`);
+    else if (n.type === "ARTIST_APPROVED" || n.type === "ARTIST_REJECTED") {
+      // 심사 결과로 아티스트 상태가 바뀌었으므로 로그인 정보·내 프로필을 새로 받고 이동 (메뉴도 바로 바뀜)
+      usePrincipalState.getState().refreshPrincipal();
+      qc.invalidateQueries({ queryKey: ["myArtistProfile"] });
+      navigate("/mypage/artist");
+    }
     else navigate("/mypage/reservations");
     if (!n.isRead) markReadM.mutate(n.notificationId);
     notiMenu.onClose();
@@ -148,6 +169,8 @@ function NavBar() {
     profileMenu.onClose();
     navigate(path);
   };
+
+  const isAdmin = useIsAdmin();
 
   // 아티스트 상태에 따라 보이는 메뉴
   const artistMenuItems: { label: string; path: string }[] =
@@ -161,9 +184,11 @@ function NavBar() {
         : [{ label: "아티스트 신청", path: "/mypage/artist/apply" }];
   
   return (
-    <s.Header>
+    <s.Header data-scrolled={scrolled}>
       <s.Left>
-        <s.Logo onClick={() => navigate("/")}>MU:ZIN</s.Logo>
+        <s.Logo to="/" aria-label="MU:ZIN 홈">
+          MU<span aria-hidden="true">:</span>ZIN
+        </s.Logo>
 
         <s.Nav>
           {navItems.map((item) => (
@@ -198,6 +223,7 @@ function NavBar() {
               onClick={() => navigate("/mypage/reservations")}
               aria-label="내 일정"
               title="내 일정"
+              data-optional="true"
             >
               <PiCalendarDotsThin aria-hidden="true" />
             </s.IconBtn>
@@ -373,6 +399,8 @@ function NavBar() {
               <MenuItem onClick={() => goFromProfile("/mypage/reviews")}>리뷰 관리</MenuItem>
               <MenuItem onClick={() => goFromProfile("/mypage/follows")}>팔로잉</MenuItem>
               <MenuItem onClick={() => goFromProfile("/mypage/account")}>계정 설정</MenuItem>
+              {isAdmin && <Divider sx={{ my: "6px !important" }} />}
+              {isAdmin && <MenuItem onClick={() => goFromProfile("/admin")}>관리자 페이지로 전환</MenuItem>}
               <Divider sx={{ my: "6px !important" }} />
               <MenuItem
                 onClick={() => {
