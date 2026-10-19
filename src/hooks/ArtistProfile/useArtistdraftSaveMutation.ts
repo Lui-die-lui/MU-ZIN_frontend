@@ -5,6 +5,7 @@ import {
   setMyInstrumentReq,
 } from "../../apis/artist/artistApi";
 import { queryClient } from "../../configs/queryClient";
+import { usePrincipalState } from "../../stores/usePrincipalState";
 
 // 저장
 export function useArtistDraftSaveMutation() {
@@ -20,7 +21,7 @@ export function useArtistDraftSaveMutation() {
       await setMyInstrumentReq({ instrumentIds: p.instrumentIds });
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["principal"] });
+      await usePrincipalState.getState().refreshPrincipal();
       await queryClient.invalidateQueries({ queryKey: ["myArtistProfile"] });
     },
   });

@@ -3,9 +3,11 @@ import { Outlet } from "react-router-dom";
 import { usePrincipalState } from "../../stores/usePrincipalState";
 import type { ArtistStatus } from "../../Types/auth";
 import SideNavBar from "./SideNavBar/SideNavBar";
+import NavBar from "../../components/layout/NavBar/NavBar";
 import * as s from "./styles";
 import { useMyNotifications } from "../../hooks/notification/useMyNotifications";
 import { useMemo } from "react";
+import { useIsAdmin } from "../../hooks/admin/useAdmin";
 
 function MyPageLayout() {
   const { principal, hydrated } = usePrincipalState();
@@ -19,6 +21,8 @@ function MyPageLayout() {
   const { data: notifications = [] } = useMyNotifications({
     enabled: canFetchNotifications,
   });
+
+  const isAdmin = useIsAdmin();
 
   const badgeMap = useMemo(() => {
     // 내 예약 알림
@@ -45,12 +49,16 @@ function MyPageLayout() {
   }, [notifications]);
 
   return (
-    <s.Wrap>
-      <SideNavBar artistStatus={artistStatus} badgeMap={badgeMap} />
-      <s.Content>
-        <Outlet />
-      </s.Content>
-    </s.Wrap>
+    <>
+      {/* 다른 화면과 같은 상단 메뉴 (예전엔 마이페이지에서만 숨겨서 레슨·아티스트로 바로 갈 수 없었음) */}
+      <NavBar />
+      <s.Wrap>
+        <SideNavBar artistStatus={artistStatus} isAdmin={isAdmin} badgeMap={badgeMap} />
+        <s.Content>
+          <Outlet />
+        </s.Content>
+      </s.Wrap>
+    </>
   );
 }
 

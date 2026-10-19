@@ -7,11 +7,12 @@ import { useMemo, useState } from "react";
 
 type Props = {
   artistStatus: ArtistStatus;
+  isAdmin?: boolean;
   // 뱃지(알림 카운트) 붙이고 싶을 때 - 이거 리스트 상태(000status) 받아와서 프론트에서도 가능!
   badgeMap?: Record<string, number>; // key -> count 라서
 };
 
-function SideNavBar({ artistStatus, badgeMap }: Props) {
+function SideNavBar({ artistStatus, isAdmin = false, badgeMap }: Props) {
   const navigate = useNavigate();
   const loc = useLocation();
 
@@ -93,7 +94,7 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
 
   return (
     <s.Aside>
-      <s.Title onClick={() => navigate("/")}>MU:ZIN</s.Title>
+      <s.Title onClick={() => navigate("/mypage")}>마이페이지</s.Title>
 
       <s.Nav>
         {items.map((item) => {
@@ -148,6 +149,13 @@ function SideNavBar({ artistStatus, badgeMap }: Props) {
           );
         })}
       </s.Nav>
+
+      {/* 관리자만: 관리자 페이지로 전환 (일반 메뉴와 섞지 않음) */}
+      {isAdmin && (
+        <s.SwitchButton type="button" onClick={() => navigate("/admin")}>
+          관리자 페이지로 전환
+        </s.SwitchButton>
+      )}
     </s.Aside>
   );
 }

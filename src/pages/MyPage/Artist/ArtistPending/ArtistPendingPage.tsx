@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "../ArtistApply/styles";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useMyArtistProfile } from "../../../../hooks/ArtistProfile/useMyArtistProfile";
 
 const p2 = (n: number) => String(n).padStart(2, "0");
@@ -12,8 +12,14 @@ const formatDt = (v?: string | null) => {
 
 // 아티스트 신청 제출 후 (예전: "심사 진행중입니다." 한 줄)
 function ArtistPendingPage() {
-  const { data: profile } = useMyArtistProfile();
+  const profileQ = useMyArtistProfile();
+  const profile = profileQ.data;
   const submitted = formatDt(profile?.submittedDt);
+
+  // 그 사이 승인/반려됐으면 (예: 반려 알림을 누르고 들어옴) 결과 화면으로
+  if (profileQ.isFetchedAfterMount && profile && profile.status !== "PENDING") {
+    return <Navigate to="/mypage/artist" replace />;
+  }
 
   return (
     <div css={s.page}>

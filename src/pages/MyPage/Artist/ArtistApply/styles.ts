@@ -112,6 +112,19 @@ export const notice = (tone: "warn" | "error" | "info") => css`
   }
 `;
 
+// 반려 안내 안의 사유 제목 / 내용
+export const rejectTitle = css`
+  font-weight: 700;
+`;
+
+export const rejectReason = css`
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff;
+  color: #1b1d20;
+  overflow-wrap: anywhere;
+`;
+
 export const majorRow = css`
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
