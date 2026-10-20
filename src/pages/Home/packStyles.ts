@@ -220,7 +220,8 @@ export const labelCode = css`
 export const shadow = css`
   width: 210px;
   height: 22px;
-  margin-top: 6px;
+  /* 떠 있는 느낌이 나도록 포장과 간격을 둠 */
+  margin-top: 26px;
   border-radius: 50%;
   background: radial-gradient(closest-side, rgba(17, 19, 21, 0.32), rgba(17, 19, 21, 0));
   animation: ${shadowPulse} 6s ease-in-out infinite;
@@ -229,5 +230,6 @@ export const shadow = css`
   @media (max-width: 600px) {
     width: 150px;
     height: 14px;
+    margin-top: 18px;
   }
 `;

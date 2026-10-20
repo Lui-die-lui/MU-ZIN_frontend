@@ -37,6 +37,7 @@ export const followButton = (on: boolean, size: "md" | "sm") => css`
 `;
 
 // ---------- 팔로우 취소 확인 창 ----------
+// 팔로우 취소 확인 - 공용 모달과 같은 배경·모서리·그림자, 버튼은 세로로 쌓는 형태 유지
 export const dialogOverlay = css`
   position: fixed;
   inset: 0;
@@ -44,13 +45,18 @@ export const dialogOverlay = css`
   display: grid;
   place-items: center;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.55);
-  animation: unfollowFade 0.12s ease-out;
+  background: rgba(23, 25, 28, 0.42);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: unfollowFade 0.16s ease-out;
 
   @keyframes unfollowFade {
     from {
       opacity: 0;
     }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 `;
 
@@ -58,16 +64,17 @@ export const dialog = css`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 400px;
+  max-width: 360px;
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: 24px;
   background: #fff;
   text-align: center;
-  animation: unfollowPop 0.15s ease-out;
+  box-shadow: 0 32px 80px -32px rgba(23, 25, 28, 0.5), 0 2px 8px rgba(23, 25, 28, 0.06);
+  animation: unfollowPop 0.2s cubic-bezier(0.2, 0.7, 0.2, 1);
 
   @keyframes unfollowPop {
     from {
-      transform: scale(1.08);
+      transform: translateY(10px) scale(0.985);
       opacity: 0;
     }
   }
@@ -80,7 +87,7 @@ export const dialogHead = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   padding: 32px 24px 24px;
 `;
 
@@ -88,40 +95,44 @@ export const dialogText = css`
   margin: 0;
   word-break: keep-all; /* "취소하시겠어 / 요?" 처럼 단어 중간에서 줄바꿈되지 않게 */
   overflow-wrap: anywhere;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #262626;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #5f656a;
 
   strong {
-    font-weight: 700;
+    font-weight: 800;
+    color: #17191c;
   }
 `;
 
 const dialogRow = css`
-  height: 48px;
+  height: 52px;
   border: 0;
-  border-top: 1px solid #dbdbdb;
+  border-top: 1px solid #eeede8;
   background: #fff;
   font: inherit;
-  font-size: 14px;
+  font-size: 15px;
   cursor: pointer;
+  transition: background 0.15s ease;
 
+  &:hover,
   &:active {
-    background: #f5f5f5;
+    background: #faf9f6;
   }
   &:focus-visible {
     outline: none;
-    background: #f5f5f5;
+    background: #f2f1ed;
   }
 `;
 
 export const dialogDanger = css`
   ${dialogRow};
-  color: #ed4956;
-  font-weight: 700;
+  color: #c8463f;
+  font-weight: 800;
 `;
 
 export const dialogCancel = css`
   ${dialogRow};
-  color: #262626;
+  color: #17191c;
+  font-weight: 600;
 `;

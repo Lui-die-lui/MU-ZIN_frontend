@@ -22,6 +22,7 @@ import { formatMonthDay, formatTime } from "../../../utils/reservationFormat";
 import { formatDateKey } from "../../../utils/chatFormat";
 import { getErrorMessage } from "../../../utils/errorUtils";
 import type { ReservationStatus } from "../../../Types/reservationType";
+import { modalBtn } from "../../../components/common/CommonModal/modalButtons";
 
 const canEdit = (m: ChatMessage) => Date.now() - new Date(m.createDt).getTime() < CHAT_EDITABLE_HOURS * 3600_000;
 
@@ -269,10 +270,10 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
         onClose={() => setConfirmLeave(false)}
         footer={
           <>
-            <button type="button" css={s.headerBtn} onClick={() => setConfirmLeave(false)} disabled={leaveM.isPending}>
+            <button type="button" css={modalBtn("secondary")} onClick={() => setConfirmLeave(false)} disabled={leaveM.isPending}>
               취소
             </button>
-            <button type="button" css={s.sendBtn} onClick={leave} disabled={leaveM.isPending}>
+            <button type="button" css={modalBtn("danger")} onClick={leave} disabled={leaveM.isPending}>
               {leaveM.isPending ? "나가는 중..." : "나가기"}
             </button>
           </>
@@ -307,10 +308,10 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
         onClose={() => setConfirmDelete(null)}
         footer={
           <>
-            <button type="button" css={s.headerBtn} onClick={() => setConfirmDelete(null)} disabled={deleteM.isPending}>
+            <button type="button" css={modalBtn("secondary")} onClick={() => setConfirmDelete(null)} disabled={deleteM.isPending}>
               취소
             </button>
-            <button type="button" css={s.sendBtn} onClick={doDelete} disabled={deleteM.isPending}>
+            <button type="button" css={modalBtn("danger")} onClick={doDelete} disabled={deleteM.isPending}>
               {deleteM.isPending ? "삭제 중..." : "삭제"}
             </button>
           </>

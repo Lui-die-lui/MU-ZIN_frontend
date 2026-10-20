@@ -1,104 +1,37 @@
 import styled from "@emotion/styled";
 
-// 모달 뒤 명도 낮아지게 오버레이
-export const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.55);
-  display: grid;
-  place-items: center;
-  z-index: 9999;
-`;
+// 배경·창·머리말·닫기는 공용 모달과 같은 모양
+export { Overlay, Modal, Header, Title, CloseBtn } from "../CommonModal/styles";
 
-// 모달
-export const Modal = styled.div`
-  width: min(520px, calc(100vw - 24px));
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-  /* border: 1px solid #e5e7eb; */
-`;
-
-// 제목 및 취소 아이콘
-export const Header = styled.div`
-  padding: 14px 16px;
-  /* display: flex;
-  align-items: center;
-  justify-content: space-between; */
-  display: flex;
-  justify-content: flex-end;
-`;
-
-// props 내 제목
-// export const Title = styled.h2`
-//   margin: 0;
-//   font-size: 14px;
-//   font-weight: 900;
-// `;
-
-// 닫기 버튼
-export const CloseBtn = styled.button`
-  width: 36px;
-  height: 36px;
-  border-radius: 50px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  cursor: pointer;
-`;
-
-// 크롭되는 영역
+// 크롭되는 영역 (차콜 바탕)
 export const CropArea = styled.div`
   position: relative;
   width: 100%;
   height: 360px;
-  background: #0b0f1a;
-`;
+  background: #17191c;
 
-export const Controls = styled.div`
-  padding: 14px 16px 16px;
-  display: grid;
-  gap: 12px;
-
-  label {
-    display: grid;
-    gap: 8px;
-    font-size: 12px;
-    font-weight: 800;
-    color: #374151;
+  @media (max-width: 600px) {
+    height: min(360px, 56dvh);
   }
 `;
 
-// export const Range = styled.input`
-//   width: 100%;
-// `;
+export const Controls = styled.div`
+  display: grid;
+`;
 
-// 버튼 공간
+// 버튼 공간 - 공용 모달 하단과 같은 띠
 export const BtnRow = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-`;
+  padding: 14px 24px 18px;
+  border-top: 1px solid #eeede8;
+  background: #faf9f6;
 
-// 버튼
-export const Btn = styled.button`
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  font-weight: 900;
-  cursor: pointer;
-`;
-
-
-// 저장 - 바로 반영 버튼
-export const PrimaryBtn = styled(Btn)`
-  background: #111827;
-  color: #fff;
-  border-color: #111827;
-
-  &:disabled {
-    background: #9ca3af;   /* gray-400 */
-    border-color: #9ca3af;
-    color: #ffffff;
+  @media (max-width: 600px) {
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    & > button {
+      flex: 1 1 0;
+    }
   }
 `;

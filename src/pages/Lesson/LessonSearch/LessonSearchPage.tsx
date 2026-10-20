@@ -17,11 +17,16 @@ import RegionSearchInput from "../../Artist/ArtistSearch/RegionSearchInput/Regio
 import SearchTimeFilter from "./SearchTimeFilter/SearchTimeFilter";
 import { hasTimeFilter } from "./SearchTimeFilter/hasTimeFilter";
 import { useInfiniteScroll } from "../../../hooks/useInfiniteScroll";
-import SelectDropdown, { type SelectOption } from "../../../components/common/SelectDropdown/SelectDropdown";
+import SearchHero from "../../../components/search/SearchHero";
+import Chevron from "../../../components/common/Chevron";
+import * as ui from "../../../components/search/searchStyles";
+import { PiMagnifyingGlassBold, PiSlidersHorizontalBold } from "react-icons/pi";
 import * as s from "./styles";
 
+type SelectOption<T> = { value: T; label: string };
+
 const MODE_OPTIONS: SelectOption<LessonMode | "ALL">[] = [
-  { value: "ALL", label: "전체 방식" },
+  { value: "ALL", label: "전체" },
   { value: "ONLINE", label: "온라인" },
   { value: "OFFLINE", label: "대면" },
   { value: "VISIT", label: "방문 레슨" },
@@ -69,7 +74,9 @@ function LessonSearchPage() {
   const [draftInstCategory, setDraftInstCategory] = useState<InstrumentCategory | "ALL">("ALL");
   const [draftInstIds, setDraftInstIds] = useState<number[]>([]);
   const [draftRegion, setDraftRegion] = useState<RegionSearchValue>(EMPTY_REGION);
-  const [applied, setApplied] = useState<AppliedFilters | null>(null);
+  // 들어오자마자 전체 레슨을 보여줌 (예전: 검색 버튼을 눌러야 목록이 나옴)
+  const [applied, setApplied] = useState<AppliedFilters | null>({});
+  const [panelOpen, setPanelOpen] = useState(false);
   const [filterError, setFilterError] = useState<string | null>(null);
   const [regionResetKey, setRegionResetKey] = useState(0);
 
@@ -128,23 +135,25 @@ function LessonSearchPage() {
     enabled: !!appliedParams && !!hasNextPage && !isFetchingNextPage && !isError,
     onLoadMore: loadMore,
   });
-  const appliedFilterCount = applied
-    ? [applied.keyword, applied.mode, applied.styleTagIds?.length,
-        applied.instCategory || applied.instIds?.length,
+  // 상세 조건(접힌 곳)에 적용된 개수 - 상세 조건 버튼에 표시
+  const detailCount = applied
+    ? [applied.styleTagIds?.length, applied.instCategory || applied.instIds?.length,
         applied.region1DepthName, applied.time].filter(Boolean).length
     : 0;
+  const appliedFilterCount = applied ? detailCount + [applied.keyword, applied.mode].filter(Boolean).length : 0;
 
-  const onSearch = (event?: FormEvent) => {
-    event?.preventDefault();
+  // 지금 고른 조건(draft)을 적용. 칩처럼 바로 적용하는 곳은 바뀐 값만 넘김
+  const apply = (over: { mode?: LessonMode | "ALL" } = {}) => {
     if (draftTime.from && draftTime.to && draftTime.to < draftTime.from) {
       setFilterError("종료 날짜는 시작 날짜보다 빠를 수 없어요.");
+      setPanelOpen(true);
       return;
     }
-
+    const mode = over.mode ?? draftMode;
     setFilterError(null);
     setApplied({
       keyword: draftKeyword.trim() || undefined,
-      mode: draftMode === "ALL" ? undefined : draftMode,
+      mode: mode === "ALL" ? undefined : mode,
       styleTagIds: draftTagIds.length ? draftTagIds : undefined,
       instIds: draftInstIds.length ? draftInstIds : undefined,
       instCategory: draftInstCategory === "ALL" ? undefined : draftInstCategory,
@@ -155,6 +164,17 @@ function LessonSearchPage() {
     });
   };
 
+  const onSearch = (event?: FormEvent) => {
+    event?.preventDefault();
+    apply();
+  };
+
+  // 수업 방식 칩: 누르면 바로 적용
+  const pickMode = (mode: LessonMode | "ALL") => {
+    setDraftMode(mode);
+    apply({ mode });
+  };
+
   const onReset = () => {
     setDraftKeyword("");
     setDraftMode("ALL");
@@ -163,7 +183,7 @@ function LessonSearchPage() {
     setDraftInstCategory("ALL");
     setDraftInstIds([]);
     setDraftRegion(EMPTY_REGION);
-    setApplied(null);
+    setApplied({});
     setFilterError(null);
     setRegionResetKey((value) => value + 1);
   };
@@ -172,133 +192,156 @@ function LessonSearchPage() {
     () => applied?.time ?? null,
     [applied],
   );
+  const activeMode = applied?.mode ?? "ALL";
 
   return (
-    <main css={s.wrap}>
-      <header css={s.pageHeader}>
-        <span css={s.eyebrow}>LESSON SEARCH</span>
-        <h1 css={s.pageTitle}>내게 맞는 레슨 찾기</h1>
-        <p css={s.pageDescription}>악기와 수업 방식, 가능한 일정까지 한 번에 비교해 보세요.</p>
-      </header>
-
-      <form css={s.filterPanel} onSubmit={onSearch}>
-        <div css={s.primaryRow}>
-          <label css={s.keywordField}>
-            <span css={s.fieldLabel}>검색어</span>
-            <input value={draftKeyword} onChange={(e) => setDraftKeyword(e.target.value)}
-              placeholder="레슨명이나 배우고 싶은 내용을 입력하세요" css={s.input} />
-          </label>
-          <div css={s.modeField}>
-            <span css={s.fieldLabel}>수업 방식</span>
-            <SelectDropdown<LessonMode | "ALL">
-              css={s.select}
-              ariaLabel="수업 방식"
-              value={draftMode}
-              onChange={setDraftMode}
-              options={MODE_OPTIONS}
+    <main css={ui.page}>
+      <SearchHero
+        eyebrow="LESSON SEARCH"
+        title="내게 맞는 레슨 찾기"
+        desc="악기와 수업 방식, 가능한 일정까지 한 번에 비교해 보세요."
+      >
+        <form onSubmit={onSearch} css={s.form}>
+          <div css={ui.searchPill}>
+            <PiMagnifyingGlassBold css={ui.searchIcon} size={18} aria-hidden="true" />
+            <input
+              value={draftKeyword}
+              onChange={(e) => setDraftKeyword(e.target.value)}
+              placeholder="레슨명, 배우고 싶은 내용"
+              aria-label="레슨 검색어"
+              css={ui.searchInput}
             />
+            <button type="submit" css={ui.searchButton} disabled={isInitialLoading}>
+              검색
+            </button>
           </div>
-        </div>
 
-        <div css={s.filterGrid}>
-          <div css={s.filterGroup}>
-            <span css={s.fieldLabel}>레슨 스타일</span>
-            <StyleDropdown lessonStyleTagIds={draftTagIds} onChangeStyleTagIds={setDraftTagIds} />
+          {/* 상세 조건 열기 | 수업 방식 (바로 적용) */}
+          <div css={ui.toolbar}>
+            <button
+              type="button"
+              css={ui.chip(panelOpen)}
+              aria-expanded={panelOpen}
+              aria-controls="lesson-filter-panel"
+              onClick={() => setPanelOpen((v) => !v)}
+            >
+              <PiSlidersHorizontalBold size={15} aria-hidden="true" />
+              상세 조건
+              {detailCount > 0 && <span css={ui.chipCount(panelOpen)}>{detailCount}</span>}
+            </button>
+            <span css={ui.divider} aria-hidden="true" />
+            <div css={s.chipGroup} role="group" aria-label="수업 방식">
+              {MODE_OPTIONS.map((o) => (
+                <button
+                  key={o.value}
+                  type="button"
+                  css={ui.chip(activeMode === o.value)}
+                  aria-pressed={activeMode === o.value}
+                  onClick={() => pickMode(o.value)}
+                >
+                  {o.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div css={s.filterGroupWide}>
-            <span css={s.fieldLabel}>악기</span>
-            <InstFilterDropdown category={draftInstCategory} onChangeCategory={setDraftInstCategory}
-              instIds={draftInstIds} onChangeInstIds={setDraftInstIds} resetOnCategoryChange />
+
+          {panelOpen && (
+            <div id="lesson-filter-panel" css={ui.panel}>
+              <div css={ui.panelGrid}>
+                <div css={ui.field}>
+                  <span css={ui.fieldLabel}>악기</span>
+                  <InstFilterDropdown category={draftInstCategory} onChangeCategory={setDraftInstCategory}
+                    instIds={draftInstIds} onChangeInstIds={setDraftInstIds} resetOnCategoryChange />
+                </div>
+                <div css={ui.field}>
+                  <span css={ui.fieldLabel}>레슨 스타일</span>
+                  <StyleDropdown lessonStyleTagIds={draftTagIds} onChangeStyleTagIds={setDraftTagIds} />
+                </div>
+                <div css={ui.fieldWide}>
+                  <span css={ui.fieldLabel}>지역</span>
+                  <RegionSearchInput key={regionResetKey} value={draftRegion} onChange={setDraftRegion} />
+                </div>
+                <div css={ui.fieldWide}>
+                  <span css={ui.fieldLabel}>
+                    가능한 일정 <small>고른 조건을 모두 만족하는 레슨만 보여줘요.</small>
+                  </span>
+                  <SearchTimeFilter value={draftTime} onChange={setDraftTime} />
+                  {filterError && <p css={ui.validation}>{filterError}</p>}
+                </div>
+              </div>
+              <div css={ui.panelActions}>
+                <button type="button" css={ui.ghostButton} onClick={onReset}>초기화</button>
+                <button type="submit" css={ui.primaryButton} disabled={isInitialLoading}>조건 적용</button>
+              </div>
+            </div>
+          )}
+        </form>
+      </SearchHero>
+
+      <section css={ui.results} aria-live="polite">
+        <div css={ui.resultHead}>
+          <h2 css={ui.resultTitle}>
+            레슨
+            {!isInitialLoading && !isError && <span>{lessons.length}{hasNextPage ? "+" : ""}개</span>}
+          </h2>
+          {appliedFilterCount > 0 && (
+            <div css={ui.resultTools}>
+              <span>{appliedFilterCount}개 조건 적용</span>
+              <button type="button" css={ui.textButton} onClick={onReset}>조건 지우기</button>
+            </div>
+          )}
+        </div>
+
+        {isError ? (
+          <div css={ui.emptyState}>
+            <strong>{getErrorMessage(error, "검색 중 오류가 발생했어요.")}</strong>
+            <button type="button" css={ui.primaryButton} onClick={() => refetch()}>다시 시도</button>
           </div>
-        </div>
-
-        <div css={s.filterBlock}>
-          <span css={s.fieldLabel}>지역</span>
-          <RegionSearchInput key={regionResetKey} value={draftRegion} onChange={setDraftRegion} />
-        </div>
-
-        <div css={s.filterBlock}>
-          <div css={s.blockHeading}>
-            <span css={s.fieldLabel}>가능한 일정</span>
-            <span css={s.optionalText}>선택한 조건을 모두 만족하는 레슨만 보여줘요.</span>
+        ) : isInitialLoading ? (
+          <div css={s.list} aria-busy="true" aria-label="레슨을 찾고 있어요">
+            {Array.from({ length: 6 }, (_, i) => <span key={i} css={[ui.skeleton, s.cardSkeleton]} />)}
           </div>
-          <SearchTimeFilter value={draftTime} onChange={setDraftTime} />
-          {filterError && <p css={s.validationMessage}>{filterError}</p>}
-        </div>
-
-        <div css={s.actions}>
-          <button type="button" css={s.resetButton} onClick={onReset}>초기화</button>
-          <button type="submit" css={s.searchButton} disabled={isInitialLoading}>
-            {isInitialLoading ? "검색 중..." : "레슨 검색"}
-          </button>
-        </div>
-      </form>
-
-      <section css={s.resultSection} aria-live="polite">
-        {!appliedParams ? (
-          <div css={s.emptyState}>
-            <strong>원하는 조건으로 레슨을 찾아보세요.</strong>
-            <span>조건 없이 검색하면 현재 열려 있는 모든 레슨을 볼 수 있어요.</span>
+        ) : lessons.length === 0 ? (
+          <div css={ui.emptyState}>
+            <strong>조건에 맞는 레슨이 없어요.</strong>
+            <span>지역이나 일정 조건을 조금 넓혀보세요.</span>
           </div>
         ) : (
           <>
-            <div css={s.resultHeader}>
-              <div>
-                <span css={s.resultLabel}>검색 결과</span>
-                <h2 css={s.resultTitle}>{isInitialLoading ? "레슨을 찾고 있어요" : `${lessons.length}개 불러옴`}</h2>
-              </div>
-              {appliedFilterCount > 0 && <span css={s.filterCount}>{appliedFilterCount}개 조건 적용</span>}
-            </div>
-
-            {isError ? (
-              <div css={s.emptyState}>
-                <strong>{getErrorMessage(error, "검색 중 오류가 발생했어요.")}</strong>
-                <button type="button" css={s.retryButton} onClick={() => refetch()}>다시 시도</button>
-              </div>
-            ) : !isInitialLoading && lessons.length === 0 ? (
-              <div css={s.emptyState}>
-                <strong>조건에 맞는 레슨이 없어요.</strong>
-                <span>지역이나 일정 조건을 조금 넓혀보세요.</span>
-              </div>
-            ) : (
-              <>
-              <div css={s.list} aria-busy={isFetchingNextPage}>
-                {lessons.map((lesson) => {
-                  const region = lesson.mainRegionSummary;
-                  const regionLabel = region
-                    ? [region.region1DepthName, region.region2DepthName, region.region3DepthName]
-                        .filter(Boolean).join(" ")
-                    : null;
-                  return (
-                    <button type="button" key={lesson.lessonId} css={s.card}
-                      onClick={() => { setSelectedId(lesson.lessonId); setOpen(true); }}>
-                      <div css={s.cardTop}>
-                        <span css={s.instrumentBadge}>{lesson.instName}</span>
-                        <span css={s.cardArrow} aria-hidden="true">→</span>
-                      </div>
-                      <h3 css={s.cardTitle}>{lesson.title}</h3>
-                      <p css={s.cardDescription}>{lesson.description ?? ""}</p>
-                      <div css={s.cardMeta}>
-                        <span>{LESSON_MODE_LABEL[lesson.mode]}</span><span aria-hidden="true">·</span>
-                        <span>{lesson.durationMin}분</span><span aria-hidden="true">·</span>
+            <div css={[s.list, ui.listBusy]} aria-busy={isFetchingNextPage}>
+              {lessons.map((lesson) => {
+                const region = lesson.mainRegionSummary;
+                const regionLabel = region
+                  ? [region.region1DepthName, region.region2DepthName, region.region3DepthName]
+                      .filter(Boolean).join(" ")
+                  : null;
+                return (
+                  <button type="button" key={lesson.lessonId} css={s.card}
+                    onClick={() => { setSelectedId(lesson.lessonId); setOpen(true); }}>
+                    <span css={s.cardHead}>
+                      <span css={s.instBadge}>{lesson.instName}</span>
+                      <span css={s.cardSub}>{LESSON_MODE_LABEL[lesson.mode]} · {lesson.durationMin}분</span>
+                    </span>
+                    <h3 css={s.cardTitle}>{lesson.title}</h3>
+                    {lesson.description && <p css={s.cardDescription}>{lesson.description}</p>}
+                    <span css={s.cardFoot}>
+                      <span css={s.cardMeta}>
                         <strong>{lesson.price == null ? "가격 협의" : lesson.price === 0 ? "무료" : formatKRW(lesson.price)}</strong>
-                      </div>
-                      {regionLabel && <span css={s.regionText}>{regionLabel}</span>}
-                    </button>
-                  );
-                })}
-              </div>
-              <div ref={loadMoreRef} css={s.loadMore} aria-live="polite">
-                {isFetchingNextPage
-                  ? "다음 레슨을 불러오는 중..."
-                  : hasNextPage
-                    ? "스크롤하면 더 불러와요"
-                    : lessons.length > 0
-                      ? "모든 레슨을 확인했어요."
-                      : null}
-              </div>
-              </>
-            )}
+                        {regionLabel && <span>{regionLabel}</span>}
+                      </span>
+                      <span css={s.cardArrow} aria-hidden="true"><Chevron size={16} /></span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <div ref={loadMoreRef} css={ui.loadMore} aria-live="polite">
+              {isFetchingNextPage
+                ? "다음 레슨을 불러오는 중..."
+                : hasNextPage
+                  ? "스크롤하면 더 불러와요"
+                  : "모든 레슨을 확인했어요."}
+            </div>
           </>
         )}
       </section>

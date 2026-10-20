@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { modalBtn } from "../../../../components/common/CommonModal/modalButtons";
 
 const border = "#e2e5e9";
 const text = "#1b1d20";
@@ -160,38 +161,25 @@ export const checkRow = css`
   }
 `;
 
+// 버튼은 모두 오른쪽 (닫기 · 채팅하기 → 동작 버튼이 맨 오른쪽). 좁으면 오른쪽 정렬 그대로 다음 줄로
 export const footer = css`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 8px;
   width: 100%;
 `;
 
 export const footerRight = css`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 8px;
-  margin-left: auto;
 `;
 
-export const btn = (variant: "primary" | "ghost" | "danger") => css`
-  height: 42px;
-  padding: 0 16px;
-  border-radius: 12px;
-  border: 1px solid ${variant === "primary" ? text : variant === "danger" ? "#dc2626" : border};
-  background: ${variant === "primary" ? text : variant === "danger" ? "#dc2626" : "#fff"};
-  color: ${variant === "ghost" ? text : "#fff"};
-  font: inherit;
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
+// 하단 버튼 - 모든 모달과 같은 공용 버튼 (ghost = 보조)
+export const btn = (variant: "primary" | "ghost" | "danger") => modalBtn(variant === "ghost" ? "secondary" : variant);
 
 // 리뷰 작성 기간이 지난 완료 레슨 안내
 export const reviewClosed = css`

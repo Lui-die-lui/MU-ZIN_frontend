@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type Ref } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import * as s from "./styles";
 import AssistantCards from "./AssistantCards";
@@ -42,6 +42,13 @@ function newKey() {
     : `k-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
 }
 
+const SparkleIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z" />
+    <path d="M19 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z" />
+  </svg>
+);
+
 // 마이페이지처럼 로그인 필요. 로그인 안 했으면 안내 (기존 로그인 화면으로)
 function AssistantPage() {
   const hydrated = usePrincipalState((st) => st.hydrated);
@@ -54,6 +61,9 @@ function AssistantPage() {
     return (
       <main css={s.page}>
         <section css={s.gate} aria-labelledby="assistant-gate-title">
+          <span css={s.sparkle(48)}>
+            <SparkleIcon />
+          </span>
           <h1 id="assistant-gate-title">AI 레슨 내비게이터</h1>
           <p>
             원하는 레슨을 말로 설명하면 MU:ZIN에 등록된 공개 레슨과 아티스트 중에서 맞는 선택지를 찾아 드려요.
@@ -75,6 +85,7 @@ function AssistantPage() {
   return <AssistantWorkspace />;
 }
 
+// [대화 기록 | 대화] - 대화형 AI 화면처럼 대화만 스크롤되고 입력창은 아래에 고정
 function AssistantWorkspace() {
   const userId = usePrincipalState((st) => st.principal?.userId ?? null);
   const [params, setParams] = useSearchParams();
@@ -85,50 +96,55 @@ function AssistantWorkspace() {
   const convQ = useAssistantConversation(selectedId);
   const deleteAllM = useDeleteAllAssistantConversations();
   const [confirmAll, setConfirmAll] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false); // 좁은 화면의 대화 기록 서랍
 
-  const select = (id: number | null) => setParams(id ? { c: String(id) } : {});
+  const select = (id: number | null) => {
+    setParams(id ? { c: String(id) } : {});
+    setHistoryOpen(false);
+  };
   const quota = quotaQ.data;
 
-  return (
-    <main css={s.page}>
-      <div css={s.head}>
-        <div css={s.titleBlock}>
-          <h1>AI 레슨 내비게이터</h1>
-          <p>원하는 레슨을 말로 설명하면 MU:ZIN에 등록된 공개 레슨·아티스트 중에서 찾아 드려요. 가격과 예약 가능 시간은 카드의 최신 정보로 확인하세요.</p>
-        </div>
-        {quota && <QuotaChips quota={quota} />}
+  const unavailable = quota && !quota.available && (
+    <div css={s.notice("warn")} role="status">
+      <strong>{quota.unavailableCode === ASSISTANT_ERRORS.BUDGET_EXHAUSTED ? "이번 달 AI 이용량이 모두 소진됐어요" : "지금은 AI 내비게이터를 쓸 수 없어요"}</strong>
+      조건으로 직접 찾는 레슨 찾기는 그대로 쓸 수 있어요.
+      <div css={s.noticeActions}>
+        <Link to="/lessons" css={s.secondaryBtn}>
+          레슨 찾기로 이동
+        </Link>
       </div>
+    </div>
+  );
 
-      {quota && !quota.available && (
-        <div css={s.notice("warn")} role="status">
-          <strong>{quota.unavailableCode === ASSISTANT_ERRORS.BUDGET_EXHAUSTED ? "이번 달 AI 이용량이 모두 소진됐어요" : "지금은 AI 내비게이터를 쓸 수 없어요"}</strong>
-          조건으로 직접 찾는 레슨 찾기는 그대로 쓸 수 있어요.
-          <div css={s.noticeActions}>
-            <Link to="/lessons" css={s.secondaryBtn}>
-              레슨 찾기로 이동
-            </Link>
-          </div>
-        </div>
-      )}
-
-      <div css={s.layout}>
-        <aside css={s.side} aria-label="이전 대화">
-          <div css={s.sideHead}>
-            <span>이전 대화</span>
-            <button type="button" css={s.textBtn} onClick={() => select(null)}>
-              새 대화
-            </button>
-          </div>
+  return (
+    <main css={s.shell}>
+      <aside css={s.side(historyOpen)} aria-label="이전 대화">
+        <button type="button" css={s.newChatBtn} onClick={() => select(null)}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+          </svg>
+          새 대화
+        </button>
+        <span css={s.sideLabel}>이전 대화</span>
+        <div css={s.convScroll}>
           {listQ.isLoading ? (
-            <p css={s.muted}>불러오는 중...</p>
+            <p css={s.muted} style={{ padding: "0 10px" }}>
+              불러오는 중...
+            </p>
           ) : !listQ.data?.length ? (
-            <p css={s.muted}>아직 대화가 없어요.</p>
+            <p css={s.muted} style={{ padding: "0 10px" }}>
+              아직 대화가 없어요.
+            </p>
           ) : (
             <ul css={s.convList}>
               {listQ.data.map((c) => (
                 <li key={c.conversationId}>
-                  <button type="button" css={s.convItem(c.conversationId === selectedId)} onClick={() => select(c.conversationId)}
-                    aria-current={c.conversationId === selectedId ? "page" : undefined}>
+                  <button
+                    type="button"
+                    css={s.convItem(c.conversationId === selectedId)}
+                    onClick={() => select(c.conversationId)}
+                    aria-current={c.conversationId === selectedId ? "page" : undefined}
+                  >
                     <strong>{c.title}</strong>
                     <span>
                       {formatDateTime(c.updateDt)} · 질문 {c.userMessageCount}/{c.maxUserMessages}
@@ -138,19 +154,47 @@ function AssistantWorkspace() {
               ))}
             </ul>
           )}
+        </div>
+        <div css={s.sideFoot}>
           {!!listQ.data?.length && (
-            <button type="button" css={s.textBtn} style={{ justifySelf: "start" }} onClick={() => setConfirmAll(true)}>
+            <button type="button" css={s.textBtn} onClick={() => setConfirmAll(true)}>
               대화 기록 전체 삭제
             </button>
           )}
           <p css={s.muted}>대화 기록은 마지막 대화 후 90일이 지나면 자동으로 지워져요.</p>
-        </aside>
+        </div>
+      </aside>
+      {historyOpen && <div css={s.sideBackdrop} onClick={() => setHistoryOpen(false)} aria-hidden="true" />}
 
-        <div css={s.main}>
-          {selectedId ? (
-            convQ.isLoading ? (
-              <div css={s.panel}>불러오는 중...</div>
-            ) : convQ.isError || !convQ.data ? (
+      <section css={s.chat} aria-label="AI 레슨 내비게이터">
+        <header css={s.topbar}>
+          <button
+            type="button"
+            css={s.historyBtn}
+            aria-label="대화 기록"
+            aria-expanded={historyOpen}
+            onClick={() => setHistoryOpen((v) => !v)}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+          <h1 css={s.brand}>
+            <span css={s.sparkle(26)}>
+              <SparkleIcon />
+            </span>
+            AI 레슨 내비게이터
+          </h1>
+          {quota && <QuotaChips quota={quota} />}
+        </header>
+
+        {selectedId ? (
+          convQ.isLoading ? (
+            <Frame>
+              <p css={s.muted}>불러오는 중...</p>
+            </Frame>
+          ) : convQ.isError || !convQ.data ? (
+            <Frame>
               <div css={s.notice("error")} role="alert">
                 대화를 찾을 수 없어요.
                 <div css={s.noticeActions}>
@@ -159,14 +203,14 @@ function AssistantWorkspace() {
                   </button>
                 </div>
               </div>
-            ) : (
-              <Thread key={convQ.data.conversationId} conv={convQ.data} quota={quota} onNew={() => select(null)} />
-            )
+            </Frame>
           ) : (
-            <Starter userId={userId} quota={quota} onStarted={(id) => select(id)} />
-          )}
-        </div>
-      </div>
+            <Thread key={convQ.data.conversationId} conv={convQ.data} quota={quota} notice={unavailable} onNew={() => select(null)} />
+          )
+        ) : (
+          <Starter userId={userId} quota={quota} notice={unavailable} onStarted={(id) => select(id)} />
+        )}
+      </section>
 
       <ConfirmModal
         open={confirmAll}
@@ -189,15 +233,105 @@ function AssistantWorkspace() {
   );
 }
 
+// 대화 칸: 스크롤 영역(가운데 좁은 열) + 아래 입력창
+function Frame({ children, composer, scrollRef }: { children: ReactNode; composer?: ReactNode; scrollRef?: Ref<HTMLDivElement> }) {
+  return (
+    <>
+      <div css={s.scroll} ref={scrollRef}>
+        <div css={s.column}>{children}</div>
+      </div>
+      {composer && <div css={s.composerWrap}>{composer}</div>}
+    </>
+  );
+}
+
 function QuotaChips({ quota }: { quota: AssistantQuota }) {
   return (
     <div css={s.quota} aria-label="이번 주 이용량">
       <span css={s.quotaChip(true)}>
         이번 주 {quota.used}/{quota.weeklyLimit}회
       </span>
-      <span css={s.quotaChip(false)}>남은 {quota.remaining}회</span>
-      <span css={s.quotaChip(false)}>{kstLabel(quota.resetsAt)} 초기화 (한국 시간)</span>
+      <span css={s.quotaChip(false)}>{kstLabel(quota.resetsAt)} 초기화</span>
     </div>
+  );
+}
+
+// ---------- 입력창 (자동 높이, Enter 보내기 · Shift+Enter 줄바꿈) ----------
+
+function Composer({
+  id,
+  label,
+  value,
+  onChange,
+  onSubmit,
+  disabled,
+  canSend,
+  placeholder,
+  sendLabel,
+  hint,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  onSubmit: () => void;
+  disabled: boolean;
+  canSend: boolean;
+  placeholder: string;
+  sendLabel: string;
+  hint: string;
+}) {
+  const ref = useRef<HTMLTextAreaElement>(null);
+  // 내용만큼 높이 (최대 200px, 넘치면 안에서 스크롤)
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
+  }, [value]);
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+    >
+      <div css={s.composer}>
+        <label htmlFor={id} css={s.srOnly}>
+          {label}
+        </label>
+        <textarea
+          ref={ref}
+          id={id}
+          css={s.textarea}
+          rows={1}
+          value={value}
+          maxLength={ASSISTANT_MESSAGE_MAX}
+          disabled={disabled}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+              e.preventDefault();
+              onSubmit();
+            }
+          }}
+        />
+        <button type="submit" css={s.sendBtn} disabled={!canSend}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+            <path d="M12 19V5M5.5 11.5L12 5l6.5 6.5" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span css={s.srOnly}>{sendLabel}</span>
+        </button>
+      </div>
+      <div css={s.composerMeta}>
+        <span>{hint}</span>
+        <span>
+          {value.length}/{ASSISTANT_MESSAGE_MAX}
+        </span>
+      </div>
+    </form>
   );
 }
 
@@ -259,22 +393,56 @@ function useIdempotencyKey() {
   };
 }
 
-function Waiting() {
+// AI 답변 한 줄 (왼쪽 ✦)
+function AiRow({ children }: { children: ReactNode }) {
   return (
-    <div css={s.thinking} role="status" aria-live="polite">
-      <i aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </i>
-      MU:ZIN에 등록된 레슨을 찾고 있어요
+    <div css={s.answer}>
+      <span css={s.sparkle(28)}>
+        <SparkleIcon />
+      </span>
+      <div css={s.answerBody}>{children}</div>
     </div>
   );
 }
 
+function Waiting() {
+  return (
+    <AiRow>
+      <div css={s.thinking} role="status" aria-live="polite">
+        <i aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </i>
+        MU:ZIN에 등록된 레슨을 찾고 있어요
+      </div>
+    </AiRow>
+  );
+}
+
+// 새 메시지·답변 대기가 생기면 맨 아래로
+function useStickToBottom(dep: unknown) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [dep]);
+  return ref;
+}
+
 // ---------- 새 대화 ----------
 
-function Starter({ userId, quota, onStarted }: { userId: number | null; quota?: AssistantQuota; onStarted: (id: number) => void }) {
+function Starter({
+  userId,
+  quota,
+  notice,
+  onStarted,
+}: {
+  userId: number | null;
+  quota?: AssistantQuota;
+  notice: ReactNode;
+  onStarted: (id: number) => void;
+}) {
   const startM = useStartAssistant();
   const idem = useIdempotencyKey();
   const [text, setText] = useState("");
@@ -295,6 +463,7 @@ function Starter({ userId, quota, onStarted }: { userId: number | null; quota?: 
 
   const blocked = !!quota && (!quota.available || quota.remaining <= 0);
   const trimmed = text.trim();
+  const scrollRef = useStickToBottom(startM.isPending);
 
   const submit = (value = trimmed) => {
     if (!value || startM.isPending) return;
@@ -312,112 +481,102 @@ function Starter({ userId, quota, onStarted }: { userId: number | null; quota?: 
     );
   };
 
+  const composer = (
+    <Composer
+      id="assistant-start"
+      label="찾고 싶은 레슨 설명"
+      value={text}
+      onChange={setText}
+      onSubmit={() => submit()}
+      disabled={blocked || startM.isPending}
+      canSend={!!trimmed && !blocked && !startM.isPending}
+      placeholder="원하는 레슨을 말로 설명해 주세요"
+      sendLabel="대화 시작"
+      hint="시작하면 이번 주 이용 횟수 1회 · 이어지는 질문 5번은 차감 없음"
+    />
+  );
+
   return (
-    <section css={s.panel} aria-labelledby="assistant-start-title">
-      <h2 id="assistant-start-title" css={s.sectionLabel}>
-        새 대화 · 시작하면 이번 주 이용 횟수 1회를 써요 (이어지는 질문 5번은 차감 없음)
-      </h2>
-
-      <div css={s.context}>
-        {ownReady ? (
-          <label css={s.check}>
-            <input type="checkbox" checked={useOwn} onChange={(e) => setUseOwn(e.target.checked)} />
-            <div>
-              <strong>내 음악 스타일 찾기 결과 반영</strong>
-              <span>체크를 풀면 취향 정보 없이 대화만으로 찾아요.</span>
-            </div>
-          </label>
-        ) : guestReady ? (
-          <label css={s.check}>
-            <input type="checkbox" checked={useGuest} onChange={(e) => setUseGuest(e.target.checked)} />
-            <div>
-              <strong>로그인 전에 한 음악 스타일 찾기 결과 가져오기</strong>
-              <span>이 기기에서 로그인하지 않고 한 결과예요. 체크한 경우에만 이번 대화에 보내요.</span>
-            </div>
-          </label>
-        ) : (
-          <p css={s.muted}>
-            음악 스타일 찾기 결과가 없어도 쓸 수 있어요. 취향을 반영하고 싶다면 <Link to="/hobby-finder">내 음악 스타일 찾기</Link>를 먼저 해 보세요.
-          </p>
-        )}
-        {context && (
-          <div css={s.chips} aria-label="반영할 취향">
-            {context.recommended.map((r) => (
-              <span key={r.id} css={s.chip}>
-                {r.name}
-              </span>
-            ))}
-            {context.region && (
-              <span css={s.chip}>
-                {[context.region.region1DepthName, context.region.region2DepthName].filter(Boolean).join(" ")}
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-
+    <Frame scrollRef={scrollRef} composer={composer}>
+      {notice}
       {startM.isPending ? (
-        <div css={s.messages}>
+        <div css={s.messages} style={{ paddingTop: 16 }}>
           <div css={s.userBubble}>{sent}</div>
           <Waiting />
         </div>
       ) : (
         <>
-          <div css={s.chips} aria-label="질문 예시">
-            {EXAMPLES.map((ex) => (
-              <button key={ex} type="button" css={s.exampleBtn} onClick={() => setText(ex)} disabled={blocked}>
-                {ex}
-              </button>
-            ))}
-          </div>
-          <form
-            css={s.composer}
-            onSubmit={(e) => {
-              e.preventDefault();
-              submit();
-            }}
-          >
-            <label htmlFor="assistant-start" css={s.srOnly}>
-              찾고 싶은 레슨 설명
-            </label>
-            <textarea
-              id="assistant-start"
-              css={s.textarea}
-              value={text}
-              maxLength={ASSISTANT_MESSAGE_MAX}
-              disabled={blocked}
-              placeholder="예: 평일 저녁, 서울 강남에서 처음 배우는 드럼 레슨을 찾고 있어요."
-              onChange={(e) => setText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
-                  e.preventDefault();
-                  submit();
-                }
-              }}
-            />
-            <div css={s.composerRow}>
-              <span css={s.counter}>
-                {text.length}/{ASSISTANT_MESSAGE_MAX}
-              </span>
-              <button type="submit" css={s.primaryBtn} disabled={!trimmed || blocked}>
-                대화 시작
-              </button>
+          <div css={s.hello}>
+            <span css={s.sparkle(48)}>
+              <SparkleIcon />
+            </span>
+            <h2>어떤 레슨을 찾고 있나요?</h2>
+            <p>원하는 레슨을 말로 설명하면 MU:ZIN에 등록된 공개 레슨·아티스트 중에서 찾아 드려요. 가격과 예약 가능 시간은 카드의 최신 정보로 확인하세요.</p>
+
+            <div css={s.examples} aria-label="질문 예시">
+              {EXAMPLES.map((ex) => (
+                <button key={ex} type="button" css={s.exampleBtn} onClick={() => setText(ex)} disabled={blocked}>
+                  {ex}
+                </button>
+              ))}
             </div>
-            {quota && quota.available && quota.remaining <= 0 && (
-              <p css={s.muted}>이번 주 이용 횟수를 모두 썼어요. {kstLabel(quota.resetsAt)}에 다시 3회가 돼요.</p>
-            )}
-          </form>
+
+            <div css={s.context}>
+              {ownReady ? (
+                <label css={s.check}>
+                  <input type="checkbox" checked={useOwn} onChange={(e) => setUseOwn(e.target.checked)} />
+                  <strong>내 음악 스타일 찾기 결과 반영</strong>
+                </label>
+              ) : guestReady ? (
+                <label css={s.check}>
+                  <input type="checkbox" checked={useGuest} onChange={(e) => setUseGuest(e.target.checked)} />
+                  <strong>로그인 전에 한 음악 스타일 찾기 결과 가져오기</strong>
+                </label>
+              ) : (
+                <span>
+                  음악 스타일 찾기 결과가 없어도 쓸 수 있어요. 취향을 반영하려면 <Link to="/hobby-finder">내 음악 스타일 찾기</Link>를 먼저 해 보세요.
+                </span>
+              )}
+              {context && (
+                <div css={s.chips} aria-label="반영할 취향">
+                  {context.recommended.map((r) => (
+                    <span key={r.id} css={s.chip}>
+                      {r.name}
+                    </span>
+                  ))}
+                  {context.region && (
+                    <span css={s.chip}>{[context.region.region1DepthName, context.region.region2DepthName].filter(Boolean).join(" ")}</span>
+                  )}
+                </div>
+              )}
+              {ownReady && !useOwn && <span>취향 정보 없이 대화만으로 찾아요.</span>}
+              {guestReady && <span>이 기기에서 로그인하지 않고 한 결과예요. 체크한 경우에만 이번 대화에 보내요.</span>}
+            </div>
+          </div>
+          {quota && quota.available && quota.remaining <= 0 && (
+            <p css={s.startNote}>이번 주 이용 횟수를 모두 썼어요. {kstLabel(quota.resetsAt)}에 다시 3회가 돼요.</p>
+          )}
         </>
       )}
 
       {startM.isError && !startM.isPending && <ErrorNotice error={startM.error} onRetry={() => sent && submit(sent)} />}
-    </section>
+    </Frame>
   );
 }
 
 // ---------- 대화 ----------
 
-function Thread({ conv, quota, onNew }: { conv: AssistantConversation; quota?: AssistantQuota; onNew: () => void }) {
+function Thread({
+  conv,
+  quota,
+  notice,
+  onNew,
+}: {
+  conv: AssistantConversation;
+  quota?: AssistantQuota;
+  notice: ReactNode;
+  onNew: () => void;
+}) {
   const sendM = useSendAssistantMessage();
   const deleteM = useDeleteAssistantConversation();
   const idem = useIdempotencyKey();
@@ -427,6 +586,7 @@ function Thread({ conv, quota, onNew }: { conv: AssistantConversation; quota?: A
   const trimmed = text.trim();
   const closed = conv.status === "CLOSED" || conv.remainingQuestions <= 0;
   const blocked = closed || conv.inFlight || (!!quota && !quota.available);
+  const scrollRef = useStickToBottom(`${conv.messages.length}-${sendM.isPending}-${sendM.isError}`);
 
   const submit = (value = trimmed) => {
     if (!value || sendM.isPending) return;
@@ -443,39 +603,65 @@ function Thread({ conv, quota, onNew }: { conv: AssistantConversation; quota?: A
     );
   };
 
+  const composer = closed ? (
+    <div css={s.notice("info")}>
+      <strong>이 대화의 질문 6번을 모두 썼어요</strong>
+      새 대화를 시작하면 이번 주 이용 횟수 1회를 써요.
+      <div css={s.noticeActions}>
+        <button type="button" css={s.secondaryBtn} onClick={onNew}>
+          새 대화 시작
+        </button>
+      </div>
+    </div>
+  ) : (
+    <Composer
+      id="assistant-follow"
+      label="이어서 질문"
+      value={text}
+      onChange={setText}
+      onSubmit={() => submit()}
+      disabled={blocked || sendM.isPending}
+      canSend={!!trimmed && !blocked && !sendM.isPending}
+      placeholder="조건을 더 알려 주거나 물어보세요"
+      sendLabel="보내기"
+      hint="이어서 하는 질문은 이번 주 이용 횟수가 줄지 않아요"
+    />
+  );
+
   return (
-    <section css={s.panel} aria-labelledby="assistant-thread-title">
+    <Frame scrollRef={scrollRef} composer={composer}>
+      {notice}
       <div css={s.threadHead}>
         <h2 id="assistant-thread-title">{conv.title}</h2>
-        <div css={s.quota}>
-          <span css={s.quotaChip(false)}>
-            질문 {conv.userMessageCount}/{conv.maxUserMessages} · 남은 {conv.remainingQuestions}번
-          </span>
-          <button type="button" css={s.textBtn} onClick={() => setConfirmDelete(true)} disabled={conv.inFlight}>
-            삭제
-          </button>
-        </div>
+        <span css={s.metaText}>
+          질문 {conv.userMessageCount}/{conv.maxUserMessages} · 남은 {conv.remainingQuestions}번
+        </span>
+        <button type="button" css={s.textBtn} onClick={() => setConfirmDelete(true)} disabled={conv.inFlight}>
+          삭제
+        </button>
       </div>
-      <p css={s.muted}>
+      <p css={s.contextLine}>
         {conv.styleContext
           ? `취향 진단 반영 중: ${[...conv.styleContext.recommended, conv.styleContext.region].filter(Boolean).join(" · ")} — 반영하지 않으려면 새 대화에서 체크를 풀어 주세요.`
           : "취향 진단 없이 대화 내용으로만 찾고 있어요."}
       </p>
 
-      <ol css={s.messages}>
+      <ol css={s.messages} aria-labelledby="assistant-thread-title">
         {conv.messages.map((m) =>
           m.role === "USER" ? (
             <li key={m.messageId} css={s.userBubble}>
               {m.content}
             </li>
           ) : (
-            <li key={m.messageId} css={s.answer}>
-              <div css={s.answerText}>{m.content}</div>
-              {m.recommendations.length === 0 && !m.followUpQuestion && (
-                <p css={s.followUp}>조건에 맞는 공개 레슨을 찾지 못했어요. 지역·악기·시간 조건을 바꿔 다시 물어보세요.</p>
-              )}
-              <AssistantCards cards={m.recommendations} />
-              {m.followUpQuestion && <p css={s.followUp}>{m.followUpQuestion}</p>}
+            <li key={m.messageId}>
+              <AiRow>
+                <div css={s.answerText}>{m.content}</div>
+                {m.recommendations.length === 0 && !m.followUpQuestion && (
+                  <p css={s.followUp}>조건에 맞는 공개 레슨을 찾지 못했어요. 지역·악기·시간 조건을 바꿔 다시 물어보세요.</p>
+                )}
+                <AssistantCards cards={m.recommendations} />
+                {m.followUpQuestion && <p css={s.followUp}>{m.followUpQuestion}</p>}
+              </AiRow>
             </li>
           ),
         )}
@@ -489,54 +675,10 @@ function Thread({ conv, quota, onNew }: { conv: AssistantConversation; quota?: A
         )}
       </ol>
 
-      {sendM.isError && !sendM.isPending && <ErrorNotice error={sendM.error} onRetry={() => sent && submit(sent)} onNew={onNew} />}
-
-      {closed ? (
-        <div css={s.notice("info")}>
-          <strong>이 대화의 질문 6번을 모두 썼어요</strong>
-          새 대화를 시작하면 이번 주 이용 횟수 1회를 써요.
-          <div css={s.noticeActions}>
-            <button type="button" css={s.secondaryBtn} onClick={onNew}>
-              새 대화 시작
-            </button>
-          </div>
+      {sendM.isError && !sendM.isPending && (
+        <div style={{ marginTop: 16 }}>
+          <ErrorNotice error={sendM.error} onRetry={() => sent && submit(sent)} onNew={onNew} />
         </div>
-      ) : (
-        <form
-          css={s.composer}
-          onSubmit={(e) => {
-            e.preventDefault();
-            submit();
-          }}
-        >
-          <label htmlFor="assistant-follow" css={s.srOnly}>
-            이어서 질문
-          </label>
-          <textarea
-            id="assistant-follow"
-            css={s.textarea}
-            style={{ minHeight: 72 }}
-            value={text}
-            maxLength={ASSISTANT_MESSAGE_MAX}
-            disabled={blocked || sendM.isPending}
-            placeholder="조건을 더 알려 주거나 궁금한 점을 물어보세요. (이번 주 이용 횟수는 줄지 않아요)"
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
-                e.preventDefault();
-                submit();
-              }
-            }}
-          />
-          <div css={s.composerRow}>
-            <span css={s.counter}>
-              {text.length}/{ASSISTANT_MESSAGE_MAX}
-            </span>
-            <button type="submit" css={s.primaryBtn} disabled={!trimmed || blocked || sendM.isPending}>
-              보내기
-            </button>
-          </div>
-        </form>
       )}
 
       <ConfirmModal
@@ -556,7 +698,7 @@ function Thread({ conv, quota, onNew }: { conv: AssistantConversation; quota?: A
         }
         onClose={() => setConfirmDelete(false)}
       />
-    </section>
+    </Frame>
   );
 }
 

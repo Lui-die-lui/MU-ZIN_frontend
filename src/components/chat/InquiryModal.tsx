@@ -6,6 +6,7 @@ import { useCreateInquiry } from "../../hooks/chat/useChat";
 import { INQUIRY_MAX } from "../../Types/chatTypes";
 import { getErrorMessage } from "../../utils/errorUtils";
 import { toast } from "../../stores/useToastStore";
+import { modalBtn } from "../common/CommonModal/modalButtons";
 
 type Props = {
   open: boolean;
@@ -44,10 +45,10 @@ function InquiryModal({ open, onClose, artistProfileId, artistName }: Props) {
       width={520}
       footer={
         <div css={s.footer}>
-          <button type="button" css={s.btn(false)} onClick={onClose} disabled={createM.isPending}>
+          <button type="button" css={modalBtn("secondary")} onClick={onClose} disabled={createM.isPending}>
             취소
           </button>
-          <button type="button" css={s.btn(true)} onClick={submit} disabled={createM.isPending}>
+          <button type="button" css={modalBtn("primary")} onClick={submit} disabled={createM.isPending}>
             {createM.isPending ? "보내는 중..." : "문의 보내기"}
           </button>
         </div>

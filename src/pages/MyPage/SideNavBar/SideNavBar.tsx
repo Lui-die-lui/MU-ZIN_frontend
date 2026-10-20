@@ -3,7 +3,8 @@ import * as s from "./styles";
 import type { ArtistStatus } from "../../../Types/auth";
 import { buildMyPageNavItems, type NavItem } from "./navItems";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import ChevronIcon from "../../../components/common/Chevron";
 
 type Props = {
   artistStatus: ArtistStatus;
@@ -92,8 +93,25 @@ function SideNavBar({ artistStatus, isAdmin = false, badgeMap }: Props) {
     </s.Item>
   );
 
+  // 모바일 가로 칩 줄: 선택된 메뉴가 화면 밖이면 보이는 곳까지 옆으로 넘김
+  const asideRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = asideRef.current;
+    if (!el) return;
+    // 레이아웃이 잡힌 다음 프레임에 계산 (바로 하면 폭이 0 이라 넘기지 못함)
+    const id = requestAnimationFrame(() => {
+      if (el.scrollWidth <= el.clientWidth) return;
+      const active = el.querySelector<HTMLElement>("a.active");
+      if (!active) return;
+      const a = active.getBoundingClientRect();
+      const box = el.getBoundingClientRect();
+      el.scrollLeft += a.left - box.left - (box.width - a.width) / 2;
+    });
+    return () => cancelAnimationFrame(id);
+  }, [loc.pathname]);
+
   return (
-    <s.Aside>
+    <s.Aside ref={asideRef} aria-label="마이페이지 메뉴">
       <s.Title onClick={() => navigate("/mypage")}>마이페이지</s.Title>
 
       <s.Nav>
@@ -110,7 +128,7 @@ function SideNavBar({ artistStatus, isAdmin = false, badgeMap }: Props) {
           return (
             <s.Item key={item.key}>
               {/* 부모 클릭하면 펼침 */}
-              <s.ParentButton type="button" onClick={() => goOrToggle(item)}>
+              <s.ParentButton type="button" aria-expanded={isOpen} onClick={() => goOrToggle(item)}>
                 <span>{item.label}</span>
 
                 {!!item.badgeCount && item.badgeCount > 0 && (
@@ -121,30 +139,31 @@ function SideNavBar({ artistStatus, isAdmin = false, badgeMap }: Props) {
                   </s.Badge>
                 )}
 
-                <s.Chevron data-open={isOpen}>▾</s.Chevron>
+                <s.Chevron data-open={isOpen} aria-hidden="true">
+                  <ChevronIcon size={14} />
+                </s.Chevron>
               </s.ParentButton>
 
-              {isOpen && (
-                <s.ChildNav>
-                  {item.children!.map((child) => (
-                    <s.Item key={child.key}>
-                      <s.ChildLinkItem
-                        to={child.to!}
-                        end={child.to === "/mypage/reservations"}
-                      >
-                        <span>{child.label}</span>
-                        {!!badgeMap?.[child.key] && badgeMap[child.key] > 0 && (
-                          <s.Badge
-                            aria-label={`${child.label} 알림 ${badgeMap[child.key]}개`}
-                          >
-                            {badgeMap[child.key]}
-                          </s.Badge>
-                        )}
-                      </s.ChildLinkItem>
-                    </s.Item>
-                  ))}
-                </s.ChildNav>
-              )}
+              {/* 데스크톱은 닫히면 숨김, 모바일은 항상 칩으로 보임 (CSS) */}
+              <s.ChildNav data-open={isOpen}>
+                {item.children!.map((child) => (
+                  <s.Item key={child.key}>
+                    <s.ChildLinkItem
+                      to={child.to!}
+                      end={child.to === "/mypage/reservations"}
+                    >
+                      <span>{child.label}</span>
+                      {!!badgeMap?.[child.key] && badgeMap[child.key] > 0 && (
+                        <s.Badge
+                          aria-label={`${child.label} 알림 ${badgeMap[child.key]}개`}
+                        >
+                          {badgeMap[child.key]}
+                        </s.Badge>
+                      )}
+                    </s.ChildLinkItem>
+                  </s.Item>
+                ))}
+              </s.ChildNav>
             </s.Item>
           );
         })}

@@ -34,16 +34,16 @@ function ConfirmModal({
       width={width}
       footer={
         <>
-          <button css={s.ghostBtn} onClick={onClose} disabled={loading}>
+          <button type="button" css={s.ghostBtn} onClick={onClose} disabled={loading}>
             {cancelText}
           </button>
-          <button css={s.primaryBtn} onClick={onConfirm} disabled={loading}>
+          <button type="button" css={s.primaryBtn} onClick={onConfirm} disabled={loading}>
             {loading ? "처리중..." : confirmText}
           </button>
         </>
       }
     >
-      <p>{message}</p>
+      <p css={s.message}>{message}</p>
     </CommonModal>
   );
 }

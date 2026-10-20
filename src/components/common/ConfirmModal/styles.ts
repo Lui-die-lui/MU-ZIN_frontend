@@ -1,30 +1,12 @@
 import { css } from "@emotion/react";
+import { modalBtn } from "../CommonModal/modalButtons";
 
-export const ghostBtn = css`
-  height: 38px;
-  padding: 0 14px;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-  cursor: pointer;
+// 확인 창 버튼 - 모든 모달과 같은 공용 버튼
+export const ghostBtn = modalBtn("secondary");
+export const primaryBtn = modalBtn("primary");
 
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-`;
-
-export const primaryBtn = css`
-  height: 38px;
-  padding: 0 14px;
-  border-radius: 10px;
-  border: none;
-  background: #111827;
-  color: #fff;
-  cursor: pointer;
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+export const message = css`
+  margin: 0;
+  color: #5f656a;
+  word-break: keep-all;
 `;
