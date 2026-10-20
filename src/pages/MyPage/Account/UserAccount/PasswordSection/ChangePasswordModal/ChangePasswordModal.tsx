@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { getErrorMessage } from "../../../../../../utils/errorUtils";
 import { toast } from "../../../../../../stores/useToastStore";
 import { isValidPassword, PASSWORD_RULE_TEXT } from "../../../../../../utils/passwordRules";
+import { modalBtn } from "../../../../../../components/common/CommonModal/modalButtons";
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -79,11 +80,11 @@ function ChangePasswordModal({ open, onClose, onSubmit }: Props) {
       width={420}
       footer={
         <div css={s.footerRow}>
-          <button css={s.ghostBtn} onClick={onClose} disabled={isLoading}>
+          <button type="button" css={modalBtn("secondary")} onClick={onClose} disabled={isLoading}>
             취소
           </button>
           <button
-            css={s.primaryBtn}
+            css={modalBtn("primary")}
             onClick={handleSubmit}
             disabled={isLoading}
           >

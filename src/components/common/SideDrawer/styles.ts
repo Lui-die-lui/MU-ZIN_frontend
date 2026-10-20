@@ -54,8 +54,9 @@ export const panel = (
     left: 0;
     right: 0;
     bottom: 0;
-    width: 100%;
-    max-width: 100%;
+    /* 스크롤바 자리(scrollbar-gutter)까지 덮어 화면 끝에 붙게 (100% 면 그 자리만큼 비어 보임) */
+    width: 100vw;
+    max-width: 100vw;
     max-height: 88dvh;
     border-radius: 20px 20px 0 0;
     box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);

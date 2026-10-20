@@ -3,6 +3,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import * as s from "./styles";
 import InstrumentPack from "./InstrumentPack";
+import MySchedule from "./MySchedule";
+import AiPrompt from "./AiPrompt";
+import Chevron from "../../components/common/Chevron";
 import { instrumentSrc, pickInstruments } from "./instruments";
 import { isComplete } from "../../features/hobbyFinder/engine";
 import { loadSaved } from "../../features/hobbyFinder/storage";
@@ -16,52 +19,65 @@ const STEPS = [
   { title: "확정", desc: "아티스트가 확인하면 확정되고, 알림으로 알려드려요." },
 ] as const;
 
-// 메인: ① 레슨·아티스트 찾기(배너) → ② 신청 순서 → ③ 아직 정하지 못했다면 내 음악 스타일 찾기
+// 메인: ① 레슨·아티스트 찾기(배너) [+ 로그인 회원은 오른쪽에 내 레슨 일정] → ② 신청 순서 → ③ 내 음악 스타일 찾기
 function Home() {
   const userId = usePrincipalState((st) => st.principal?.userId ?? null);
+  const hydrated = usePrincipalState((st) => st.hydrated);
+  // 로그인 복구 중에도 토큰이 있으면 회원 배치로 그려서, 복구가 끝날 때 배너 폭이 바뀌며 깜빡이지 않게
+  const member = !!userId || (!hydrated && !!localStorage.getItem("accessToken"));
   const hasResult = isComplete(loadSaved(userId).answers);
   // 서버 렌더링 없는 SPA: 첫 렌더에서 한 번만 고름 (다시 그려져도 바뀌지 않음)
   const [picked] = useState(() => pickInstruments(3));
 
   return (
     <main css={s.page}>
-      {/* ① 메인 배너 */}
-      <section css={s.hero} aria-labelledby="home-title">
-        <div css={s.heroBody}>
-          <h1 id="home-title" css={s.title}>
-            내 근처 레슨을
-            <br />
-            빠르고 간편하게!
-          </h1>
-          <p css={s.heroDesc}>악기·지역·시간으로 원하는 레슨을 찾고, 마음에 드는 시간에 바로 예약을 요청해 보세요.</p>
+      <div css={s.top(member)}>
+        {/* ① 메인 배너 - 데스크톱: 왼쪽 [제목 → AI 질문 → 찾기 버튼] / 오른쪽 악기
+                         모바일: 제목 → 악기 → AI 질문 → 찾기 버튼 */}
+        <section css={s.hero(member)} aria-labelledby="home-title">
+          <div css={s.heroHead}>
+            <h1 id="home-title" css={s.title(member)}>
+              내 근처 레슨을
+              <br />
+              빠르고 간편하게!
+            </h1>
+            <p css={s.heroDesc}>악기·지역·시간으로 원하는 레슨을 찾고, 마음에 드는 시간에 바로 예약을 요청해 보세요.</p>
+          </div>
 
-          <nav css={s.paths} aria-label="바로 찾기">
+          <div css={s.heroVisual(member)}>
+            <InstrumentPack inst={picked.hero} />
+          </div>
+
+          {/* 말로 설명해서 찾기 (로그인 회원 - 비로그인은 내비게이터 화면에서 로그인 안내) */}
+          <div css={s.heroAi}>
+            <AiPrompt />
+          </div>
+
+          <nav css={s.paths(member)} aria-label="바로 찾기">
             <Link to="/lessons" css={s.pathPrimary}>
               <span css={s.pathText}>
                 <strong>레슨 찾기</strong>
                 <span>악기·지역·시간으로 레슨을 찾아보세요.</span>
               </span>
-              <span css={s.pathArrow} aria-hidden="true" />
+              <span css={s.pathArrow} aria-hidden="true">
+                <Chevron />
+              </span>
             </Link>
             <Link to="/artists" css={s.pathSecondary}>
               <span css={s.pathText}>
                 <strong>아티스트 찾기</strong>
                 <span>전공과 레슨 스타일로 아티스트를 찾아보세요.</span>
               </span>
-              <span css={s.pathArrow} aria-hidden="true" />
-            </Link>
-            {/* 말로 설명해서 찾기 (로그인 회원 - 비로그인은 화면에서 로그인 안내) */}
-            <Link to="/assistant" css={s.aiLink}>
-              <span>원하는 레슨을 말로 설명해서 찾고 싶다면</span>
-              <strong>AI 레슨 내비게이터</strong>
+              <span css={s.pathArrow} aria-hidden="true">
+                <Chevron />
+              </span>
             </Link>
           </nav>
-        </div>
+        </section>
 
-        <div css={s.heroVisual}>
-          <InstrumentPack inst={picked.hero} />
-        </div>
-      </section>
+        {/* 로그인 회원: 내 레슨 일정 (복구 중엔 목록 요청 없이 자리만) */}
+        {member && (userId ? <MySchedule key={userId} /> : <div css={s.schedulePlaceholder} aria-hidden="true" />)}
+      </div>
 
       {/* ② 신청 순서 */}
       <section css={s.section} aria-labelledby="home-steps-title">

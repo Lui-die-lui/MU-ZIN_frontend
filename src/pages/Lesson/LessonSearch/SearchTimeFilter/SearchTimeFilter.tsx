@@ -56,19 +56,10 @@ function SearchTimeFilter({ value, onChange, disabled = false }: Props) {
       {/* 요일 */}
       <div css={s.row}>
         <div css={s.label}>요일</div>
-        <div css={s.inline}>
+        {/* 모바일에서도 일곱 개가 한 줄 */}
+        <div css={s.chips(7)}>
           <ToggleChips<Weekday>
-            options={WEEKDAY_OPTIONS.slice(0, 5)}
-            selected={value.daysOfWeek}
-            getLabel={(d) => WEEKDAY_LABEL[d]}
-            onToggle={toggleWeekday}
-            disabled={disabled}
-          />
-
-          <span css={s.gap} />
-
-          <ToggleChips<Weekday>
-            options={WEEKDAY_OPTIONS.slice(5)}
+            options={WEEKDAY_OPTIONS}
             selected={value.daysOfWeek}
             getLabel={(d) => WEEKDAY_LABEL[d]}
             onToggle={toggleWeekday}
@@ -80,13 +71,15 @@ function SearchTimeFilter({ value, onChange, disabled = false }: Props) {
       {/* 시간 */}
       <div css={s.row}>
         <div css={s.label}>시간</div>
-        <ToggleChips<TimePart>
-          options={TIME_PART_OPTIONS}
-          selected={value.timeParts}
-          getLabel={(tp) => TIME_PART_LABEL[tp]}
-          onToggle={toggleTimePart}
-          disabled={disabled}
-        />
+        <div css={s.chips(4)}>
+          <ToggleChips<TimePart>
+            options={TIME_PART_OPTIONS}
+            selected={value.timeParts}
+            getLabel={(tp) => TIME_PART_LABEL[tp]}
+            onToggle={toggleTimePart}
+            disabled={disabled}
+          />
+        </div>
       </div>
     </div>
   );

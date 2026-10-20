@@ -16,11 +16,13 @@ import { getArtistReservationListReq } from "../../apis/reservation/reservationA
 import { buildArtistReservationParams } from "../../utils/filters/buildArtistReservationParams";
 
 // 아티스트가 가진 예약 리스트 불러옴
-export function useArtistReservationList(filter: ArtistReservationListFilter) {
+// enabled: 승인된 아티스트일 때만 받도록 (메인 일정 패널처럼 누구나 그리는 곳)
+export function useArtistReservationList(filter: ArtistReservationListFilter, options?: { enabled?: boolean }) {
   const params = buildArtistReservationParams(filter);
   return useQuery({
     queryKey: reservationKeys.artistList({ tab: filter.tab, ...params }),
     queryFn: async () => (await getArtistReservationListReq(params)).data.data,
+    enabled: options?.enabled ?? true,
   });
 }
 

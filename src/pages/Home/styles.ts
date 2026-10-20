@@ -1,75 +1,108 @@
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 
 // 메인 - 밝은 바탕 + 충분한 여백, 차콜 글자 / 오프화이트 · 밝은 회색 면
 // 포인트 컬러 없음 (주요 버튼은 차콜), 실버는 얇은 선에만
 // 둥근 정도: 섹션 24 · 카드 18 · 버튼 14 · 칩 8 (모바일 섹션 20)
-const ink = "#17191C"; // 차콜
-const sub = "#5F656A"; // 보조 글자
-const faint = "#8A9095";
-const paper = "#F5F4F0"; // 오프화이트 면
-const mist = "#ECEBE7"; // 밝은 회색 면
-const line = "#E1E0DB";
-const silver = "#C5CACD"; // 얇은 실버 선
-
-const focusRing = css`
-  &:focus-visible {
-    outline: 3px solid rgba(23, 25, 28, 0.35);
-    outline-offset: 3px;
-  }
-`;
+import { faint, focusRing, ink, line, mist, paper, silver, sub } from "../../constants/uiTone";
+// 일정 패널 스타일에서도 같이 씀
+export { faint, focusRing, ink, line, mist, paper, silver, sub };
 
 export const page = css`
   display: grid;
   gap: 24px;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 24px 24px 88px;
+  /* 폭은 #root(1440) 를 그대로 씀. 좌우 8px + 바깥 16px = 상단 메뉴 로고와 같은 선 */
+  /* 위: 바깥 16px + 4px = 상단 메뉴와 20px */
+  padding: 4px 8px 88px;
   color: ${ink};
   text-align: left;
   box-sizing: border-box;
 
   @media (max-width: 600px) {
     gap: 16px;
-    padding: 8px 0 56px;
+    padding: 0 0 56px;
   }
 `;
 
-// ---------- ① 메인 배너 ----------
+// ---------- ① 메인 배너 (+ 내 레슨 일정) ----------
 
-export const hero = css`
+// 회원: 배너 | 일정 패널 (1120px 이하에서는 패널이 배너 아래로)
+export const top = (member: boolean) => css`
+  display: grid;
+  grid-template-columns: ${member ? "minmax(0, 1fr) 400px" : "minmax(0, 1fr)"};
+  align-items: stretch;
+  gap: 20px;
+
+  @media (max-width: 1120px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    gap: 12px;
+  }
+`;
+
+// 로그인 복구 중 일정 패널 자리 (복구가 끝나면 패널로 바뀜)
+export const schedulePlaceholder = css`
+  min-height: 560px;
+  border-radius: 24px;
+  background: ${mist};
+
+  @media (max-width: 1120px) {
+    min-height: 320px;
+  }
+  @media (max-width: 768px) {
+    order: -1;
+  }
+`;
+
+// 데스크톱: 왼쪽 [제목 → AI 질문 → 찾기 버튼], 오른쪽 악기가 세로 전체
+//   위아래 빈 1fr 줄이 남는 높이를 나눠 가져서 왼쪽 묶음이 가운데에 모임
+// 960px 이하: 제목 → 악기 → AI 질문 → 찾기 버튼
+export const hero = (member: boolean) => css`
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-  align-items: center;
-  gap: 40px;
-  padding: 56px 56px 48px;
+  grid-template-columns: ${member ? "minmax(0, 1fr) minmax(220px, 0.7fr)" : "minmax(0, 1.15fr) minmax(320px, 0.85fr)"};
+  grid-template-rows: 1fr auto auto auto 1fr;
+  grid-template-areas:
+    ". visual"
+    "head visual"
+    "ai visual"
+    "paths visual"
+    ". visual";
+  column-gap: ${member ? 24 : 56}px;
+  padding: ${member ? "48px 40px 40px 48px" : "64px 64px 56px"};
   border-radius: 24px;
   background: ${paper};
   overflow: hidden;
 
   @media (max-width: 960px) {
     grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
-    padding: 44px 32px 24px;
+    grid-template-rows: none;
+    grid-template-areas: "head" "visual" "ai" "paths";
+    padding: 44px 32px 28px;
   }
 
   @media (max-width: 600px) {
-    padding: 28px 20px 12px;
+    padding: 28px 20px 20px;
     border-radius: 20px;
   }
 `;
 
-export const heroBody = css`
-  position: relative;
-  z-index: 1;
+export const heroHead = css`
+  grid-area: head;
   display: grid;
-  gap: 16px;
+  gap: 14px;
   min-width: 0;
+  margin-bottom: 28px;
+
+  @media (max-width: 960px) {
+    margin-bottom: 0;
+  }
 `;
 
-export const title = css`
+export const title = (member: boolean) => css`
   margin: 0;
-  font-size: clamp(34px, 5vw, 58px);
+  font-size: ${member ? "clamp(34px, 3.3vw, 50px)" : "clamp(34px, 4.4vw, 62px)"};
   font-weight: 800;
   line-height: 1.12;
   letter-spacing: -0.045em;
@@ -78,27 +111,169 @@ export const title = css`
 `;
 
 export const heroDesc = css`
-  max-width: 30em;
+  max-width: 32em;
   margin: 0;
-  font-size: 17px;
+  font-size: 15px;
   line-height: 1.7;
   color: ${sub};
   word-break: keep-all;
 
   @media (max-width: 600px) {
-    font-size: 15px;
+    font-size: 14px;
   }
 `;
 
-// 두 갈래 찾기: 레슨 = 차콜 큰 판(주), 아티스트 = 흰 판(보조)
-export const paths = css`
+export const heroVisual = (member: boolean) => css`
+  grid-area: visual;
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: 10px;
-  max-width: 460px;
-  margin-top: 12px;
+  place-items: center;
+  min-height: ${member ? 400 : 460}px;
 
   @media (max-width: 960px) {
-    max-width: 560px;
+    min-height: 0;
+    padding: 24px 0 20px;
+  }
+
+  /* 모바일: 포장을 조금 크게 (212 -> 약 250px) */
+  @media (max-width: 600px) {
+    padding: 20px 0 16px;
+    zoom: 1.18;
+  }
+
+  /* 회원 + 배너 옆 일정 패널: 배너 칸이 가장 좁은 구간에서 포장(300px)이 잘리지 않게 */
+  ${member ? "@media (min-width: 1121px) and (max-width: 1300px) { zoom: 0.75; }" : ""}
+`;
+
+// ---------- 배너 > AI 질문 (입력창 모양 링크) ----------
+
+const rise = keyframes`
+  from { opacity: 0; transform: translateY(70%); }
+  to { opacity: 1; transform: none; }
+`;
+
+export const heroAi = css`
+  grid-area: ai;
+  /* 폭에 따라 질문 줄 수를 바꾸려고 이 칸 폭을 기준으로 삼음 */
+  container-type: inline-size;
+  max-width: 640px;
+  margin-bottom: 14px;
+`;
+
+export const aiPrompt = css`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 8px 8px 8px 24px;
+  border-radius: 999px;
+  background: #FFFFFF;
+  box-shadow: 0 14px 30px -22px rgba(23, 25, 28, 0.45);
+  color: ${sub};
+  text-decoration: none;
+  box-sizing: border-box;
+  transition: box-shadow 0.15s ease;
+
+  &:hover {
+    color: ${sub};
+    box-shadow: 0 18px 34px -20px rgba(23, 25, 28, 0.5);
+  }
+  &:hover > span:last-of-type {
+    background: #000000;
+  }
+  ${focusRing}
+
+  @container (max-width: 520px) {
+    padding-left: 20px;
+  }
+`;
+
+// 한 줄(넓을 때) / 두 줄(좁을 때) 높이를 고정해서 문장이 바뀌어도 배너 높이가 흔들리지 않음
+// 짧은 문장(한 줄)도 두 줄 칸 안에서 세로 가운데
+export const aiField = css`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 24px;
+  overflow: hidden;
+
+  & > span {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @container (max-width: 520px) {
+    height: 40px;
+  }
+`;
+
+export const aiText = css`
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  line-height: 24px;
+  animation: ${rise} 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @container (max-width: 520px) {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    word-break: keep-all;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`;
+
+export const aiButton = css`
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: ${ink};
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+
+  /* 좁으면 질문 칸을 남기려고 버튼을 줄임 */
+  @container (max-width: 400px) {
+    padding: 0 16px;
+  }
+`;
+
+// 좁은 폭에서는 "AI" 만 남김 (링크 이름은 aria-label 로 전체 전달)
+export const aiButtonMore = css`
+  @container (max-width: 400px) {
+    display: none;
+  }
+`;
+
+// ---------- 배너 > 레슨·아티스트 찾기 ----------
+
+// 넓으면 나란히, 좁으면 위아래 (회원 배너는 칸이 좁아 기준을 낮춤)
+export const paths = (member: boolean) => css`
+  grid-area: paths;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(${member ? 220 : 260}px, 1fr));
+  gap: 10px;
+  max-width: 640px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 `;
 
@@ -107,8 +282,10 @@ const pathBase = css`
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 16px 16px 16px 22px;
+  min-height: 76px;
+  padding: 14px 16px 14px 22px;
   border-radius: 18px;
+  box-sizing: border-box;
   text-decoration: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 
@@ -127,7 +304,6 @@ const pathBase = css`
 
 export const pathPrimary = css`
   ${pathBase};
-  min-height: 80px;
   background: ${ink};
   color: #FFFFFF;
   box-shadow: 0 14px 28px -16px rgba(23, 25, 28, 0.75);
@@ -141,9 +317,7 @@ export const pathPrimary = css`
   /* 차콜 판 위에서는 화살표 원을 흰색으로 */
   & > span[aria-hidden] {
     background: #FFFFFF;
-  }
-  & > span[aria-hidden]::after {
-    border-color: ${ink};
+    color: ${ink};
   }
 
   &:hover {
@@ -152,12 +326,12 @@ export const pathPrimary = css`
   }
 `;
 
+// 보조: 테두리 없이 흰 판 + 옅은 그림자 (일정 패널과 같은 결)
 export const pathSecondary = css`
   ${pathBase};
-  min-height: 72px;
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.85);
   color: ${ink};
-  box-shadow: inset 0 0 0 1px ${line};
+  box-shadow: 0 10px 24px -20px rgba(23, 25, 28, 0.45);
 
   span span {
     color: ${sub};
@@ -165,7 +339,8 @@ export const pathSecondary = css`
 
   &:hover {
     color: ${ink};
-    box-shadow: inset 0 0 0 1px ${silver}, 0 10px 22px -16px rgba(23, 25, 28, 0.4);
+    background: #FFFFFF;
+    box-shadow: 0 14px 28px -18px rgba(23, 25, 28, 0.45);
   }
 `;
 
@@ -175,8 +350,9 @@ export const pathText = css`
   min-width: 0;
 
   strong {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
+    line-height: 1.3;
     letter-spacing: -0.02em;
   }
   span {
@@ -186,84 +362,19 @@ export const pathText = css`
   }
 `;
 
-// AI 레슨 내비게이터 진입: 두 갈래 버튼 아래 한 줄 (보조 동선이라 버튼보다 가볍게)
-export const aiLink = css`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 8px;
-  padding: 6px 4px 0;
-  font-size: 14px;
-  color: ${sub};
-  text-decoration: none;
-
-  strong {
-    position: relative;
-    padding-right: 14px;
-    font-weight: 800;
-    color: ${ink};
-    text-decoration: underline;
-    text-decoration-color: ${silver};
-    text-underline-offset: 4px;
-  }
-  /* 오른쪽 화살촉 */
-  strong::after {
-    content: "";
-    position: absolute;
-    right: 2px;
-    top: 50%;
-    width: 6px;
-    height: 6px;
-    margin-top: -3px;
-    border-top: 2px solid currentColor;
-    border-right: 2px solid currentColor;
-    transform: rotate(45deg);
-  }
-  &:hover {
-    color: ${ink};
-  }
-  &:hover strong {
-    text-decoration-color: ${ink};
-  }
-  ${focusRing}
-`;
-
-// 원 안의 화살촉 (선으로만)
+// 원 안의 꺾쇠 (SVG 를 정확히 가운데에)
 export const pathArrow = css`
-  position: relative;
+  display: grid;
   flex-shrink: 0;
+  place-items: center;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: ${ink};
+  color: #FFFFFF;
 
-  &::after {
-    content: "";
-    position: absolute;
-    left: 14px;
-    top: 15px;
-    width: 8px;
-    height: 8px;
-    border-top: 2px solid #FFFFFF;
-    border-right: 2px solid #FFFFFF;
-    transform: rotate(45deg);
-  }
-`;
-
-export const heroVisual = css`
-  position: relative;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  min-height: 440px;
-
-  @media (max-width: 960px) {
-    min-height: 0;
-    padding: 20px 0 8px;
-  }
-
-  @media (max-width: 600px) {
-    padding: 16px 0 4px;
+  svg {
+    display: block;
   }
 `;
 

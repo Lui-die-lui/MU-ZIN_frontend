@@ -31,14 +31,15 @@ function ArtistCard({ artist }: Props) {
           src={artist.profileImgUrl}
           name={artist.username}
           alt={`${artist.username} 프로필`}
-          size={72}
+          size={56}
         />
 
         <div css={s.content}>
           <div css={s.topRow}>
             <h3 css={s.username}>{artist.username}</h3>
-            {artist.majorName && <span css={s.major}>{artist.majorName}</span>}
-          <span css={s.followers}>팔로워 {artist.followerCount.toLocaleString("ko-KR")}</span>
+            <span css={s.sub2}>
+              {artist.majorName ? `${artist.majorName} · ` : ""}팔로워 {artist.followerCount.toLocaleString("ko-KR")}
+            </span>
           </div>
 
           <div css={s.chips}>

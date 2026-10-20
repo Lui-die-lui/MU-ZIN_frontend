@@ -2,13 +2,14 @@
 import { useCallback, useState } from "react";
 import * as s from "./styles";
 import Cropper, { type Area } from "react-easy-crop";
+import { modalBtn } from "../CommonModal/modalButtons";
 
 type Props = {
   open: boolean;
   imageSrc: string; //objectUrl
   onClose: () => void;
   onConfirm: (croppedAreaPixels: Area) => Promise<void>;
-  // title?: string;
+  title?: string;
 };
 
 function ImageCropModal({
@@ -16,8 +17,8 @@ function ImageCropModal({
   imageSrc,
   onClose,
   onConfirm,
-}: // title = "프로필 설정",
-Props) {
+  title = "프로필 설정",
+}: Props) {
   // 크롭 좌표
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   // 배율
@@ -47,11 +48,13 @@ Props) {
 
   return (
     <s.Overlay>
-      <s.Modal>
+      <s.Modal width={520} role="dialog" aria-modal="true" aria-label={title}>
         <s.Header>
-          {/* <s.Title>{title}</s.Title> */}
+          <s.Title>{title}</s.Title>
           <s.CloseBtn type="button" onClick={onClose} aria-label="닫기">
-            ✕
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
           </s.CloseBtn>
         </s.Header>
 
@@ -72,16 +75,17 @@ Props) {
         <s.Controls>
 
           <s.BtnRow>
-            <s.Btn type="button" onClick={onClose} disabled={isLoading}>
+            <button type="button" css={modalBtn("secondary")} onClick={onClose} disabled={isLoading}>
               취소
-            </s.Btn>
-            <s.PrimaryBtn
+            </button>
+            <button
               type="button"
+              css={modalBtn("primary")}
               disabled={isLoading || !croppedAreaPixels}
               onClick={handleConfirm}
             >
               적용
-            </s.PrimaryBtn>
+            </button>
           </s.BtnRow>
         </s.Controls>
       </s.Modal>

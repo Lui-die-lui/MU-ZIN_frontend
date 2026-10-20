@@ -7,6 +7,7 @@ import { useCreateReview, useReviewKeywords, useUpdateReview } from "../../hooks
 import { REVIEW_CONTENT_MAX, REVIEW_MAX_KEYWORDS, type ReviewResp } from "../../Types/reviewTypes";
 import { getErrorMessage } from "../../utils/errorUtils";
 import { toast } from "../../stores/useToastStore";
+import { modalBtn } from "../common/CommonModal/modalButtons";
 
 export type ReviewTarget = {
   reservationId: number;
@@ -72,10 +73,10 @@ function ReviewFormModal({ open, onClose, target, editing }: Props) {
 
   const footer = (
     <div css={s.formFooter}>
-      <button type="button" css={s.btn("ghost")} onClick={onClose} disabled={busy}>
+      <button type="button" css={modalBtn("secondary")} onClick={onClose} disabled={busy}>
         취소
       </button>
-      <button type="button" css={s.btn("primary")} onClick={submit} disabled={busy}>
+      <button type="button" css={modalBtn("primary")} onClick={submit} disabled={busy}>
         {busy ? "저장 중..." : editing ? "수정하기" : "리뷰 남기기"}
       </button>
     </div>

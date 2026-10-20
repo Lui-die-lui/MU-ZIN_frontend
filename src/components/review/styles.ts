@@ -1,9 +1,8 @@
 import { css } from "@emotion/react";
 
-// 리뷰 공통 디자인 (공개 프로필 · 레슨 상세 창 · 마이페이지 리뷰 관리)
+// 리뷰 공통 디자인 (공개 프로필 · 레슨 상세 창 · 마이페이지 리뷰 관리) - 메인 톤: 테두리 없는 오프화이트 판 + 흰 면
 const text = "#1b1d20";
 const mutedColor = "#6b7280";
-const border = "#e2e5e9";
 const soft = "#f7f8f9";
 
 // ---------- 별 ----------
@@ -65,14 +64,14 @@ export const summary = (compact = false) => css`
   grid-template-columns: ${compact ? "1fr" : "150px 1fr 1.3fr"};
   gap: 24px;
   align-items: center;
-  padding: 20px;
-  border: 1px solid ${border};
-  border-radius: 14px;
-  background: #fff;
+  padding: 24px;
+  border-radius: 18px;
+  background: #f5f4f0; /* 메인 톤: 테두리 없는 오프화이트 판 */
 
   @media (max-width: 760px) {
     grid-template-columns: 1fr;
     gap: 18px;
+    padding: 20px;
   }
 `;
 
@@ -116,7 +115,7 @@ export const bar = css`
   position: relative;
   height: 8px;
   border-radius: 999px;
-  background: #eef0f2;
+  background: #ffffff; /* 오프화이트 판 위에서 빈 칸이 보이게 */
   overflow: hidden;
 `;
 
@@ -239,9 +238,9 @@ export const toolbarSelectSmall = css`
 export const toggleChip = (on: boolean) => css`
   height: 36px;
   padding: 0 14px;
-  border: 1px solid ${on ? "#111827" : "#cfd4da"};
+  border: 0;
   border-radius: 999px;
-  background: ${on ? "#111827" : "#fff"};
+  background: ${on ? "#17191c" : "#f2f1ed"};
   color: ${on ? "#fff" : text};
   font: inherit;
   font-size: 13px;
@@ -259,10 +258,13 @@ export const item = css`
   display: grid;
   min-width: 0;
   gap: 10px;
-  padding: 18px;
-  border: 1px solid ${border};
-  border-radius: 14px;
-  background: #fff;
+  padding: 20px;
+  border-radius: 18px;
+  background: #f5f4f0; /* 테두리 없는 오프화이트 판 (안쪽 레슨·칩·답글은 흰 면) */
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
 `;
 
 export const itemHead = css`
@@ -309,9 +311,9 @@ export const lessonTag = css`
   min-width: 0;
   overflow-wrap: anywhere;
   gap: 6px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: ${soft};
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #ffffff;
   font-size: 13px;
 `;
 
@@ -341,10 +343,10 @@ export const chips = css`
 export const chip = css`
   padding: 4px 10px;
   border-radius: 999px;
-  background: #f3f4f6;
-  color: #374151;
+  background: #ffffff;
+  color: #17191c;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
 `;
 
 export const content = css`
@@ -361,9 +363,9 @@ export const reply = css`
   gap: 6px;
   margin-left: 12px;
   padding: 12px 14px;
-  border-left: 3px solid #111827;
-  border-radius: 0 10px 10px 0;
-  background: ${soft};
+  border-left: 2px solid #17191c;
+  border-radius: 0 12px 12px 0;
+  background: #ffffff;
 `;
 
 export const replyHead = css`
@@ -443,9 +445,9 @@ export const stateBox = css`
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 28px 16px;
-  border: 1px dashed #d8dce1;
-  border-radius: 14px;
+  padding: 32px 16px;
+  border-radius: 18px;
+  background: #f5f4f0;
   font-size: 14px;
   color: ${mutedColor};
   text-align: center;
@@ -453,9 +455,9 @@ export const stateBox = css`
 
 export const moreButton = css`
   height: 44px;
-  border: 1px solid #cfd4da;
-  border-radius: 10px;
-  background: #fff;
+  border: 0;
+  border-radius: 14px;
+  background: #ecebe7;
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -463,7 +465,7 @@ export const moreButton = css`
   cursor: pointer;
 
   &:hover {
-    background: #f7f8f9;
+    background: #e2e1dc;
   }
 `;
 

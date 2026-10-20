@@ -14,7 +14,7 @@ function AdminLayout() {
     <>
       <NavBar />
       <layout.Wrap>
-        <s.Aside>
+        <s.Aside aria-label="관리자 메뉴">
           <s.Title onClick={() => navigate("/admin")}>관리자</s.Title>
 
           <s.Nav>
