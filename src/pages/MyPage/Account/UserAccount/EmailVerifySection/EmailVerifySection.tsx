@@ -92,24 +92,26 @@ function EmailVerifySection() {
         </div>
       }
       action={
-        <button
-          onClick={() => sendMut.mutate()}
-          css={s.reserveBtn}
-          disabled={!email || sendMut.isPending || isVerified || coolingDown}
-        >
-          {isVerified
-            ? "인증 완료"
-            : sendMut.isPending
+        isVerified ? (
+          <span css={s.statusDone}>인증 완료</span>
+        ) : (
+          <button
+            onClick={() => sendMut.mutate()}
+            css={s.reserveBtn}
+            disabled={!email || sendMut.isPending || coolingDown}
+          >
+            {sendMut.isPending
               ? "전송 중"
               : coolingDown
                 ? `재전송 ${formatRemaining(remainingMs)}`
                 : "전송"}
-        </button>
+          </button>
+        )
       }
     >
       <input value={email} css={s.input} disabled />
       {!isVerified && coolingDown && (
-        <p style={{ margin: "6px 0 0", fontSize: 13, color: "#666" }}>
+        <p css={s.helperText}>
           메일을 보냈어요. 3분 안에 메일의 링크를 눌러 인증해주세요.
         </p>
       )}

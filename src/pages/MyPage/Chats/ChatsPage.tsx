@@ -18,7 +18,7 @@ function ChatsPage() {
     <div css={s.page}>
       <div css={s.header(!!currentId)}>
         <h1 css={s.title}>채팅</h1>
-        <p css={s.desc}>아티스트가 레슨을 수락하거나 문의를 채팅으로 이어가면 대화할 수 있어요. 마지막 레슨(또는 문의로 열린 날)부터 14일이 지나면 읽기 전용이 돼요.</p>
+        <p css={s.desc}>레슨이 수락되거나 문의가 채팅으로 이어지면 대화할 수 있어요. 마지막 레슨(또는 문의)부터 14일 뒤에는 읽기 전용이 돼요.</p>
       </div>
 
       <div css={s.layout}>
@@ -51,14 +51,14 @@ function ChatsPage() {
                     onClick={() => navigate(`/mypage/chats/${r.chatRoomId}`)}
                   >
                     <ProfileAvatar src={r.counterpartProfileImgUrl} name={r.counterpartName} size={44} />
-                    <span css={s.roomText}>
+                    <span css={s.roomText(r.unreadCount > 0)}>
                       <span css={s.roomTop}>
                         <strong>{r.counterpartName}</strong>
                         <span css={s.roleTag}>{r.myRole === "STUDENT" ? "아티스트" : "수강생"}</span>
                         <time>{formatChatListTime(r.lastMessageDt)}</time>
                       </span>
                       <span css={s.roomBottom}>
-                        <span css={s.preview}>{r.lastMessage ?? (r.writable ? "첫 메시지를 보내보세요" : "대화 내용이 없어요")}</span>
+                        <span css={s.preview} data-preview>{r.lastMessage ?? (r.writable ? "첫 메시지를 보내보세요" : "대화 내용이 없어요")}</span>
                         {!r.writable && <span css={s.readOnlyTag}>{r.counterpartLeft ? "상대가 나감" : "읽기 전용"}</span>}
                         {r.unreadCount > 0 && (
                           <span css={s.unread} aria-label={`안 읽은 메시지 ${r.unreadCount}개`}>
@@ -78,7 +78,10 @@ function ChatsPage() {
           {currentId ? (
             <ChatRoomView key={currentId} roomId={currentId} onBack={() => navigate("/mypage/chats")} />
           ) : (
-            <div css={s.emptyRoom}>왼쪽에서 대화방을 골라주세요.</div>
+            <div css={s.emptyRoom}>
+              <strong>대화방을 골라주세요</strong>
+              <span>왼쪽 목록에서 대화를 이어갈 상대를 선택하세요.</span>
+            </div>
           )}
         </section>
       </div>

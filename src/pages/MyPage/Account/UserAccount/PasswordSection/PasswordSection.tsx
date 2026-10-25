@@ -30,21 +30,11 @@ function PasswordSection() {
         </button>
       }
     >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>
-          {!canChange && (
-            <p style={{ fontSize: 12, color: "#6b7280" }}>
-              소셜 로그인 계정은 비밀번호 변경이 불가해요.
-            </p>
-          )}
-        </div>
-      </div>
+      {!canChange && (
+        <p css={[s.helperText, { margin: 0 }]}>
+          소셜 로그인 계정은 비밀번호 변경이 불가해요.
+        </p>
+      )}
 
       <ChangePasswordModal
         open={open}

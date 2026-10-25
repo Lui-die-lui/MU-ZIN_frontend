@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { c } from "../../../../constants/metalTheme";
+import { tone } from "../styles";
 
 // 넓은 화면: [제목 | 내용 | 버튼] 한 줄
 // 좁은 화면: [제목 ... 버튼] 아래 내용 전체 폭 (예전엔 세 칸을 그대로 둬서 설명이 한 글자씩 세로로 쌓이고 입력칸이 카드 밖으로 잘림)
@@ -10,7 +10,7 @@ export const row = css`
   align-items: center;
   gap: 20px;
   padding: 24px 28px;
-  border-bottom: 1px solid ${c.hairline};
+  border-bottom: 1px solid ${tone.divider};
   text-align: left;
 
   &:last-child {
@@ -36,7 +36,7 @@ export const content = css`
   display: flex;
   min-width: 0;
   font-size: 15px;
-  color: ${c.ink};
+  color: ${tone.text};
 
   /* 넓은 화면에서도 입력칸이 내용 칸 폭을 넘지 않게 */
   input {

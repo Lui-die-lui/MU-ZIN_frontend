@@ -222,8 +222,9 @@ export function useToggleMyLessonStatus(
 
 // 내 레슨 목록 (정렬/필터는 화면에서 처리 - 서버는 항상 최신순 전체 목록)
 // 수정/삭제/생성 화면이 모두 lessonKeys.myList() 를 갱신하므로 목록도 같은 키를 써야 바로 반영됨
-export function useMyLessonList() {
+export function useMyLessonList(enabled = true) {
   return useQuery({
+    enabled,
     queryKey: lessonKeys.myList(),
     queryFn: async (): Promise<MyLessonDetail[]> => {
       const resp = await getMyLessonsReq();
