@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import * as s from "./styles";
+import ReportButton from "../../../components/report/ReportButton";
 import MypageTabBar from "../../../components/common/MypageTabBar/MypageTabBar";
 import ProfileAvatar from "../../../components/common/ProfileAvatar/ProfileAvatar";
 import { useInquiryToChat, useReceivedInquiries, useReplyInquiry, useSentInquiries } from "../../../hooks/chat/useChat";
@@ -130,6 +131,9 @@ function InquiryItem({ inquiry: i }: { inquiry: Inquiry }) {
           <span>{formatDateTime(i.createDt)}</span>
         </div>
         <span css={s.status(i.status)}>{STATUS_LABEL[i.status]}</span>
+        {artistView && (
+          <ReportButton targetType="INQUIRY" targetId={i.inquiryId} targetName={`${i.userName}님의 문의`} targetUserId={i.userId} />
+        )}
       </div>
 
       <p css={s.content}>{i.content}</p>

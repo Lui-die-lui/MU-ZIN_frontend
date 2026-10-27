@@ -23,6 +23,7 @@ import { formatDateKey, formatDaySep } from "../../../utils/chatFormat";
 import { getErrorMessage } from "../../../utils/errorUtils";
 import type { ReservationStatus } from "../../../Types/reservationType";
 import { modalBtn } from "../../../components/common/CommonModal/modalButtons";
+import ReportButton from "../../../components/report/ReportButton";
 
 const sameGroup = (a?: ChatMessage, b?: ChatMessage) =>
   !!a &&
@@ -277,6 +278,13 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
                     : "수강생"}
               </span>
             </div>
+            <ReportButton
+              targetType="CHAT_ROOM"
+              targetId={room.chatRoomId}
+              targetName={room.counterpartName}
+              targetUserId={room.counterpartUserId}
+              buttonCss={s.headerBtn}
+            />
             <button type="button" css={s.headerBtn} onClick={() => setConfirmLeave(true)}>
               나가기
             </button>

@@ -3,6 +3,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import * as s from "./styles";
 import ReviewSummary from "./ReviewSummary";
 import ReviewItem from "./ReviewItem";
+import ReportButton from "../report/ReportButton";
 import SelectDropdown from "../common/SelectDropdown/SelectDropdown";
 import type { ReviewListResp, ReviewResp } from "../../Types/reviewTypes";
 
@@ -131,7 +132,20 @@ function ReviewSection({ data, isLoading, isError, onRetry, showLesson, limit, e
       ) : (
         <div css={s.list}>
           {visible.map((r) => (
-            <ReviewItem key={r.reviewId} review={r} showLesson={showLesson} replyArea={renderReplyArea?.(r)} />
+            <ReviewItem
+              key={r.reviewId}
+              review={r}
+              showLesson={showLesson}
+              replyArea={renderReplyArea?.(r)}
+              actions={
+                <ReportButton
+                  targetType="REVIEW"
+                  targetId={r.reviewId}
+                  targetName={`${r.reviewerName}님의 리뷰`}
+                  targetUserId={r.reviewerUserId}
+                />
+              }
+            />
           ))}
         </div>
       )}
