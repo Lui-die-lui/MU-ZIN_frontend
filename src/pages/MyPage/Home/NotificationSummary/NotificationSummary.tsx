@@ -1,166 +1,181 @@
 /** @jsxImportSource @emotion/react */
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import * as s from "./styles";
-type MiniItem = {
-  id: string;
+import { useChatRooms } from "../../../../hooks/chat/useChat";
+import { useMyReservationList } from "../../../../hooks/reservation/useMyReservation";
+import { useMyLessonList } from "../../../../hooks/Lesson/useLessonEdit";
+import { useWritableReviews } from "../../../../hooks/review/useReviews";
+import { usePrincipalState } from "../../../../stores/usePrincipalState";
+import { formatChatListTime } from "../../../../utils/chatFormat";
+import { formatMonthDay, formatTime } from "../../../../utils/reservationFormat";
+import { RESERVATION_STATUS_META } from "../../Reservations/ReservationCard/StatusBadge/badgeUi";
+
+type MiniItem = { id: string | number; title: string; sub?: string };
+
+type CardProps = {
+  to: string;
   title: string;
-  sub?: string; // 시간/상태/날짜 등
+  tag: string;
+  count: number;
+  countLabel: string; // 읽는 사람용 (예: "안 읽은 메시지 3개")
+  alert?: boolean;
+  items: MiniItem[];
+  empty: string;
+  isLoading: boolean;
+  isError: boolean;
 };
 
-type Props = {
-  // 메시지
-  unreadMessageCount?: number;
-  messagePreview?: MiniItem[];
-  onClickMessages?: () => void;
+// 카드 전체가 해당 화면으로 가는 링크
+function SummaryCard({ to, title, tag, count, countLabel, alert, items, empty, isLoading, isError }: CardProps) {
+  return (
+    <Link to={to} css={s.card} aria-label={`${title} - ${countLabel}`}>
+      {alert && <span css={s.dot} aria-hidden="true" />}
+      <div css={s.titleRow}>
+        <div css={s.title}>{title}</div>
+        <span css={s.pill}>{tag}</span>
+      </div>
 
-  // 예약
-  reservationCount?: number; // 예: 진행/예정 예약 수
-  reservationPreview?: MiniItem[];
-  hasReservationAlert?: boolean; // 빨간 점 띄울지
-  onClickReservations?: () => void;
+      {isLoading ? (
+        <div css={s.list} aria-hidden="true">
+          <span css={s.skeleton} />
+          <span css={s.skeleton} />
+        </div>
+      ) : isError ? (
+        <div css={s.empty}>불러오지 못했어요</div>
+      ) : items.length === 0 ? (
+        <div css={s.empty}>{empty}</div>
+      ) : (
+        <div css={s.list}>
+          {items.slice(0, 2).map((it) => (
+            <div key={it.id} css={s.row}>
+              <span css={s.bullet} />
+              <span css={s.text}>{it.title}</span>
+              {it.sub && <span css={s.sub}>{it.sub}</span>}
+            </div>
+          ))}
+        </div>
+      )}
 
-  // 레슨
-  lessonCount?: number; // 예: 내 레슨 개수(활성/전체 등)
-  lessonPreview?: MiniItem[];
-  hasLessonAlert?: boolean; // 빨간 점 띄울지
-  onClickLessons?: () => void;
-};
+      <div css={s.footer}>
+        <span css={s.more}>바로가기 →</span>
+        <span css={s.count}>{isLoading || isError ? "–" : count}</span>
+      </div>
+    </Link>
+  );
+}
 
-function SummaryCards({
-  unreadMessageCount = 3,
-  messagePreview,
-  onClickMessages,
+// 마이페이지 홈 요약: 메시지 / 다가오는 예약 / (아티스트) 내 레슨 · (그 외) 작성할 리뷰
+function SummaryCards() {
+  const isArtist = usePrincipalState((st) => st.principal?.artistStatus === "APPROVED");
 
-  reservationCount = 1,
-  reservationPreview,
-  hasReservationAlert = false,
-  onClickReservations,
+  // 화면을 연 시각 기준으로 "다가오는" 예약을 거름
+  const [now] = useState(() => Date.now());
 
-  lessonCount = 2,
-  lessonPreview,
-  hasLessonAlert = false,
-  onClickLessons,
-}: Props) {
-  // 더미 (API 붙이면 props로 덮어쓰면 됨)
-  const demoMessages: MiniItem[] = [
-    { id: "m1", title: "새 메시지가 도착했어요", sub: "방금" },
-    { id: "m2", title: "레슨 문의가 왔어요", sub: "2시간 전" },
-  ];
+  const roomsQ = useChatRooms();
+  const resQ = useMyReservationList("all");
+  const lessonsQ = useMyLessonList(isArtist);
+  const reviewsQ = useWritableReviews(!isArtist);
 
-  const demoReservations: MiniItem[] = [
-    { id: "r1", title: "예약 확정", sub: "1/04 19:00" },
-    { id: "r2", title: "예약 대기", sub: "1/05 15:30" },
-  ];
+  // 메시지: 안 읽은 방 먼저, 그다음 최근 대화 순
+  const rooms = [...(roomsQ.data ?? [])].sort(
+    (a, b) =>
+      Number(b.unreadCount > 0) - Number(a.unreadCount > 0) ||
+      (b.lastMessageDt ?? "").localeCompare(a.lastMessageDt ?? ""),
+  );
+  const unreadTotal = rooms.reduce((sum, r) => sum + r.unreadCount, 0);
+  const messageItems: MiniItem[] = rooms
+    .filter((r) => r.lastMessage)
+    .map((r) => ({
+      id: r.chatRoomId,
+      title: `${r.counterpartName}: ${r.lastMessage}`,
+      sub: r.unreadCount > 0 ? `${r.unreadCount}개 안 읽음` : formatChatListTime(r.lastMessageDt),
+    }));
 
-  const demoLessons: MiniItem[] = [
-    { id: "l1", title: "기본기 위주 레슨", sub: "활성" },
-    { id: "l2", title: "곡 해석 & 테크닉", sub: "비활성" },
-  ];
-
-  const msgList = messagePreview ?? demoMessages;
-  const resList = reservationPreview ?? demoReservations;
-  const lesList = lessonPreview ?? demoLessons;
-
-  const showMsgDot = unreadMessageCount > 0;
-  const showResDot = hasReservationAlert;
-  const showLesDot = hasLessonAlert;
+  // 예약: 아직 끝나지 않은 요청·확정 예약을 가까운 순으로
+  const upcoming = (resQ.data ?? [])
+    .filter((r) => (r.status === "REQUESTED" || r.status === "CONFIRMED") && new Date(r.timeSlot.endDt).getTime() > now)
+    .sort((a, b) => a.timeSlot.startDt.localeCompare(b.timeSlot.startDt));
+  const reservationItems: MiniItem[] = upcoming.map((r) => ({
+    id: r.reservationId,
+    title: `${r.lessonTitle} · ${RESERVATION_STATUS_META[r.status]?.label ?? r.status}`,
+    sub: `${formatMonthDay(r.timeSlot.startDt)} ${formatTime(r.timeSlot.startDt)}`,
+  }));
+  const hasRequested = upcoming.some((r) => r.status === "REQUESTED");
 
   return (
     <div css={s.wrap}>
-      {/* ===== 메시지 카드 ===== */}
-      <button
-        type="button"
-        css={s.card("message")}
-        onClick={onClickMessages}
-        style={{ textAlign: "left" }}
-      >
-        {showMsgDot && <span css={s.dot} />}
-        <div css={s.titleRow}>
-          <div css={s.title}>메시지</div>
-          <span css={s.pill} style={{ cursor: "default" }}>
-            읽지 않음
-          </span>
-        </div>
+      <SummaryCard
+        to="/mypage/chats"
+        title="메시지"
+        tag="읽지 않음"
+        count={unreadTotal}
+        countLabel={`안 읽은 메시지 ${unreadTotal}개`}
+        alert={unreadTotal > 0}
+        items={messageItems}
+        empty="아직 대화가 없어요"
+        isLoading={roomsQ.isLoading}
+        isError={roomsQ.isError}
+      />
 
-        {msgList.length === 0 ? (
-          <div css={s.empty}>새 알림이 없어요</div>
-        ) : (
-          <div css={s.list}>
-            {msgList.slice(0, 2).map((it) => (
-              <div key={it.id} css={s.row}>
-                <span css={s.bullet} />
-                <span css={s.text}>{it.title}</span>
-                {it.sub && <span css={s.sub}>{it.sub}</span>}
-              </div>
-            ))}
-          </div>
-        )}
+      <SummaryCard
+        to="/mypage/reservations"
+        title="예약"
+        tag="다가오는"
+        count={upcoming.length}
+        countLabel={`다가오는 예약 ${upcoming.length}개`}
+        alert={hasRequested}
+        items={reservationItems}
+        empty="예정된 예약이 없어요"
+        isLoading={resQ.isLoading}
+        isError={resQ.isError}
+      />
 
-        <div css={s.count}>{unreadMessageCount}</div>
-      </button>
-
-      {/* ===== 예약 카드 ===== */}
-      <button
-        type="button"
-        css={s.card("reservation")}
-        onClick={onClickReservations}
-        style={{ textAlign: "left" }}
-      >
-        {showResDot && <span css={s.dot} />}
-        <div css={s.titleRow}>
-          <div css={s.title}>예약</div>
-          <span css={s.pill} style={{ cursor: "default" }}>
-            예정
-          </span>
-        </div>
-
-        {resList.length === 0 ? (
-          <div css={s.empty}>예정된 예약이 없어요</div>
-        ) : (
-          <div css={s.list}>
-            {resList.slice(0, 2).map((it) => (
-              <div key={it.id} css={s.row}>
-                <span css={s.bullet} />
-                <span css={s.text}>{it.title}</span>
-                {it.sub && <span css={s.sub}>{it.sub}</span>}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div css={s.count}>{reservationCount}</div>
-      </button>
-
-      {/* ===== 레슨 카드 ===== */}
-      <button
-        type="button"
-        css={s.card("lesson")}
-        onClick={onClickLessons}
-        style={{ textAlign: "left" }}
-      >
-        {showLesDot && <span css={s.dot} />}
-        <div css={s.titleRow}>
-          <div css={s.title}>레슨</div>
-          <span css={s.pill} style={{ cursor: "default" }}>
-            내 레슨
-          </span>
-        </div>
-
-        {lesList.length === 0 ? (
-          <div css={s.empty}>등록된 레슨이 없어요</div>
-        ) : (
-          <div css={s.list}>
-            {lesList.slice(0, 2).map((it) => (
-              <div key={it.id} css={s.row}>
-                <span css={s.bullet} />
-                <span css={s.text}>{it.title}</span>
-                {it.sub && <span css={s.sub}>{it.sub}</span>}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <div css={s.count}>{lessonCount}</div>
-      </button>
+      {isArtist ? (
+        (() => {
+          const lessons = (lessonsQ.data ?? []).filter((l) => !l.deleted);
+          const pending = lessons.reduce((sum, l) => sum + l.pendingRequestCount, 0);
+          // 요청이 쌓인 레슨 먼저
+          const items: MiniItem[] = [...lessons]
+            .sort((a, b) => b.pendingRequestCount - a.pendingRequestCount)
+            .map((l) => ({
+              id: l.lessonId,
+              title: l.title,
+              sub: l.pendingRequestCount > 0 ? `요청 ${l.pendingRequestCount}건` : l.status === "ACTIVE" ? "공개" : "비공개",
+            }));
+          return (
+            <SummaryCard
+              to={pending > 0 ? "/mypage/reservations/requests" : "/mypage/artist/manage"}
+              title="레슨"
+              tag="내 레슨"
+              count={lessons.length}
+              countLabel={`내 레슨 ${lessons.length}개${pending > 0 ? `, 대기 중인 요청 ${pending}건` : ""}`}
+              alert={pending > 0}
+              items={items}
+              empty="등록된 레슨이 없어요"
+              isLoading={lessonsQ.isLoading}
+              isError={lessonsQ.isError}
+            />
+          );
+        })()
+      ) : (
+        <SummaryCard
+          to="/mypage/reviews"
+          title="리뷰"
+          tag="작성 가능"
+          count={reviewsQ.data?.length ?? 0}
+          countLabel={`작성할 수 있는 리뷰 ${reviewsQ.data?.length ?? 0}개`}
+          alert={(reviewsQ.data?.length ?? 0) > 0}
+          items={(reviewsQ.data ?? []).map((r) => ({
+            id: r.reservationId,
+            title: `${r.lessonTitle} · ${r.artistName}`,
+            sub: `${formatMonthDay(r.writableUntil)}까지`,
+          }))}
+          empty="작성할 리뷰가 없어요"
+          isLoading={reviewsQ.isLoading}
+          isError={reviewsQ.isError}
+        />
+      )}
     </div>
   );
 }

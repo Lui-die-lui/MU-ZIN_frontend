@@ -19,10 +19,17 @@ import { CHAT_EDITABLE_HOURS, CHAT_MESSAGE_MAX, type ChatMessage } from "../../.
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { RESERVATION_STATUS_META } from "../Reservations/ReservationCard/StatusBadge/badgeUi";
 import { formatMonthDay, formatTime } from "../../../utils/reservationFormat";
-import { formatDateKey } from "../../../utils/chatFormat";
+import { formatDateKey, formatDaySep } from "../../../utils/chatFormat";
 import { getErrorMessage } from "../../../utils/errorUtils";
 import type { ReservationStatus } from "../../../Types/reservationType";
 import { modalBtn } from "../../../components/common/CommonModal/modalButtons";
+
+const sameGroup = (a?: ChatMessage, b?: ChatMessage) =>
+  !!a &&
+  !!b &&
+  a.senderUserId === b.senderUserId &&
+  formatDateKey(a.createDt) === formatDateKey(b.createDt) &&
+  formatTime(a.createDt) === formatTime(b.createDt);
 
 const canEdit = (m: ChatMessage) => Date.now() - new Date(m.createDt).getTime() < CHAT_EDITABLE_HOURS * 3600_000;
 
@@ -161,6 +168,8 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
   const scrollRef = useRef<HTMLDivElement>(null);
   const nearBottom = useRef(true);
   const lastMarked = useRef(0);
+  // 위쪽을 읽는 중에 새 메시지가 오면 "새 메시지" 버튼으로 알림
+  const [newBelow, setNewBelow] = useState(false);
 
   const messages = useMemo(() => {
     const map = new Map<number, ChatMessage>();
@@ -176,7 +185,18 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
     if (!el) return;
     const mine = messages.at(-1)?.senderUserId === me;
     if (nearBottom.current || mine) el.scrollTop = el.scrollHeight;
-  }, [lastId, me, messages]);
+    else if (lastId) setNewBelow(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 마지막 메시지가 바뀔 때만
+  }, [lastId, me]);
+
+  const scrollToBottom = () => {
+    const el = scrollRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    setNewBelow(false);
+  };
+
+  // 내 메시지 메뉴 열기 (오른쪽 클릭 · 메뉴 키 · "⋯" 버튼 공용)
+  const openMenu = (msg: ChatMessage, x: number, y: number) => setMenu({ msg, x, y });
 
   // 열려 있는 방에 상대 메시지가 오면 읽음 처리
   useEffect(() => {
@@ -336,6 +356,7 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
         onScroll={(e) => {
           const el = e.currentTarget;
           nearBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+          if (nearBottom.current && newBelow) setNewBelow(false);
         }}
         aria-live="polite"
       >
@@ -358,11 +379,23 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
             {messages.length === 0 && <div css={s.emptyMessages}>아직 메시지가 없어요. 레슨 일정이나 준비물을 편하게 물어보세요.</div>}
             {messages.map((m, i) => {
               const mine = m.senderUserId === me;
-              const newDay = i === 0 || formatDateKey(messages[i - 1].createDt) !== formatDateKey(m.createDt);
+              const prev = messages[i - 1];
+              const next = messages[i + 1];
+              const newDay = !prev || formatDateKey(prev.createDt) !== formatDateKey(m.createDt);
+              // 같은 사람이 같은 분에 연달아 보낸 메시지는 한 묶음 (간격 좁게, 시간은 마지막에만)
+              const groupStart = newDay || !sameGroup(prev, m);
+              const groupEnd = !sameGroup(m, next);
+              const isLastMine = mine && m.chatMessageId === myLastSent?.chatMessageId;
+              const edited = !!m.editedDt && !m.deleted;
+              const showMeta = groupEnd || (isLastMine && seen) || edited;
               return (
                 <div key={m.chatMessageId}>
-                  {newDay && <div css={s.daySep}>{formatMonthDay(m.createDt)}</div>}
-                  <div css={s.msgRow(mine)}>
+                  {newDay && (
+                    <div css={s.daySep}>
+                      <span>{formatDaySep(m.createDt)}</span>
+                    </div>
+                  )}
+                  <div css={s.msgRow(mine, groupStart)}>
                     {editing?.id === m.chatMessageId ? (
                       <div css={s.editBox}>
                         <label htmlFor="chat-edit" css={s.srOnly}>
@@ -399,7 +432,7 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
                       <p css={s.deletedBubble}>삭제된 메시지예요.</p>
                     ) : (
                       <p
-                        css={s.bubble(mine)}
+                        css={s.bubble(mine, groupStart)}
                         tabIndex={mine ? 0 : undefined}
                         aria-haspopup={mine ? "menu" : undefined}
                         title={mine ? "오른쪽 클릭해서 수정·삭제" : undefined}
@@ -410,7 +443,7 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
                                 // 키보드(메뉴 키·Shift+F10)로 열면 좌표가 0 -> 말풍선 옆에
                                 const r = e.currentTarget.getBoundingClientRect();
                                 const byKey = e.clientX === 0 && e.clientY === 0;
-                                setMenu({ msg: m, x: byKey ? r.left : e.clientX, y: byKey ? r.bottom + 4 : e.clientY });
+                                openMenu(m, byKey ? r.left : e.clientX, byKey ? r.bottom + 4 : e.clientY);
                               }
                             : undefined
                         }
@@ -419,10 +452,30 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
                       </p>
                     )}
                     {editing?.id !== m.chatMessageId && (
-                      <span css={s.msgMeta}>
-                        {mine && m.chatMessageId === myLastSent?.chatMessageId && seen ? "읽음 · " : ""}
-                        {m.editedDt && !m.deleted ? "수정됨 · " : ""}
-                        {formatTime(m.createDt)}
+                      <span css={s.msgSide(mine)}>
+                        {/* 오른쪽 클릭을 모르거나 터치 화면이어도 수정·삭제할 수 있게 */}
+                        {mine && !m.deleted && room?.writable && (
+                          <button
+                            type="button"
+                            css={s.moreBtn}
+                            data-more
+                            aria-label="메시지 메뉴"
+                            aria-haspopup="menu"
+                            onClick={(e) => {
+                              const r = e.currentTarget.getBoundingClientRect();
+                              openMenu(m, r.left, r.bottom + 4);
+                            }}
+                          >
+                            ⋯
+                          </button>
+                        )}
+                        {showMeta && (
+                          <span css={s.msgMeta}>
+                            {isLastMine && seen && <b>읽음</b>}
+                            {edited && <span>수정됨</span>}
+                            {groupEnd && <time>{formatTime(m.createDt)}</time>}
+                          </span>
+                        )}
                       </span>
                     )}
                   </div>
@@ -432,6 +485,14 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
           </>
         )}
       </div>
+
+      {newBelow && (
+        <div css={s.newBelowWrap}>
+          <button type="button" css={s.newBelowBtn} onClick={scrollToBottom}>
+            새 메시지 ↓
+          </button>
+        </div>
+      )}
 
       {room && !room.writable ? (
         <div css={s.readOnly} role="status">
@@ -444,7 +505,7 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
         <div css={s.composer}>
           {room?.writableUntil && (
             <p css={s.untilNote}>
-              {formatMonthDay(room.writableUntil)} {formatTime(room.writableUntil)}까지 대화할 수 있어요 (레슨이 끝났거나 문의로 열린 대화방은 14일 동안 열려요)
+              {formatMonthDay(room.writableUntil)} {formatTime(room.writableUntil)}까지 대화할 수 있어요
             </p>
           )}
           {error && (
@@ -461,7 +522,7 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
               css={s.input}
               rows={1}
               maxLength={CHAT_MESSAGE_MAX}
-              placeholder="메시지를 입력하세요 (Enter 보내기, Shift+Enter 줄바꿈)"
+              placeholder="메시지 입력 (Shift+Enter 줄바꿈)"
               value={text}
               disabled={!room}
               onChange={(e) => setText(e.target.value)}

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import * as s from "./styles";
 
-import { PiBellSimpleThin, PiCalendarDotsThin, PiChatCircleDotsThin } from "react-icons/pi";
+import { HiOutlineBell, HiOutlineChatBubbleOvalLeft } from "react-icons/hi2";
 import { useChatUnread } from "../../../hooks/chat/useChat";
 import { dropdownCaret } from "../../common/dropdownStyles";
 
@@ -214,19 +214,10 @@ function NavBar() {
               aria-label={chatUnread > 0 ? `채팅, 안 읽은 메시지 ${chatUnread}개` : "채팅"}
               title="채팅"
             >
-              <PiChatCircleDotsThin aria-hidden="true" />
+              <HiOutlineChatBubbleOvalLeft aria-hidden="true" />
               {chatUnread > 0 && <s.Badge aria-hidden="true">{chatUnread > 99 ? "99+" : chatUnread}</s.Badge>}
             </s.IconBtn>
 
-            {/* 일정 - 알림 종과 같은 Phosphor Thin 아이콘 */}
-            <s.IconBtn
-              onClick={() => navigate("/mypage/reservations")}
-              aria-label="내 일정"
-              title="내 일정"
-              data-optional="true"
-            >
-              <PiCalendarDotsThin aria-hidden="true" />
-            </s.IconBtn>
             {/* <s.Btn onClick={onLogout}>로그아웃</s.Btn> */}
 
             {/* 알림 */}
@@ -238,7 +229,7 @@ function NavBar() {
               aria-expanded={notiMenu.open}
               data-open={notiMenu.open}
             >
-              <PiBellSimpleThin />
+              <HiOutlineBell aria-hidden="true" />
               {unread > 0 && <s.Badge>{unread > 99 ? "99+" : unread}</s.Badge>}
             </s.IconBtn>
 
@@ -294,7 +285,7 @@ function NavBar() {
                 </s.NotificationLoading>
               ) : notiListQ.isError ? (
                 <s.MenuEmpty>
-                  <PiBellSimpleThin aria-hidden="true" />
+                  <HiOutlineBell aria-hidden="true" />
                   <strong>알림을 불러오지 못했습니다</strong>
                   <span>잠시 후 다시 시도해 주세요.</span>
                   <button type="button" onClick={() => notiListQ.refetch()}>
@@ -303,7 +294,7 @@ function NavBar() {
                 </s.MenuEmpty>
               ) : notifications.length === 0 ? (
                 <s.MenuEmpty>
-                  <PiBellSimpleThin aria-hidden="true" />
+                  <HiOutlineBell aria-hidden="true" />
                   <strong>아직 도착한 알림이 없습니다</strong>
                   <span>예약 진행 상황과 리뷰 소식을 이곳에서 알려드릴게요.</span>
                 </s.MenuEmpty>

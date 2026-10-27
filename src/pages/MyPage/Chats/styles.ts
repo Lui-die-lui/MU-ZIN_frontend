@@ -58,7 +58,7 @@ export const layout = css`
 
   ${MOBILE} {
     grid-template-columns: minmax(0, 1fr);
-    height: calc(100vh - 120px);
+    height: calc(100dvh - 120px);
   }
 `;
 
@@ -112,11 +112,19 @@ export const roomItem = (active: boolean) => css`
   }
 `;
 
-export const roomText = css`
+export const roomText = (hasUnread: boolean) => css`
   display: grid;
   gap: 4px;
   flex: 1;
   min-width: 0;
+
+  strong {
+    font-weight: ${hasUnread ? 800 : 700};
+  }
+  [data-preview] {
+    color: ${hasUnread ? text : muted};
+    font-weight: ${hasUnread ? 600 : 400};
+  }
 `;
 
 export const roomTop = css`
@@ -189,10 +197,21 @@ export const unread = css`
 
 export const emptyRoom = css`
   display: grid;
-  place-items: center;
+  align-content: center;
+  justify-items: center;
+  gap: 6px;
   flex: 1;
-  font-size: 14px;
+  padding: 24px;
+  background: ${softer};
+  font-size: 13px;
   color: ${muted};
+  text-align: center;
+  word-break: keep-all;
+
+  strong {
+    font-size: 15px;
+    color: ${text};
+  }
 `;
 
 export const stateBox = css`
@@ -221,6 +240,7 @@ export const textBtn = css`
 
 // ---------- 대화방 ----------
 export const room = css`
+  position: relative;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -345,10 +365,28 @@ export const emptyMessages = css`
 `;
 
 export const daySep = css`
-  margin: 14px 0 10px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 12px;
   font-size: 12px;
+  font-weight: 600;
   color: ${muted};
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: ${line};
+  }
+
+  span {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid ${line};
+  }
 `;
 
 export const notice = css`
@@ -361,30 +399,84 @@ export const notice = css`
   color: ${muted};
 `;
 
-export const msgRow = (mine: boolean) => css`
+// 묶음의 첫 메시지만 위 간격을 넓게
+export const msgRow = (mine: boolean, groupStart: boolean) => css`
   display: flex;
   flex-direction: ${mine ? "row-reverse" : "row"};
   align-items: flex-end;
   gap: 6px;
-  margin: 4px 0;
+  margin-top: ${groupStart ? 10 : 2}px;
+
+  /* 마우스로 올리거나 키보드로 고르면 "⋯" 버튼 보이기 */
+  &:hover [data-more],
+  &:focus-within [data-more] {
+    opacity: 1;
+  }
 `;
 
-export const bubble = (mine: boolean) => css`
-  max-width: min(70%, 520px);
+// 묶음 안에서 상대 쪽 모서리만 덜 둥글게 → 한 덩어리로 읽힘
+export const bubble = (mine: boolean, groupStart = true) => {
+  const r = 18;
+  const tight = 6;
+  const top = groupStart ? r : tight;
+  const radius = mine ? `${r}px ${top}px ${tight}px ${r}px` : `${top}px ${r}px ${r}px ${tight}px`;
+  return bubbleBase(mine, radius);
+};
+
+const bubbleBase = (mine: boolean, radius: string) => css`
+  max-width: min(72%, 520px);
   margin: 0;
-  padding: 6px 12px;
-  border-radius: ${mine ? "14px 14px 4px 14px" : "14px 14px 14px 4px"};
+  padding: 9px 14px;
+  border-radius: ${radius};
   background: ${mine ? ink : "#fff"};
   border: 1px solid ${mine ? ink : line};
   color: ${mine ? "#fff" : text};
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.5;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 
   &:focus-visible {
     outline: 3px solid rgba(17, 24, 39, 0.25);
     outline-offset: 2px;
+  }
+`;
+
+// 말풍선 옆: "⋯" 버튼 + 읽음 · 수정됨 · 시간 (말풍선 쪽으로 붙임)
+export const msgSide = (mine: boolean) => css`
+  display: flex;
+  flex-direction: column;
+  align-items: ${mine ? "flex-end" : "flex-start"};
+  gap: 2px;
+  flex-shrink: 0;
+`;
+
+export const moreBtn = css`
+  width: 24px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  color: ${muted};
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease, background 0.12s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: ${soft};
+    color: ${text};
+    outline: none;
+    opacity: 1;
+  }
+
+  /* 터치 화면은 올려 볼 수 없으니 항상 보이게 */
+  @media (hover: none) {
+    opacity: 1;
   }
 `;
 
@@ -464,9 +556,41 @@ export const msgMenuItem = (danger: boolean) => css`
 `;
 
 export const msgMeta = css`
-  flex-shrink: 0;
+  display: flex;
+  gap: 4px;
   font-size: 11px;
   color: #9ca3af;
+  white-space: nowrap;
+
+  b {
+    font-weight: 700;
+    color: ${muted};
+  }
+`;
+
+// 위쪽을 읽는 중 새 메시지가 오면 입력창 바로 위에 뜨는 버튼
+export const newBelowWrap = css`
+  position: relative;
+  height: 0;
+`;
+
+export const newBelowBtn = css`
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: ${ink};
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(17, 24, 39, 0.18);
+  cursor: pointer;
 `;
 
 export const readOnly = css`
@@ -515,17 +639,21 @@ export const input = css`
   max-height: 140px;
   padding: 11px 14px;
   box-sizing: border-box;
-  border: 1px solid #cfd4da;
-  border-radius: 12px;
+  border: 1px solid ${line};
+  border-radius: 14px;
+  background: ${softer};
   font: inherit;
   font-size: 14px;
   line-height: 1.5;
   resize: none;
   field-sizing: content;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 
   &:focus {
-    outline: 3px solid rgba(17, 24, 39, 0.1);
+    outline: none;
     border-color: ${ink};
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
   }
   ${MOBILE} {
     font-size: 16px;
@@ -537,16 +665,21 @@ export const sendBtn = css`
   height: 44px;
   padding: 0 16px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 14px;
   background: ${ink};
   color: #fff;
   font: inherit;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s ease;
 
+  &:hover:enabled {
+    background: #2b3240;
+  }
   &:disabled {
-    opacity: 0.4;
+    background: ${soft};
+    color: #9ca3af;
     cursor: not-allowed;
   }
 `;

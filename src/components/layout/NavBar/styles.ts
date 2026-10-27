@@ -214,8 +214,9 @@ export const IconBtn = styled.button`
   }
   ${focusRing}
 
+  /* Heroicons 외곽선 (선 굵기 1.5) - 프로필 사진 옆에서 너무 가늘어 보이지 않게 */
   svg {
-    font-size: 23px;
+    font-size: 22px;
   }
 
   @media (max-width: 600px) {
@@ -223,13 +224,7 @@ export const IconBtn = styled.button`
     height: 34px;
 
     svg {
-      font-size: 22px;
-    }
-  }
-  /* 좁은 휴대폰(375px 등): 일정은 프로필 메뉴의 "내 예약"으로도 갈 수 있어 숨김 */
-  @media (max-width: 380px) {
-    &[data-optional="true"] {
-      display: none;
+      font-size: 21px;
     }
   }
 `;
