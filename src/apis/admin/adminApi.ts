@@ -1,6 +1,11 @@
 import type { ApiRespDto } from "../../Types/responseType";
 import type {
+  AbuseFlagItem,
   AdminArtistApplyDetail,
+  AdminDashboard,
+  AdminReportItem,
+  DashboardDays,
+  ModerationCounts,
   AdminArtistApplyListItem,
   AdminUserListItem,
   PageResp,
@@ -51,4 +56,43 @@ export const suspendUserReq = async ({ userId, reason }: { userId: number; reaso
 
 export const unsuspendUserReq = async (userId: number) => {
   await instance.post(`/admin/users/${userId}/unsuspend`);
+};
+
+// ---------- 대시보드 ----------
+export const getAdminDashboardReq = async (days: DashboardDays) =>
+  (await instance.get<ApiRespDto<AdminDashboard>>("/admin/dashboard", { params: { days } })).data.data;
+
+// ---------- 이상행동 · 신고 ----------
+export const getModerationCountsReq = async () =>
+  (await instance.get<ApiRespDto<ModerationCounts>>("/admin/moderation/counts")).data.data;
+
+export const getAbuseFlagsReq = async ({ open, page }: { open: boolean; page: number }) =>
+  (
+    await instance.get<ApiRespDto<PageResp<AbuseFlagItem>>>("/admin/moderation/flags", {
+      params: { open, page, size: 20 },
+    })
+  ).data.data;
+
+export const dismissAbuseFlagReq = async (flagId: number) => {
+  await instance.post(`/admin/moderation/flags/${flagId}/dismiss`);
+};
+
+export const getAdminReportsReq = async ({ open, page }: { open: boolean; page: number }) =>
+  (
+    await instance.get<ApiRespDto<PageResp<AdminReportItem>>>("/admin/moderation/reports", {
+      params: { open, page, size: 20 },
+    })
+  ).data.data;
+
+// actioned: true = 조치 완료 / false = 문제없음
+export const resolveAdminReportReq = async ({
+  reportId,
+  actioned,
+  memo,
+}: {
+  reportId: number;
+  actioned: boolean;
+  memo?: string;
+}) => {
+  await instance.post(`/admin/moderation/reports/${reportId}/${actioned ? "resolve" : "dismiss"}`, { memo: memo || null });
 };

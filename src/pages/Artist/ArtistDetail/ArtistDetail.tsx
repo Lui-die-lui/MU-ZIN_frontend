@@ -11,6 +11,7 @@ import { useArtistReviews } from "../../../hooks/review/useReviews";
 import ReviewSection from "../../../components/review/ReviewSection";
 import { StarDisplay } from "../../../components/review/StarRating";
 import FollowButton from "../../../components/artist/FollowButton";
+import ReportButton from "../../../components/report/ReportButton";
 import InquiryModal from "../../../components/chat/InquiryModal";
 import { useEffect, useState } from "react";
 import { useArtistFollow } from "../../../hooks/artistSearch/useArtistFollow";
@@ -186,6 +187,9 @@ function ArtistDetail() {
                 following={followQ.data.following}
               />
             )
+          )}
+          {!isOwner && (
+            <ReportButton targetType="ARTIST" targetId={id} targetName={artist.username} targetUserId={artist.userId} label="신고하기" />
           )}
         </div>
 

@@ -2,13 +2,15 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import * as layout from "../MyPage/styles";
 import * as s from "../MyPage/SideNavBar/styles";
-import { usePendingApplicationCount } from "../../hooks/admin/useAdmin";
+import { useModerationCounts, usePendingApplicationCount } from "../../hooks/admin/useAdmin";
 import NavBar from "../../components/layout/NavBar/NavBar";
 
 // 관리자 페이지 틀 - 마이페이지와 같은 모양, 메뉴는 관리 기능만
 function AdminLayout() {
   const navigate = useNavigate();
   const { data: pending = 0 } = usePendingApplicationCount(true);
+  const { data: counts } = useModerationCounts(true);
+  const moderation = (counts?.openFlags ?? 0) + (counts?.openReports ?? 0);
 
   return (
     <>
@@ -18,6 +20,11 @@ function AdminLayout() {
           <s.Title onClick={() => navigate("/admin")}>관리자</s.Title>
 
           <s.Nav>
+            <s.Item>
+              <s.LinkItem to="/admin/dashboard">
+                <span>대시보드</span>
+              </s.LinkItem>
+            </s.Item>
             <s.Item>
               <s.LinkItem to="/admin/artist-applications">
                 <span>아티스트 심사</span>
@@ -31,6 +38,16 @@ function AdminLayout() {
             <s.Item>
               <s.LinkItem to="/admin/users">
                 <span>회원 관리</span>
+              </s.LinkItem>
+            </s.Item>
+            <s.Item>
+              <s.LinkItem to="/admin/moderation">
+                <span>이상행동 · 신고</span>
+                {moderation > 0 && (
+                  <s.Badge aria-label={`확인할 이상행동·신고 ${moderation}건`}>
+                    {moderation}
+                  </s.Badge>
+                )}
               </s.LinkItem>
             </s.Item>
           </s.Nav>
