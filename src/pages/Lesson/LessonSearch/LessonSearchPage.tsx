@@ -20,6 +20,7 @@ import { useInfiniteScroll } from "../../../hooks/useInfiniteScroll";
 import SearchHero from "../../../components/search/SearchHero";
 import Chevron from "../../../components/common/Chevron";
 import * as ui from "../../../components/search/searchStyles";
+import { useScrollFade } from "../../../hooks/useScrollFade";
 import { PiMagnifyingGlassBold, PiSlidersHorizontalBold } from "react-icons/pi";
 import * as s from "./styles";
 
@@ -52,6 +53,7 @@ const EMPTY_REGION: RegionSearchValue = {
 };
 
 function LessonSearchPage() {
+  const toolbarRef = useScrollFade<HTMLDivElement>();
   // /lessons/:lessonId 로 들어오면 그 레슨 상세를 열어 둠. 닫으면 /lessons 로 (뒤로 가기로 다시 열리지 않게 replace)
   const { lessonId: lessonIdParam } = useParams();
   const navigate = useNavigate();
@@ -217,7 +219,7 @@ function LessonSearchPage() {
           </div>
 
           {/* 상세 조건 열기 | 수업 방식 (바로 적용) */}
-          <div css={ui.toolbar}>
+          <div css={ui.toolbar} ref={toolbarRef}>
             <button
               type="button"
               css={ui.chip(panelOpen)}

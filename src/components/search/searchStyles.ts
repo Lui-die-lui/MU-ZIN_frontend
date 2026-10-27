@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { faint, focusRing, ink, line, mist, paper, sub } from "../../constants/uiTone";
 
 // 레슨 찾기 · 아티스트 찾기 공용 - 메인과 같은 결
-// 오프화이트 상단 판(제목 + 작은 포장 악기) → 알약 검색창 → 바로 적용 칩 한 줄 → 접히는 상세 조건 → 결과
+// 오프화이트 상단 판(제목) → 알약 검색창 → 바로 적용 칩 한 줄 → 접히는 상세 조건 → 결과
 
 export const page = css`
   display: grid;
@@ -23,19 +23,11 @@ export const page = css`
 
 export const hero = css`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-areas:
-    "text art"
-    "body body";
-  column-gap: 32px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "text" "body";
   padding: 32px 48px 32px;
   border-radius: 24px;
   background: ${paper};
-
-  @media (max-width: 760px) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "text" "body";
-  }
 
   @media (max-width: 600px) {
     padding: 24px 20px 20px;
@@ -80,23 +72,6 @@ export const desc = css`
   }
 `;
 
-// 오른쪽 작은 포장 악기 (메인 배너의 축소판, 장식) - 좁으면 숨김
-export const heroArt = css`
-  grid-area: art;
-  align-self: center;
-  width: 150px;
-  height: 172px;
-  margin: -16px 8px -16px 0;
-
-  & > div {
-    zoom: 0.44;
-  }
-
-  @media (max-width: 760px) {
-    display: none;
-  }
-`;
-
 export const heroBody = css`
   grid-area: body;
   display: grid;
@@ -117,7 +92,6 @@ export const searchPill = css`
   min-width: 0;
   align-items: center;
   gap: 8px;
-  max-width: 760px;
   min-height: 60px;
   padding: 6px 6px 6px 22px;
   border-radius: 999px;
@@ -206,6 +180,18 @@ export const toolbar = css`
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  /* 더 넘길 칩이 있는 쪽 끝을 흐리게 (useScrollFade 가 data-fade 를 붙임) */
+  --fade: 28px;
+  &[data-fade="right"] {
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+  }
+  &[data-fade="left"] {
+    mask-image: linear-gradient(to left, #000 calc(100% - var(--fade)), transparent);
+  }
+  &[data-fade="both"] {
+    mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
   }
 
   /* 모바일: 판 끝까지 넘겨 볼 수 있게 */

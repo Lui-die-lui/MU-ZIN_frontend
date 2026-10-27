@@ -7,6 +7,7 @@ import StyleDropdown from "./StyleDropdown/StyleDropdown";
 import InstFilterDropdown from "../../Lesson/InstFilterDropdown/InstFilterDropdown";
 import RegionSearchInput from "./RegionSearchInput/RegionSearchInput";
 import * as ui from "../../../components/search/searchStyles";
+import { useScrollFade } from "../../../hooks/useScrollFade";
 import * as s from "./styles";
 
 // 칩으로 바로 고르는 악기군 (기타 'etc' 는 상세 조건의 악기에서)
@@ -24,6 +25,7 @@ type Props = {
 
 // 아티스트 찾기 검색 - 알약 검색창 → [상세 조건 | 팔로우 | 악기군 칩] → 접히는 상세 조건
 function ArtistSearch({ initialValue, onSearch, onReset, resetKey, isSearching = false, followed }: Props) {
+  const toolbarRef = useScrollFade<HTMLDivElement>();
   const [draft, setDraft] = useState(initialValue);
   // 상세 조건(접힌 곳)에 적용된 개수 - 상세 조건 버튼에 표시
   const detailCount = [initialValue.styleTagIds.length, initialValue.instIds.length, initialValue.region1DepthName].filter(Boolean).length;
@@ -57,7 +59,7 @@ function ArtistSearch({ initialValue, onSearch, onReset, resetKey, isSearching =
         </button>
       </div>
 
-      <div css={ui.toolbar}>
+      <div css={ui.toolbar} ref={toolbarRef}>
         <button
           type="button"
           css={ui.chip(panelOpen)}
