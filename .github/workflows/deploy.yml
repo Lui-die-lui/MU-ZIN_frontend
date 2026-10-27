@@ -1,0 +1,90 @@
+# MU:ZIN 프론트 자동 배포
+# main에 푸시되면: 빌드 → (SSH 문 잠깐 열기) → dist를 EC2에 동기화 → 응답 확인 → (문 닫기)
+name: Deploy frontend
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ap-northeast-2
+  SITE_URL: https://mu-zin.com/
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Write production env
+        # 로컬 .env.production.local 내용을 통째로 FRONTEND_ENV 시크릿에 넣어둔다
+        run: |
+          printf '%s\n' "${{ secrets.FRONTEND_ENV }}" > .env.production.local
+          grep -q '^VITE_API_BASE_URL=https://' .env.production.local \
+            || { echo "FRONTEND_ENV에 VITE_API_BASE_URL이 없습니다"; exit 1; }
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+
+      - name: AWS login (OIDC, 키 저장 없음)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Open SSH for this runner only
+        run: |
+          RUNNER_IP=$(curl -fsS https://checkip.amazonaws.com)
+          echo "RUNNER_IP=$RUNNER_IP" >> "$GITHUB_ENV"
+          aws ec2 authorize-security-group-ingress \
+            --group-id "${{ secrets.EC2_SG_ID }}" \
+            --ip-permissions "IpProtocol=tcp,FromPort=22,ToPort=22,IpRanges=[{CidrIp=${RUNNER_IP}/32,Description=github-actions-deploy}]"
+
+      - name: Prepare SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          for i in $(seq 1 10); do
+            ssh-keyscan -T 5 -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null && break
+            sleep 3
+          done
+
+      - name: Sync dist to server
+        # --delete: 이전 빌드에서 남은 옛날 파일 정리
+        run: |
+          rsync -az --delete -e "ssh -i ~/.ssh/deploy_key" \
+            dist/ ubuntu@${{ secrets.EC2_HOST }}:/var/www/muzin/
+
+      - name: Check site
+        run: |
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' "$SITE_URL")
+          echo "site: $CODE"
+          [ "$CODE" = "200" ]
+
+      - name: Close SSH
+        if: always()
+        run: |
+          if [ -n "$RUNNER_IP" ]; then
+            aws ec2 revoke-security-group-ingress \
+              --group-id "${{ secrets.EC2_SG_ID }}" \
+              --protocol tcp --port 22 --cidr "${RUNNER_IP}/32" || true
+          fi
+          rm -f ~/.ssh/deploy_key .env.production.local
