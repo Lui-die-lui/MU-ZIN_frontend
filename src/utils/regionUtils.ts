@@ -53,11 +53,32 @@ export const getCurrentPosition = () =>
     });
   });
 
+// 카카오 지도 SDK(services)는 필요할 때 한 번만 비동기로 불러옴
+//  (index.html 에서 동기로 불러오면 모든 페이지가 기다리고, 브라우저가 document.write 경고를 띄움)
+let kakaoLoading: Promise<void> | null = null;
+const loadKakaoServices = (): Promise<void> => {
+  if (window.kakao?.maps?.services) return Promise.resolve();
+  if (kakaoLoading) return kakaoLoading;
+  kakaoLoading = new Promise<void>((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_MAP_JS_KEY}&libraries=services&autoload=false`;
+    script.async = true;
+    script.onload = () => (window.kakao?.maps ? window.kakao.maps.load(() => resolve()) : reject(new Error("카카오 지도를 불러오지 못했습니다.")));
+    script.onerror = () => reject(new Error("카카오 지도를 불러오지 못했습니다."));
+    document.head.appendChild(script);
+  }).catch((e) => {
+    kakaoLoading = null; // 다음에 다시 시도할 수 있게
+    throw e;
+  });
+  return kakaoLoading;
+};
+
 // 카카오맵 역 지오코딩 유틸
-export const resolveRegionFromCoords = (
+export const resolveRegionFromCoords = async (
   latitude: number,
   longitude: number,
 ): Promise<SearchMainRegionSummary> => {
+  await loadKakaoServices();
   return new Promise((resolve, reject) => {
     const kakao = window.kakao;
 
