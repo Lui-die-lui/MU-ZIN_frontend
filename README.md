@@ -5,6 +5,8 @@
 
 - 또한 예약 이후에도 상태와 일정을 명확하게 관리할 수 있도록 하며, 수강자와 아티스트 모두가 더 예측 가능한 방식으로 레슨을 운영할 수 있는 구조가 목표
 
+**서비스 주소: https://mu-zin.com/**
+
 
 ## 1. 문제 정의
 클래식 악기 레슨은 수요가 존재함에도 불구하고 다음과 같은 이유로 시작 단계에서 이탈이 쉽게 발생
@@ -91,12 +93,95 @@ Spring Boot, Spring Security, JPA, JWT, OAuth2
 ### Database
 PostgreSQL
 
+### Infra
+AWS EC2 (Ubuntu), nginx, Let's Encrypt (HTTPS), GitHub Actions, Firebase Storage (이미지)
+
 ### Tools
 Figma, GitHub, Postman, Notion
 
 ---
 
-## 9. 앞으로의 개선 방향
+## 9. 배포 구조
+
+```
+브라우저
+  ├─ https://mu-zin.com      → nginx → 빌드된 정적 파일 (/var/www/muzin)
+  └─ https://api.mu-zin.com  → nginx → Spring Boot (서버 내부 8080)
+                                       ├─ PostgreSQL (Docker, 서버 내부에서만 접속)
+                                       └─ /ws 실시간 채팅 (WebSocket 프록시)
+이미지 업로드 → Firebase Storage (프론트에서 직접)
+```
+
+- 프론트는 Vite로 빌드한 정적 파일을 nginx가 직접 서빙합니다. 별도의 Node 서버는 없습니다.
+- 새로고침해도 404가 나지 않도록 nginx에서 모든 경로를 `index.html`로 돌려줍니다 (`try_files`).
+- HTTPS 인증서는 Let's Encrypt(certbot)로 발급하고 자동으로 갱신합니다.
+- 외부에는 80·443만 열려 있고, 백엔드(8080)와 DB(5432)는 서버 안에서만 접근할 수 있습니다.
+
+---
+
+## 10. CI/CD (GitHub Actions)
+
+`main`에 머지되면 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)이 자동으로 배포합니다. Actions 탭의 **Run workflow**로 직접 실행할 수도 있습니다.
+
+```
+PR → main 머지
+  1. Node 22 설치, 시크릿으로 .env.production.local 생성 (API 주소 누락 시 중단)
+  2. npm ci → npm run build (tsc 타입 검사 포함)
+  3. AWS 로그인 (OIDC, 저장된 AWS 키 없음)
+  4. 보안 그룹에 "이번 Actions 서버 IP만" SSH 허용 추가
+  5. rsync로 dist/ 를 서버에 동기화 (--delete 로 이전 빌드 파일 정리)
+  6. https://mu-zin.com/ 응답 200 확인
+  7. SSH 허용 규칙 삭제, 키·env 파일 삭제 (성공·실패와 관계없이 항상)
+```
+
+| 항목 | 내용 |
+|---|---|
+| 트리거 | `main` 푸시, 수동 실행 |
+| 동시 실행 | 한 번에 하나만 (`concurrency`) |
+| 소요 시간 | 약 2~3분 |
+| 반영 방식 | 파일 교체만 (nginx 재시작 없음) |
+
+**보안상 선택한 것**
+- **SSH는 배포하는 몇 분 동안만** 그 Actions 서버 IP 하나에 열고, 끝나면 바로 닫습니다. 평소에는 관리자 IP만 허용합니다.
+- **AWS 키를 GitHub에 저장하지 않습니다.** OIDC로 몇 분짜리 임시 권한만 받으며, 이 레포의 `main` 브랜치에서만 쓸 수 있고 권한은 보안 그룹 규칙 추가·삭제뿐입니다.
+- 서버 접속에는 **배포 전용 SSH 키**를 따로 씁니다. 유출되면 서버에서 그 키 한 줄만 지우면 됩니다.
+
+**필요한 GitHub 시크릿** (Settings → Secrets and variables → Actions)
+
+| 이름 | 용도 |
+|---|---|
+| `AWS_DEPLOY_ROLE_ARN` | OIDC로 받을 배포 역할 |
+| `EC2_SG_ID` | SSH 규칙을 잠깐 추가할 보안 그룹 |
+| `EC2_HOST` | 서버 주소 |
+| `EC2_SSH_KEY` | 배포 전용 SSH 개인 키 |
+| `FRONTEND_ENV` | `.env.production.local` 전체 내용 (아래 환경변수) |
+
+> `VITE_`로 시작하는 값은 빌드 결과에 들어가 브라우저에 그대로 공개됩니다. 서버 비밀값은 프론트 환경변수에 넣지 않습니다.
+
+---
+
+## 11. 로컬 실행
+
+```bash
+npm ci
+npm run dev       # http://localhost:5173
+npm run build     # 타입 검사 + 배포용 빌드 (dist/)
+npm run lint
+```
+
+백엔드(`http://localhost:8080`)가 함께 실행 중이어야 합니다.
+
+**환경변수** (`.env`, 배포용은 `.env.production.local`. 둘 다 git에 올리지 않음)
+
+| 이름 | 용도 |
+|---|---|
+| `VITE_API_BASE_URL` | 백엔드 주소 (로컬 `http://localhost:8080`, 배포 `https://api.mu-zin.com`) |
+| `VITE_KAKAO_MAP_JS_KEY` | 카카오 지도 JavaScript 키 (현재 위치 → 지역 변환, 필요할 때만 불러옴) |
+| `VITE_APP_API_KEY`, `VITE_APP_AUTH_DOMAIN`, `VITE_APP_PROJECT_ID`, `VITE_APP_STORAGE_BUCKET`, `VITE_MESSAGING_SENDER_ID`, `VITE_APP_ID`, `VITE_MEASUREMENT_ID` | Firebase (프로필·레슨 이미지 업로드) |
+
+---
+
+## 12. 앞으로의 개선 방향
 
 - 예약 상세 UX 개선
 - 카카오 맵 API를 이용한 위치 기반 탐색 
@@ -106,6 +191,6 @@ Figma, GitHub, Postman, Notion
 - 리뷰 및 후속 운영 기능 설계
 
 ---
-## 10. 프로젝트를 통해 배우고 있는 점
+## 13. 프로젝트를 통해 배우고 있는 점
 MUZIN은 단순한 기능 구현 프로젝트가 아니라, 문제를 어떻게 정의하고 어떤 흐름으로 풀어낼지를 계속 검증하는 프로젝트입니다.
 이 과정을 통해 기능을 많이 만드는 것보다. **무엇을 왜 먼저 해결해야 하는지**, 그리고 **사용자 경험과 운영 구조를 어떻게 함께 설계해야 하는지**를 더 중요하게 보고 있습니다. 
