@@ -3,6 +3,7 @@ declare global {
   interface Window {
     kakao?: {
       maps?: {
+        load: (callback: () => void) => void;
         services?: {
           Status: {
             OK: string;
