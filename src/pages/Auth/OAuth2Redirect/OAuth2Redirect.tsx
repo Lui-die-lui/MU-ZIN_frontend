@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import type { AuthRedirectState } from "../../../Types/routerState";
+import { savePendingSignup } from "../Consent/pendingSignup";
 
 const PROVIDER_NAMES: Record<string, string> = {
   google: "구글",
@@ -44,6 +45,14 @@ function OAuth2Redirect() {
 
     const token = params.get("accessToken");
     const errorCode = params.get("errorCode");
+    const signupToken = params.get("signupToken");
+
+    // 소셜 첫 가입: 동의를 받은 뒤에 가입을 마침 (주소창에서 토큰을 지우려고 replace)
+    if (signupToken && !errorCode) {
+      savePendingSignup({ token: signupToken, provider: params.get("provider"), redirect: safeInternalPath(params.get("redirect")) });
+      navigate("/consent", { replace: true });
+      return;
+    }
 
     if (errorCode || !token) {
       const state: AuthRedirectState = {

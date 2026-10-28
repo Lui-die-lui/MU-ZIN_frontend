@@ -8,6 +8,8 @@ import OAuth2Button from "../../OAuth2Button/OAuth2Button";
 import * as a from "../../authStyles";
 import * as f from "../../AuthInput/styles";
 import * as s from "./styles";
+import ConsentChecklist from "../../../../components/legal/ConsentChecklist";
+import { allAgreed, type Consent } from "../../../../legal/consent";
 
 type Props = {
   form: SignupPayload; // ts 파일 내 signupPayload 타입
@@ -17,11 +19,13 @@ type Props = {
   onChange: (name: keyof SignupPayload, value: string) => void;
   onBlur: (name: keyof SignupPayload) => void;
   onSubmit: () => Promise<SignupErrors>; // 남은 오류를 돌려줌 -> 첫 오류 칸으로 초점
+  consent: Consent;
+  onConsentChange: (next: Consent) => void;
 };
 
 const MESSAGE_ID = "signup-messages";
 
-function SignupForm({ form, errors, isSubmitting, from, onChange, onBlur, onSubmit }: Props) {
+function SignupForm({ form, errors, isSubmitting, from, onChange, onBlur, onSubmit, consent, onConsentChange }: Props) {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmRef = useRef<HTMLInputElement>(null);
@@ -111,7 +115,9 @@ function SignupForm({ form, errors, isSubmitting, from, onChange, onBlur, onSubm
               )}
             </div>
 
-            <button css={a.primaryButton} type="submit" disabled={isSubmitting}>
+            <ConsentChecklist value={consent} onChange={onConsentChange} disabled={isSubmitting} />
+
+            <button css={a.primaryButton} type="submit" disabled={isSubmitting || !allAgreed(consent)}>
               {isSubmitting ? "가입하는 중..." : "회원가입"}
             </button>
 
@@ -119,6 +125,7 @@ function SignupForm({ form, errors, isSubmitting, from, onChange, onBlur, onSubm
           </form>
 
           <div css={a.divider}>또는 소셜 계정으로 가입</div>
+          <p css={a.infoText}>소셜 계정으로 가입하면 다음 화면에서 약관 동의를 받아요.</p>
 
           <div css={a.socialList}>
             <OAuth2Button provider="google" flow="signup" redirectPath={redirectPath} />

@@ -5,6 +5,7 @@ import ChangeUserSection from "./UserAccount/ChangeUsernameSection/ChangeUsernam
 
 import PasswordSection from "./UserAccount/PasswordSection/PasswordSection";
 import EditProfileImgSection from "./UserAccount/EditProfileImgSection/EditProfileImgSection";
+import WithdrawalSection from "./UserAccount/WithdrawalSection/WithdrawalSection";
 
 function AccountPage() {
   return (
@@ -21,6 +22,7 @@ function AccountPage() {
         <ChangeUserSection />
         <EmailVerifySection />
         <PasswordSection />
+        <WithdrawalSection />
       </div>
     </div>
   );

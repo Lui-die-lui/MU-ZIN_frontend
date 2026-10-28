@@ -37,7 +37,8 @@ function ChatRealtime() {
         const msg = JSON.parse(frame.body) as ChatMessage;
         appendMessage(qc, msg);
         qc.invalidateQueries({ queryKey: chatKeys.rooms() });
-        qc.invalidateQueries({ queryKey: chatKeys.room(msg.chatRoomId) });
+        // 방 상세는 메시지 수신으로 바뀌지 않는다. 여기서 다시 가져오면 그 요청의
+        // 오래된 lastReadIdOfCounterpart가 직후 chat-read 신호를 덮을 수 있다.
         if (msg.senderUserId !== userId) qc.invalidateQueries({ queryKey: chatKeys.unread() });
       });
       client.subscribe("/user/queue/chat-read", (frame) => {

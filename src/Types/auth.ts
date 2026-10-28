@@ -30,6 +30,8 @@ export interface Principal {
 
   canChangePassword: boolean;
   oauth2Provider: string | null;
+  // 지금 약관·처리방침에 동의하지 않음 -> 동의 화면으로 (서버가 아직 이 값을 안 주면 undefined = 묻지 않음)
+  consentRequired?: boolean;
 }
 
 // 상태 타입

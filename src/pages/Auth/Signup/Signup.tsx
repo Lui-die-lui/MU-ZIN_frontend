@@ -9,6 +9,7 @@ import { toApiError } from "../../../utils/errorUtils";
 import { toast } from "../../../stores/useToastStore";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { isValidPassword, PASSWORD_RULE_TEXT } from "../../../utils/passwordRules";
+import { allAgreed, EMPTY_CONSENT, type Consent } from "../../../legal/consent";
 
 // 별칭(name+tag@...)과 4자 넘는 도메인(.design 등)도 허용 (백엔드 @Email 과 맞춤)
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -40,6 +41,7 @@ function Signup() {
 
   const [form, setForm] = useState<SignupPayload>({ email: "", password: "", passwordConfirm: "" });
   const [errors, setErrors] = useState<SignupErrors>({});
+  const [consent, setConsent] = useState<Consent>(EMPTY_CONSENT);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 로그인 상태면 가입 화면 대신 원래 가려던 곳으로
@@ -69,6 +71,7 @@ function Signup() {
   // 오류를 돌려주면 폼이 첫 오류 칸으로 초점을 옮김
   const onSubmit = async (): Promise<SignupErrors> => {
     if (isSubmitting) return {};
+    if (!allAgreed(consent)) return {}; // 버튼이 꺼져 있지만 Enter 제출 대비
     const e: SignupErrors = {};
     for (const name of FIELDS) {
       const msg = validateField(name, form);
@@ -80,7 +83,7 @@ function Signup() {
     setIsSubmitting(true);
     try {
       const email = form.email.trim();
-      await signupReq({ ...form, email });
+      await signupReq({ ...form, email, ...consent });
       toast.success("가입이 완료됐어요. 로그인해주세요.");
       const state: AuthRedirectState = { email, from };
       navigate("/signin", { replace: true, state });
@@ -112,6 +115,8 @@ function Signup() {
       onChange={onChange}
       onBlur={onBlur}
       onSubmit={onSubmit}
+      consent={consent}
+      onConsentChange={setConsent}
     />
   );
 }

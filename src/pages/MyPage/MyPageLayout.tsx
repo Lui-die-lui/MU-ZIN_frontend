@@ -1,15 +1,18 @@
 /** @jsxImportSource @emotion/react */
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { outside as footerOutside } from "../../components/layout/Footer/styles";
 import { usePrincipalState } from "../../stores/usePrincipalState";
 import type { ArtistStatus } from "../../Types/auth";
 import SideNavBar from "./SideNavBar/SideNavBar";
 import NavBar from "../../components/layout/NavBar/NavBar";
+import Footer from "../../components/layout/Footer/Footer";
 import * as s from "./styles";
 import { useMyNotifications } from "../../hooks/notification/useMyNotifications";
 import { useMemo } from "react";
 import { useIsAdmin } from "../../hooks/admin/useAdmin";
 
 function MyPageLayout() {
+  const { pathname } = useLocation();
   const { principal, hydrated } = usePrincipalState();
 
   // principal 없으면 일단 NONE처리 (로그인 가드 로직 있으면 여긴 타지 않으나, 혹시 모르니)
@@ -58,6 +61,12 @@ function MyPageLayout() {
           <Outlet />
         </s.Content>
       </s.Wrap>
+      {/* 채팅은 화면 높이를 채우는 대화창이라 하단 푸터 없음 */}
+      {!pathname.startsWith("/mypage/chats") && (
+        <div css={footerOutside}>
+          <Footer />
+        </div>
+      )}
     </>
   );
 }

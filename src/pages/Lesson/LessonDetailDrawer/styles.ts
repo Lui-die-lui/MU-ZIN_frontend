@@ -109,6 +109,56 @@ export const metaLine = css`
   line-height: 1.4;
 `;
 
+// 예약 요청 버튼 바로 위(아래 고정 영역) 안내 + 확인 체크 - 확인해야 버튼이 켜짐
+export const noticeBox = css`
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f5f4f0;
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: #17191c;
+    word-break: keep-all;
+  }
+`;
+
+export const noticeCheck = css`
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 8px;
+  width: fit-content;
+  font-size: 14px;
+  font-weight: 700;
+  color: #17191c;
+  cursor: pointer;
+
+  input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: #17191c;
+  }
+`;
+
+
+// 가격 아래 작은 안내 (결제 기능 없음)
+export const requestFooter = css`
+  display: grid;
+  gap: 10px;
+`;
+
+export const priceNote = css`
+  margin: 4px 0 0;
+  color: ${muted};
+  font-size: 12px;
+  line-height: 1.5;
+`;
+
 export const infoBlock = css`
   display: grid;
   gap: 20px;

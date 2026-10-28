@@ -4,6 +4,8 @@ import * as layout from "../MyPage/styles";
 import * as s from "../MyPage/SideNavBar/styles";
 import { useModerationCounts, usePendingApplicationCount } from "../../hooks/admin/useAdmin";
 import NavBar from "../../components/layout/NavBar/NavBar";
+import Footer from "../../components/layout/Footer/Footer";
+import { outside as footerOutside } from "../../components/layout/Footer/styles";
 
 // 관리자 페이지 틀 - 마이페이지와 같은 모양, 메뉴는 관리 기능만
 function AdminLayout() {
@@ -60,6 +62,9 @@ function AdminLayout() {
           <Outlet />
         </layout.Content>
       </layout.Wrap>
+      <div css={footerOutside}>
+        <Footer />
+      </div>
     </>
   );
 }

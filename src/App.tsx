@@ -1,7 +1,7 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import { queryClient } from "./configs/queryClient";
-import { BrowserRouter, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, useLocation } from "react-router-dom";
 import MainRouter from "./routes/MainRouter";
 import { usePrincipalState } from "./stores/usePrincipalState";
 import { useEffect } from "react";
@@ -13,8 +13,16 @@ import { trackVisit } from "./utils/trackVisit";
 import { syncPushForUser } from "./push/pushClient";
 
 // 경로가 바뀌면 에러 화면을 초기화할 수 있게 경로를 resetKey로 넘김
+// 약관에 동의하지 않은 회원(약관이 바뀜 / 동의 기능 이전 가입)은 동의 화면으로. 약관·처리방침은 읽을 수 있게 둠
+const CONSENT_FREE = ["/consent", "/terms", "/privacy", "/oauth2/redirect"];
+
 function RoutesWithBoundary() {
-  const { pathname } = useLocation();
+  const loc = useLocation();
+  const { pathname } = loc;
+  const consentRequired = usePrincipalState((s) => !!s.principal?.consentRequired);
+  if (consentRequired && !CONSENT_FREE.includes(pathname)) {
+    return <Navigate to="/consent" replace state={{ from: loc }} />;
+  }
   return (
     <ErrorBoundary resetKey={pathname}>
       <MainRouter />
