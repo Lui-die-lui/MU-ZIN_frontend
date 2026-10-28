@@ -62,6 +62,7 @@ export type SearchApplied = SearchDraft & { stamp: number };
 export type ReservationCreateReq = {
   timeSlotId: number;
   requestMsg: string | null;
+  noticeAcknowledged: boolean; // "직접 하는 약속 · 결제는 두 분이" 안내 확인 (서버가 시각 저장)
 };
 
 // export type ReservationResp = {

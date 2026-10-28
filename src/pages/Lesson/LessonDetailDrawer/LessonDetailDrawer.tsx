@@ -92,6 +92,7 @@ function LessonDetailDrawer({
   const [mode, setMode] = useState<Mode>("pick");
   const [selectedSlot, setSelectedSlot] = useState<SlotItem | null>(null);
   const [requestMsg, setRequestMsg] = useState("");
+  const [noticeAck, setNoticeAck] = useState(false);
   const [submitError, setSubmitError] = useState<{ message: string; slotGone: boolean } | null>(null);
 
   // 레슨이 바뀌면 필터/화면 상태 초기화
@@ -102,6 +103,7 @@ function LessonDetailDrawer({
     setMode("pick");
     setSelectedSlot(null);
     setRequestMsg("");
+    setNoticeAck(false);
     setSubmitError(null);
   }, [lessonId, initialOpenSlotFilter]);
 
@@ -131,12 +133,13 @@ function LessonDetailDrawer({
   };
 
   const submit = async () => {
-    if (!selectedSlot) return;
+    if (!selectedSlot || !noticeAck) return;
     try {
       setSubmitError(null);
       await createM.mutateAsync({
         timeSlotId: selectedSlot.timeSlotId,
         requestMsg: requestMsg.trim() ? requestMsg.trim() : null,
+        noticeAcknowledged: true,
       });
       setMode("success");
     } catch (e) {
@@ -198,13 +201,22 @@ function LessonDetailDrawer({
       );
     } else if (mode === "request") {
       footer = (
-        <div css={s.footerRow}>
-          <button type="button" css={s.ghostBtn} onClick={pickAgain} disabled={createM.isPending}>
-            ← 시간 다시 고르기
-          </button>
-          <button type="button" css={s.primaryBtn} onClick={submit} disabled={createM.isPending || !selectedSlot}>
-            {createM.isPending ? "보내는 중..." : "예약 요청 보내기"}
-          </button>
+        <div css={s.requestFooter}>
+          <div css={s.noticeBox}>
+            <p>레슨은 아티스트와 직접 하는 약속이에요. 결제와 환불은 MU:ZIN 밖에서 두 분이 직접 정해요.</p>
+            <label css={s.noticeCheck}>
+              <input type="checkbox" checked={noticeAck} disabled={createM.isPending} onChange={(e) => setNoticeAck(e.target.checked)} />
+              확인했어요
+            </label>
+          </div>
+          <div css={s.footerRow}>
+            <button type="button" css={s.ghostBtn} onClick={pickAgain} disabled={createM.isPending}>
+              ← 시간 다시 고르기
+            </button>
+            <button type="button" css={s.primaryBtn} onClick={submit} disabled={createM.isPending || !selectedSlot || !noticeAck}>
+              {createM.isPending ? "보내는 중..." : "예약 요청 보내기"}
+            </button>
+          </div>
         </div>
       );
     } else {
@@ -259,6 +271,7 @@ function LessonDetailDrawer({
           <div>
             <h2 css={s.title}>{data.title}</h2>
             <p css={s.metaLine}>{metaText}</p>
+            {data.price !== 0 && <p css={s.priceNote}>레슨비는 아티스트에게 직접 전달해요.</p>}
             {reviewSummary && reviewSummary.reviewCount > 0 && mode === "pick" && (
               <button type="button" css={s.ratingLine} onClick={scrollToReviews}>
                 <StarDisplay value={reviewSummary.averageRating} size={14} />

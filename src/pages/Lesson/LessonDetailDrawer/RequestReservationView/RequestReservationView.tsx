@@ -65,6 +65,7 @@ function RequestReservationView({ summary, requestMsg, onChangeMsg, pending = fa
         <li>요청을 보내면 아티스트가 확인한 뒤 확정해요. 확정되면 알림으로 알려드려요.</li>
         <li>확정 전에는 마이페이지 &gt; 내 예약에서 언제든 취소할 수 있어요.</li>
       </ul>
+
     </div>
   );
 }
