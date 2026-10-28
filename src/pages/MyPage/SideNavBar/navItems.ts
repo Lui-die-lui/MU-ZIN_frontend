@@ -38,6 +38,7 @@ export const buildMyPageNavItems = (artistStatus: ArtistStatus): NavItem[] => {
     { key: "reviews", label: "리뷰 관리", to: "/mypage/reviews" },
     { key: "follows", label: "팔로잉", to: "/mypage/follows" },
     { key: "account", label: "인증 및 개인정보", to: "/mypage/account" },
+    { key: "notificationSettings", label: "알림 설정", to: "/mypage/notifications" },
   ];
 
   // 마지막 탭 아티스트 = 레슨 관리, 아니면 신청

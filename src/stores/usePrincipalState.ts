@@ -3,6 +3,7 @@ import type { Principal } from "../Types/auth";
 import { queryClient } from "../configs/queryClient";
 import { getPrincipalReq, signinReq } from "../apis/auth/authApi";
 import { ApiError } from "../utils/errorUtils";
+import { detachPushOnLogout } from "../push/pushClient";
 
 type PrincipalStore = {
   principal: Principal | null;
@@ -102,6 +103,8 @@ export const usePrincipalState = create<PrincipalStore>((set) => ({
   },
 
   logout: () => {
+    // 이 기기의 알림 구독을 먼저 떼어 냄 (토큰이 있어야 서버에서도 지울 수 있음) - 기다리지 않음
+    void detachPushOnLogout(localStorage.getItem("accessToken"));
     localStorage.removeItem("accessToken");
     queryClient.clear();
     set({ principal: null, isAuthenticated: false, hydrated: true });

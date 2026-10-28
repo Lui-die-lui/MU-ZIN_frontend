@@ -10,6 +10,7 @@ import ErrorBoundary from "./components/common/ErrorBoundary/ErrorBoundary";
 import SessionWatcher from "./components/auth/SessionWatcher";
 import ChatRealtime from "./realtime/ChatRealtime";
 import { trackVisit } from "./utils/trackVisit";
+import { syncPushForUser } from "./push/pushClient";
 
 // 경로가 바뀌면 에러 화면을 초기화할 수 있게 경로를 resetKey로 넘김
 function RoutesWithBoundary() {
@@ -19,6 +20,15 @@ function RoutesWithBoundary() {
       <MainRouter />
     </ErrorBoundary>
   );
+}
+
+// 로그인한 계정이 바뀌면(로그인·새로고침·계정 전환) 이 기기의 알림 구독을 그 계정에 맞춤
+function PushSync() {
+  const userId = usePrincipalState((s) => s.principal?.userId ?? null);
+  useEffect(() => {
+    if (userId != null) void syncPushForUser(userId);
+  }, [userId]);
+  return null;
 }
 
 function App() {
@@ -34,6 +44,7 @@ function App() {
       <BrowserRouter>
         <SessionWatcher />
         <ChatRealtime />
+        <PushSync />
         <RoutesWithBoundary />
       </BrowserRouter>
       <GlobalToast />

@@ -1,0 +1,16 @@
+{
+  "name": "MU:ZIN",
+  "short_name": "MU:ZIN",
+  "description": "악기·지역·시간으로 레슨을 찾고 예약하는 MU:ZIN",
+  "lang": "ko",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

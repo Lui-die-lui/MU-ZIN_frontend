@@ -18,6 +18,7 @@ import MyReviewsPage from "../pages/MyPage/Reviews/MyReviewsPage";
 import MyFollowsPage from "../pages/MyPage/Follows/MyFollowsPage";
 import ChatsPage from "../pages/MyPage/Chats/ChatsPage";
 import InquiriesPage from "../pages/MyPage/Inquiries/InquiriesPage";
+import NotificationSettingsPage from "../pages/MyPage/NotificationSettings/NotificationSettingsPage";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
 function MyPageRouter() {
@@ -56,6 +57,7 @@ function MyPageRouter() {
 
         {/* 레슨 문의 (보낸 문의 / 받은 문의) */}
         <Route path="inquiries" element={<InquiriesPage />} />
+        <Route path="notifications" element={<NotificationSettingsPage />} />
 
         {/* account 중첩 라우트 - 아티스트만 접근 가능한 탭으로 만듦 */}
         <Route path="account" element={<AccountLayout />}>
