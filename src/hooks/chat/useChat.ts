@@ -32,9 +32,9 @@ export const useChatRooms = (enabled = true) => useQuery({ queryKey: chatKeys.ro
 export const useChatRoom = (roomId: number | null) =>
   useQuery({ queryKey: chatKeys.room(roomId ?? 0), queryFn: () => getChatRoomReq(roomId!), enabled: !!roomId, retry: false });
 
-// 실시간 연결이 끊겨도 숫자가 맞도록 가볍게 다시 확인 (WebSocket 이 오면 바로 갱신)
+// 새 메시지는 WebSocket 으로 바로 반영 (realtime/ChatRealtime). 2분 확인은 연결이 끊겼을 때를 위한 안전장치
 export const useChatUnread = (enabled: boolean) =>
-  useQuery({ queryKey: chatKeys.unread(), queryFn: getChatUnreadCountReq, enabled, refetchInterval: 30_000 });
+  useQuery({ queryKey: chatKeys.unread(), queryFn: getChatUnreadCountReq, enabled, refetchInterval: 120_000 });
 
 export const useChatMessages = (roomId: number | null) =>
   useQuery({ queryKey: chatKeys.messages(roomId ?? 0), queryFn: () => getChatMessagesReq(roomId!), enabled: !!roomId });

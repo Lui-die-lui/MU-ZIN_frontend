@@ -10,6 +10,13 @@ html,body {
   padding: 0;
 }
 
+/* 아이폰 노치·홈 표시줄: viewport-fit=cover 로 화면 끝까지 쓰고, 아래 고정 요소는 각자 env(safe-area-inset-bottom) 만큼 띄움
+   가로 화면에서는 노치 쪽으로 내용이 들어가지 않게 좌우 여백 (세로 화면·PC 에서는 0) */
+#root {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
 /* 페이지마다 내용 길이가 달라 세로 스크롤바가 생겼다 사라지면 화면 폭이 바뀌어
    가운데 정렬된 화면 전체가 좌우로 덜그럭거림 -> 스크롤바 자리를 항상 확보 */
 html {
