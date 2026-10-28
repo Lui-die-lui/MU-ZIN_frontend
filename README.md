@@ -177,6 +177,7 @@ npm run lint
 |---|---|
 | `VITE_API_BASE_URL` | 백엔드 주소 (로컬 `http://localhost:8080`, 배포 `https://api.mu-zin.com`) |
 | `VITE_KAKAO_MAP_JS_KEY` | 카카오 지도 JavaScript 키 (현재 위치 → 지역 변환, 필요할 때만 불러옴) |
+| (웹 푸시 알림) | 프론트에 추가할 값 없음. 서버 `.env` 의 `WEBPUSH_PUBLIC_KEY` · `WEBPUSH_PRIVATE_KEY` · `WEBPUSH_SUBJECT` 로 동작하고, 공개키는 `/push/config` 로 받음 |
 | `VITE_APP_API_KEY`, `VITE_APP_AUTH_DOMAIN`, `VITE_APP_PROJECT_ID`, `VITE_APP_STORAGE_BUCKET`, `VITE_MESSAGING_SENDER_ID`, `VITE_APP_ID`, `VITE_MEASUREMENT_ID` | Firebase (프로필·레슨 이미지 업로드) |
 
 ---

@@ -10,6 +10,7 @@ import { instrumentSrc, pickInstruments } from "./instruments";
 import { isComplete } from "../../features/hobbyFinder/engine";
 import { loadSaved } from "../../features/hobbyFinder/storage";
 import { usePrincipalState } from "../../stores/usePrincipalState";
+import PushGuideGate from "../../components/push/PushGuideGate";
 
 // 레슨 신청 순서 - 레슨 상세 창의 단계(시간 선택 → 요청 보내기)와 안내 문구에 맞춤
 const STEPS = [
@@ -31,6 +32,7 @@ function Home() {
 
   return (
     <main css={s.page}>
+      <PushGuideGate />
       <div css={s.top(member)}>
         {/* ① 메인 배너 - 데스크톱: 왼쪽 [제목 → AI 질문 → 찾기 버튼] / 오른쪽 악기
                          모바일: 제목 → 악기 → AI 질문 → 찾기 버튼 */}
