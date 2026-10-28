@@ -105,7 +105,8 @@ function NavBar() {
     queryFn: getMyUnreadCountReq,
     enabled: !!principal,
     select: (resp) => resp.data.data ?? 0, // count number로 변환
-    refetchInterval: 5000, // 아직 실시간 안붙여서 뱃지만 가볍게 폴링
+    // 새 알림은 WebSocket 신호로 바로 갱신 (realtime/ChatRealtime). 이건 연결이 끊겼을 때를 위한 안전장치
+    refetchInterval: 60_000,
   });
 
   // 알림 메뉴 열렸을 때만 가져오는 리스트용
