@@ -22,6 +22,10 @@ function AccountPage() {
         <ChangeUserSection />
         <EmailVerifySection />
         <PasswordSection />
+      </div>
+
+      {/* 탈퇴는 다른 설정과 떨어뜨려 따로 */}
+      <div css={[s.card, s.dangerCard]}>
         <WithdrawalSection />
       </div>
     </div>

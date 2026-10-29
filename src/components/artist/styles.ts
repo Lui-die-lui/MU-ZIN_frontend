@@ -21,7 +21,7 @@ export const followButton = (on: boolean, size: "md" | "sm") => css`
   color: ${on ? "#000" : "#fff"};
   font: inherit;
   font-size: ${size === "md" ? 14 : 13}px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
   transition: background-color 0.15s ease;
@@ -100,7 +100,7 @@ export const dialogText = css`
   color: #5f656a;
 
   strong {
-    font-weight: 800;
+    font-weight: 600;
     color: #17191c;
   }
 `;
@@ -128,7 +128,7 @@ const dialogRow = css`
 export const dialogDanger = css`
   ${dialogRow};
   color: #c8463f;
-  font-weight: 800;
+  font-weight: 600;
 `;
 
 export const dialogCancel = css`

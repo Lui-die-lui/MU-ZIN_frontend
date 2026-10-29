@@ -27,7 +27,7 @@ export const header = css`
 export const title = css`
   margin: 0;
   font-size: 25px;
-  font-weight: 800;
+  font-weight: 700;
 `;
 
 export const desc = css`
@@ -50,7 +50,7 @@ export const notice = css`
   background: #f3f4f6;
   color: #1b1d20;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
 `;
 
 export const writableList = css`
@@ -100,5 +100,5 @@ export const deadline = (urgent: boolean) => css`
   background: ${urgent ? "#fff1f2" : "#f3f4f6"};
   color: ${urgent ? "#be123c" : muted};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 `;

@@ -35,7 +35,7 @@ export const empty = css`
 export const emptyTitle = css`
   margin: 0;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   color: #111827;
 `;
 
@@ -55,7 +55,7 @@ export const emptyBtn = (primary: boolean) => css`
   color: ${primary ? "#fff" : "#111827"};
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 `;
 
@@ -113,7 +113,7 @@ export const cardTitle = css`
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.35;
   color: #111827;
   word-break: keep-all;
@@ -130,7 +130,7 @@ export const statusChip = (active: boolean) => css`
   background: ${active ? "#f3f4f6" : "#f3f4f6"};
   color: ${active ? "#111827" : "#6b7280"};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const cardMeta = css`
@@ -165,7 +165,7 @@ export const switchWrap = css`
 
   label {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: #4b5563;
     cursor: pointer;
   }
@@ -208,7 +208,7 @@ export const infoChip = (tone: Tone) => css`
   color: ${TONES[tone].color};
   font: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 `;
 
@@ -229,7 +229,7 @@ export const manageBtn = css`
   color: #111827;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:hover {

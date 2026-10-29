@@ -23,13 +23,13 @@ export const title = css`
   gap: 8px;
   margin: 0 0 4px;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   color: #111827;
 `;
 
 export const countBadge = css`
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #6b7280;
 `;
 
@@ -53,7 +53,7 @@ const smallBtn = css`
   border-radius: 10px;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
 
@@ -109,7 +109,7 @@ export const addressMain = css`
 
 export const addressText = css`
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #111827;
   word-break: keep-all;
 `;
@@ -172,7 +172,7 @@ export const emptyAddress = css`
 
   b {
     color: #111827;
-    font-weight: 700;
+    font-weight: 600;
   }
 
   &:hover:not(:disabled) {
@@ -210,7 +210,7 @@ export const addButton = css`
   color: #fff;
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
 

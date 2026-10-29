@@ -15,7 +15,7 @@ export const month = css`
 
 export const monthTitle = css`
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.02em;
   color: ${muted};
 `;
@@ -46,7 +46,7 @@ export const dayLabel = css`
 
   strong {
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${text};
   }
 
@@ -71,7 +71,7 @@ export const timeBtn = (active: boolean) => css`
   color: ${active ? "#fff" : text};
   font: inherit;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background 120ms ease, border-color 120ms ease;

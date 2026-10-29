@@ -140,7 +140,7 @@ export const link = css`
 
   &.active {
     color: ${ink};
-    font-weight: 800;
+    font-weight: 600;
     background: ${soft};
   }
   ${focusRing}
@@ -177,7 +177,7 @@ export const Btn = styled.button`
   color: #FFFFFF;
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.15s ease;
 
@@ -205,16 +205,17 @@ export const IconBtn = styled.button`
   display: grid;
   place-items: center;
   cursor: pointer;
-  color: ${ink};
-  transition: background-color 0.15s ease;
+  color: #4a4f55; /* 로고·프로필보다 한 톤 옅게, 누를 때는 진하게 */
+  transition: background-color 0.15s ease, color 0.15s ease;
 
   &:hover,
   &[data-open="true"] {
     background: ${soft};
+    color: ${ink};
   }
   ${focusRing}
 
-  /* Heroicons 외곽선 (선 굵기 1.5) - 프로필 사진 옆에서 너무 가늘어 보이지 않게 */
+  /* 채팅·알림 아이콘 (NavIcons, 선 굵기 1.5) */
   svg {
     font-size: 22px;
   }
@@ -243,7 +244,7 @@ export const Badge = styled.div`
   box-shadow: 0 0 0 2px #FFFFFF;
   color: #FFFFFF;
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 16px;
   text-align: center;
   font-variant-numeric: tabular-nums;
@@ -338,7 +339,7 @@ export const MenuHeader = styled.header`
     background: transparent;
     color: #4f5660;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
 
     &:hover:not(:disabled) {
@@ -390,7 +391,7 @@ export const MenuEmpty = styled.div`
     background: #fff;
     color: #333840;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
   }
 `;
@@ -474,7 +475,7 @@ export const NotificationMeta = styled.div`
     color: #292e35;
     font-size: 13px;
     line-height: 1.45;
-    font-weight: 650;
+    font-weight: 600;
     overflow-wrap: anywhere;
   }
 
@@ -591,7 +592,7 @@ export const profileMenuBadge = css`
   background: #17191C;
   color: #fff;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const profileMenuEmail = css`

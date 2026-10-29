@@ -30,7 +30,7 @@ export const profileLink = css`
   background: #fff;
   color: ${tone.text};
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   transition: border-color 0.15s ease;
 
@@ -146,7 +146,7 @@ export const readonlyValue = css`
   border-radius: 10px;
   background: ${tone.soft};
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${tone.text};
 `;
 
@@ -158,7 +158,7 @@ export const inUseNote = css`
 
   b {
     color: ${tone.text};
-    font-weight: 800;
+    font-weight: 600;
   }
 `;
 

@@ -18,7 +18,7 @@ export const row = css`
 `;
 
 export const label = css`
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
   color: #5f656a;
   white-space: nowrap;

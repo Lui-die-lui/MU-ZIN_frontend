@@ -47,7 +47,7 @@ export const locationButton = css`
   color: #40464d;
   cursor: pointer;
   white-space: nowrap;
-  font-weight: 700;
+  font-weight: 600;
 
   &:hover { background: #eceef0; }
 `;

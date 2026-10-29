@@ -24,7 +24,7 @@ export const page = css`
 
 export const eyebrow = css`
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.08em;
   color: ${muted};
 `;
@@ -68,14 +68,14 @@ export const sectionBadge = (reality: boolean) => css`
   background: ${reality ? softer : soft};
   border: 1px solid ${reality ? line : soft};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${reality ? muted : sub};
 `;
 
 export const question = css`
   margin: 12px 0 6px;
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.4;
   letter-spacing: -0.02em;
   word-break: keep-all;
@@ -135,7 +135,7 @@ export const optionKey = (selected: boolean) => css`
   background: ${selected ? "rgba(255,255,255,0.18)" : soft};
   color: ${selected ? "#fff" : muted};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const navRow = css`
@@ -160,7 +160,7 @@ export const btn = (tone: "primary" | "ghost", wide = false) => css`
   color: ${tone === "primary" ? "#fff" : text};
   font: inherit;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -228,7 +228,7 @@ export const keywords = css`
     border-radius: 999px;
     background: ${soft};
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${text};
   }
 `;
@@ -243,7 +243,7 @@ export const disclaimer = css`
 export const sectionTitle = css`
   margin: 36px 0 12px;
   font-size: 19px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
 `;
 
@@ -272,7 +272,7 @@ export const hobbyHead = css`
   h3 {
     margin: 0;
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 600;
   }
   p {
     margin: 2px 0 0;
@@ -290,7 +290,7 @@ export const cardLabel = (strong: boolean) => css`
   background: ${strong ? ink : "#fff"};
   color: ${strong ? "#fff" : sub};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const cardText = css`
@@ -338,14 +338,14 @@ export const choiceRow = css`
 export const subTitle = css`
   margin: 24px 0 10px;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${text};
 `;
 
 export const blockLabel = css`
   margin: 0 0 6px;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${muted};
 `;
 
@@ -417,7 +417,7 @@ export const hobbyTab = (on: boolean) => css`
   color: ${on ? "#fff" : text};
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 `;
 
@@ -511,7 +511,7 @@ export const lessonOpen = css`
   h4 {
     margin: 0;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -571,7 +571,7 @@ export const artistRow = css`
 
   a {
     color: ${text};
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: none;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -620,7 +620,7 @@ export const sampleBadge = css`
   border-radius: 6px;
   border: 1px dashed #9ca3af;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${muted};
 `;
 
@@ -638,7 +638,7 @@ export const explore = css`
     gap: 10px;
     padding: 18px 22px;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 600;
     cursor: pointer;
     list-style: none;
   }
@@ -678,7 +678,7 @@ export const exploreGroup = css`
   h3 {
     margin: 0;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     color: ${muted};
   }
 `;

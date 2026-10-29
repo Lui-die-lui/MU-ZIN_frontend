@@ -18,7 +18,7 @@ export const legend = css`
   margin-bottom: 8px;
   padding: 0;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${ink};
 `;
 
@@ -40,7 +40,7 @@ export const reason = (on: boolean) => css`
   background: ${on ? ink : mist};
   color: ${on ? "#fff" : ink};
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 
   input {

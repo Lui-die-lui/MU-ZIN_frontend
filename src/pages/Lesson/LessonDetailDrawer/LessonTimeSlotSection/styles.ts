@@ -14,7 +14,7 @@ export const header = css`
 export const title = css`
   margin: 0;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
 `;
 
 export const panelBox = css`
@@ -32,7 +32,7 @@ export const emptyBox = css`
 `;
 
 export const emptyTitle = css`
-  font-weight: 800;
+  font-weight: 600;
   margin-bottom: 6px;
 `;
 
@@ -69,7 +69,7 @@ export const linkBtn = css`
   background: none;
   color: #1b1d20;
   font: inherit;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
 `;

@@ -98,7 +98,7 @@ export const instBadge = css`
   border-radius: 8px;
   background: #ffffff;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
@@ -116,7 +116,7 @@ export const cardTitle = css`
   margin: 0;
   overflow: hidden;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.4;
   letter-spacing: -0.02em;
   word-break: keep-all;
@@ -154,7 +154,7 @@ export const cardMeta = css`
 
   strong {
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
   span {

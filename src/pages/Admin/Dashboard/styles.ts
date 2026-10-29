@@ -32,7 +32,7 @@ export const segBtn = (on: boolean) => css`
   color: ${on ? ink : sub};
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:focus-visible {
@@ -61,7 +61,7 @@ export const todo = css`
   }
   a {
     color: ${ink};
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -90,7 +90,7 @@ export const tile = css`
 
 export const tileLabel = css`
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: ${sub};
 `;
 
@@ -146,7 +146,7 @@ export const card = css`
 export const cardTitle = css`
   margin: 0;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${ink};
 `;
 
@@ -204,7 +204,7 @@ export const axisText = css`
 
 export const peakText = css`
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   fill: ${sub};
 `;
 
@@ -317,7 +317,7 @@ export const barName = css`
 
 export const barValue = css`
   flex-shrink: 0;
-  font-weight: 700;
+  font-weight: 600;
   color: ${ink};
   font-variant-numeric: tabular-nums;
 `;
@@ -363,7 +363,7 @@ export const activity = css`
   dd {
     margin: 0;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${ink};
     font-variant-numeric: tabular-nums;
   }

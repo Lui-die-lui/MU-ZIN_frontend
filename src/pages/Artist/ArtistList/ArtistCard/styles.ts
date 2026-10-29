@@ -86,7 +86,7 @@ export const username = css`
   margin: 0;
   overflow: hidden;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -112,7 +112,7 @@ export const chip = css`
   background: #ffffff;
   color: ${ink};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 `;
 

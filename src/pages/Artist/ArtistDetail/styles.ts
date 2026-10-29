@@ -38,7 +38,7 @@ export const backLink = css`
   color: ${sub};
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover {
@@ -112,7 +112,7 @@ export const majorBadge = css`
   border-radius: 8px;
   background: #ffffff;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   white-space: nowrap;
 `;
 
@@ -154,7 +154,7 @@ export const stats = css`
   strong {
     margin-left: 4px;
     color: ${ink};
-    font-weight: 800;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
 `;
@@ -235,7 +235,7 @@ export const fact = css`
 
 export const factLabel = css`
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${faint};
 
   ${NARROW} {
@@ -260,7 +260,7 @@ export const chip = css`
   border-radius: 999px;
   background: #ffffff;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 `;
 
@@ -308,14 +308,14 @@ export const tab = (active: boolean) => css`
   color: ${active ? "#ffffff" : sub};
   font-family: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 
   span {
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 600;
     opacity: 0.7;
     font-variant-numeric: tabular-nums;
   }
@@ -376,13 +376,13 @@ export const sectionTitle = css`
   gap: 8px;
   margin: 0;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
 
   span {
     color: ${faint};
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
   ${MOBILE} {
@@ -419,7 +419,7 @@ export const career = css`
   h3 {
     margin: 0;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     color: ${faint};
   }
 `;
@@ -465,7 +465,7 @@ export const bookInfo = css`
 
 export const bookEyebrow = css`
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.12em;
   color: ${faint};
 
@@ -477,14 +477,14 @@ export const bookEyebrow = css`
 export const bookPrice = css`
   margin: 0;
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 
   small {
     margin-left: 4px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${sub};
   }
   ${NARROW} {
@@ -523,7 +523,7 @@ export const btn = (variant: "primary" | "ghost") => css`
   color: ${variant === "primary" ? "#ffffff" : ink};
   font: inherit;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -558,7 +558,7 @@ export const smallBtn = css`
   background: #ffffff;
   color: ${ink};
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
 
@@ -625,7 +625,7 @@ export const instBadge = css`
   border-radius: 8px;
   background: #ffffff;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
 `;
 
 export const lessonSub = css`
@@ -641,7 +641,7 @@ export const lessonTitle = css`
   margin: 0;
   overflow: hidden;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.4;
   letter-spacing: -0.02em;
   word-break: keep-all;
@@ -660,7 +660,7 @@ export const lessonFoot = css`
 
   strong {
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
 `;
@@ -693,7 +693,7 @@ export const textBtn = css`
   color: ${ink};
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   text-decoration-color: ${silver};
   text-underline-offset: 3px;

@@ -45,7 +45,7 @@ export const heroText = css`
 
 export const eyebrow = css`
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.14em;
   color: ${faint};
 `;
@@ -148,7 +148,7 @@ export const searchButton = css`
   color: #ffffff;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease;
 
@@ -221,7 +221,7 @@ export const chip = (active: boolean) => css`
   color: ${active ? "#ffffff" : sub};
   font-family: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
@@ -247,7 +247,7 @@ export const chipCount = (active: boolean) => css`
   background: ${active ? "rgba(255, 255, 255, 0.22)" : ink};
   color: #ffffff;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1;
   box-sizing: border-box;
 `;
@@ -295,7 +295,7 @@ export const fieldLabel = css`
   align-items: baseline;
   gap: 4px 8px;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${ink};
 
   small {
@@ -308,7 +308,7 @@ export const fieldLabel = css`
 export const validation = css`
   margin: 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: #c2410c;
 `;
 
@@ -333,7 +333,7 @@ export const ghostButton = css`
   color: ${ink};
   font-family: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:hover {
@@ -351,7 +351,7 @@ export const primaryButton = css`
   color: #ffffff;
   font-family: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:hover:not(:disabled) {
@@ -390,12 +390,12 @@ export const resultTitle = css`
   gap: 8px;
   margin: 0;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
 
   span {
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${sub};
     font-variant-numeric: tabular-nums;
   }
@@ -421,7 +421,7 @@ export const textButton = css`
   color: ${ink};
   font-family: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   text-decoration-color: #c5cacd;
   text-underline-offset: 3px;

@@ -220,6 +220,11 @@ function ReservationBoard({ mode, title, desc, items, isLoading, isError, onRetr
           <input type="date" aria-label="시작일" css={s.dateInput(rangeInvalid)} value={from} onChange={(e) => setFrom(e.target.value)} />
           <span aria-hidden="true">~</span>
           <input type="date" aria-label="종료일" css={s.dateInput(rangeInvalid)} value={to} onChange={(e) => setTo(e.target.value)} />
+          {(filtering || pickedDate) && (
+            <button type="button" css={s.textBtn} onClick={resetFilters}>
+              초기화
+            </button>
+          )}
         </div>
         <SelectDropdown<SortOrder>
           css={s.sortSelect}
@@ -231,11 +236,6 @@ function ReservationBoard({ mode, title, desc, items, isLoading, isError, onRetr
             { value: "OLDIST", label: "오래된순" },
           ]}
         />
-        {(filtering || pickedDate) && (
-          <button type="button" css={s.textBtn} onClick={resetFilters}>
-            조건 초기화
-          </button>
-        )}
         <button
           type="button"
           css={s.calendarToggle(showCalendar)}
@@ -245,15 +245,21 @@ function ReservationBoard({ mode, title, desc, items, isLoading, isError, onRetr
             setPickedDate(null);
           }}
         >
-          {showCalendar ? "달력 닫기" : "달력으로 보기"}
+          {showCalendar ? (
+            <>
+              달력<span> 닫기</span>
+            </>
+          ) : (
+            <>
+              달력<span>으로 보기</span>
+            </>
+          )}
         </button>
       </div>
       {rangeInvalid && <p css={s.warn}>시작일이 종료일보다 늦어요. 날짜를 확인해주세요.</p>}
 
       {showCalendar && (
         <ReservationCalendarSection
-          isOpen
-          onToggle={() => setShowCalendar(false)}
           events={calendarEvents}
           selectedDate={pickedDate}
           onSelectDate={setPickedDate}

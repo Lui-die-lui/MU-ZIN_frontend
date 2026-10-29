@@ -10,7 +10,7 @@ export const openButton = css`
   color: ${tone.danger};
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:hover { background: #fff7f6; }

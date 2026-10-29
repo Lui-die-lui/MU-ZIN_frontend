@@ -16,7 +16,7 @@ export const doc = css`
 export const h2 = css`
   margin: 28px 0 0;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.45;
   scroll-margin-top: 80px;
 `;
@@ -24,7 +24,7 @@ export const h2 = css`
 export const h3 = css`
   margin: 16px 0 0;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   scroll-margin-top: 80px;
 `;
 
@@ -83,7 +83,7 @@ export const table = css`
   }
   th {
     background: ${paper};
-    font-weight: 800;
+    font-weight: 600;
     white-space: nowrap;
   }
   tr:last-of-type td {
@@ -93,7 +93,7 @@ export const table = css`
 
 export const link = css`
   color: ${ink};
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
   border-radius: 4px;
@@ -149,7 +149,7 @@ export const otherDoc = css`
   background: ${mist};
   color: ${ink};
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   ${focusRing};
 `;

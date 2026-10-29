@@ -20,6 +20,6 @@ export const chip = css`
 `;
 
 export const chipX = css`
-  font-weight: 700;
+  font-weight: 600;
   opacity: 0.7;
 `;

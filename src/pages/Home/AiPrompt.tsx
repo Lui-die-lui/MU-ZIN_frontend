@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import * as s from "./styles";
+import AssistantIcon from "../../components/common/AssistantIcon";
 
 // 메인 배너 > AI 레슨 내비게이터 진입: 입력창 모양의 링크 (실제 입력은 내비게이터 화면에서)
 // 실제로 물어볼 만한 질문 예시가 아래에서 위로 떠오르며 바뀜 - 바뀔 때만 다시 그려서 타자 모션보다 가벼움
@@ -35,10 +36,7 @@ function AiPrompt() {
         </span>
       </span>
       <span css={s.aiButton} aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" focusable="false">
-          <path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z" />
-          <path d="M19 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z" />
-        </svg>
+        <AssistantIcon size={19} />
         <span>
           AI<span css={s.aiButtonMore}> 내비게이터</span>
         </span>

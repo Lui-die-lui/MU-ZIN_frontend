@@ -20,7 +20,7 @@ export const summaryCard = css`
 
 export const summaryLabel = css`
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${muted};
 `;
 
@@ -33,7 +33,7 @@ export const summaryTitle = css`
 export const summaryWhen = css`
   margin-top: 4px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${text};
 `;
 
@@ -55,7 +55,7 @@ export const labelRow = css`
 
 export const label = css`
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${text};
 `;
 
@@ -111,7 +111,7 @@ export const linkBtn = css`
   background: none;
   color: #991b1b;
   font: inherit;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
 `;

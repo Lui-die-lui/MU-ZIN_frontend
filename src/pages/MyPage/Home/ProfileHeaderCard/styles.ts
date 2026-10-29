@@ -35,7 +35,7 @@ export const AvatarCircle = styled.div`
 // 아바타 텍스트(이미지 없을 때 이름이 들어감)
 export const AvatarText = styled.span`
   color: #ffffff;
-  font-weight: 900;
+  font-weight: 700;
   font-size: 34px;
   letter-spacing: -0.6px;
 `;
@@ -88,7 +88,7 @@ export const EditIcon = styled.div`
 export const UserName = styled.div`
   margin-top: 6px;
   font-size: 28px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -0.6px;
   color: #111827;
   max-width: 100%;
@@ -97,7 +97,7 @@ export const UserName = styled.div`
 
 export const Email = styled.div`
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: #374151;
   max-width: 100%;
   overflow-wrap: anywhere;

@@ -58,7 +58,7 @@ export const titleRow = css`
 
 export const title = css`
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
 `;
 
 export const pill = css`
@@ -66,7 +66,7 @@ export const pill = css`
   border-radius: 999px;
   background: ${soft};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${muted};
 `;
 
@@ -111,7 +111,7 @@ export const text = css`
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 `;
 
 export const sub = css`
@@ -156,13 +156,13 @@ export const footer = css`
 
 export const more = css`
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${muted};
 `;
 
 export const count = css`
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 `;

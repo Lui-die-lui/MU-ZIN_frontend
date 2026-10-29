@@ -31,7 +31,7 @@ export const header = (disabled: boolean) => css`
 
 export const title = css`
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
 `;
 

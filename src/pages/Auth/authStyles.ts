@@ -52,7 +52,7 @@ export const primaryButton = css`
   color: #fff;
   font: inherit;
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.15s ease;
 
@@ -99,6 +99,15 @@ export const socialList = css`
   display: flex;
   justify-content: center;
   gap: 14px;
+`;
+
+// 버튼 아래 짧은 안내 (버튼과 같이 가운데 정렬)
+export const centerNote = css`
+  margin: 14px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #9ca3af;
+  text-align: center;
 `;
 
 // 상자 아래 링크 줄 (네이버의 "비밀번호 찾기 | 아이디 찾기 | 회원가입" 자리)

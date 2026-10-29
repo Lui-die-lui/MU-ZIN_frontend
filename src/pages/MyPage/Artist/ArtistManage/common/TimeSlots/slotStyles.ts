@@ -52,7 +52,7 @@ export const miniField = css`
 
 export const miniLabel = css`
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: #4b5563;
 `;
 
@@ -68,7 +68,7 @@ export const btn = (variant: "primary" | "ghost" | "danger" = "ghost") => css`
   border-radius: 10px;
   font: inherit;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
   border: 1px solid ${variant === "primary" ? "#111827" : variant === "danger" ? "#fecaca" : "#cfd4da"};
@@ -100,7 +100,7 @@ export const dowChip = (active: boolean) => css`
   color: ${active ? "#fff" : "#374151"};
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 `;
 

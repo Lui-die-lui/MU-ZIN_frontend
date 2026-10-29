@@ -89,7 +89,7 @@ export const Header = styled.div`
 export const Title = styled.h3`
   margin: 0;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.4;
   word-break: keep-all;

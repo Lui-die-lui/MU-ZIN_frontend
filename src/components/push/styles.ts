@@ -54,7 +54,7 @@ export const icon = css`
 export const cardTitle = css`
   margin: 4px 0 0;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.4;
   color: ${ink};
   word-break: keep-all;
@@ -125,7 +125,7 @@ export const textBtn = css`
   color: ${sub};
   font: inherit;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover {
@@ -144,7 +144,7 @@ export const check = css`
   width: fit-content;
   margin-top: 6px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${ink};
   cursor: pointer;
 
@@ -177,7 +177,7 @@ export const primaryBtn = css`
   color: #fff;
   font: inherit;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:disabled {
@@ -187,6 +187,16 @@ export const primaryBtn = css`
   &:focus-visible {
     outline: 3px solid rgba(23, 25, 28, 0.35);
     outline-offset: 2px;
+  }
+`;
+
+// 설정 화면: 버튼을 글자 폭만큼 (안내 모달에서는 가득)
+export const fitBtn = css`
+  justify-self: start;
+  min-width: 160px;
+
+  @media (max-width: 600px) {
+    justify-self: stretch;
   }
 `;
 
@@ -200,7 +210,7 @@ export const secondaryBtn = css`
   color: ${ink};
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:disabled {

@@ -30,7 +30,7 @@ export const infoLabel = css`
   align-items: center;
   gap: 10px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${tone.text};
 
   svg {
