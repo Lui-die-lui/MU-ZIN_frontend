@@ -32,7 +32,7 @@ export const tab = (active: boolean) => css`
   padding: 8px 12px;
 
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.2px;
 
   cursor: pointer;

@@ -20,7 +20,7 @@ export const chip = css`
 `;
 
 export const chipX = css`
-  font-weight: 700;
+  font-weight: 600;
   opacity: 0.7;
 `;
 
@@ -44,7 +44,7 @@ export const header = css`
 export const title = css`
   margin: 0;
   font-size: 25px;
-  font-weight: 800;
+  font-weight: 700;
   color: #111827;
 `;
 
@@ -74,7 +74,7 @@ export const steps = css`
     background: #f3f4f6;
     color: #374151;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
   }
 
   b {
@@ -114,7 +114,7 @@ export const notice = (tone: "warn" | "error" | "info") => css`
 
 // 반려 안내 안의 사유 제목 / 내용
 export const rejectTitle = css`
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const rejectReason = css`
@@ -145,7 +145,7 @@ export const toggleChip = (on: boolean) => css`
   color: ${on ? "#fff" : "#111827"};
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
 
@@ -174,7 +174,7 @@ export const textBtn = css`
   color: #111827;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
 
@@ -223,7 +223,7 @@ export const btn = (variant: "primary" | "ghost") => css`
   color: ${variant === "primary" ? "#fff" : "#111827"};
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:disabled {

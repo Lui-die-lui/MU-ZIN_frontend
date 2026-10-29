@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 // 내 레슨 관리 (레슨 수정 화면과 같은 톤: 왼쪽 정렬 제목, 흰 카드, 검정 버튼)
 
 export const page = css`
-  max-width: 920px;
+  max-width: 820px;
   margin: 0 auto;
   padding: 28px 24px 40px;
   text-align: left;
@@ -28,14 +28,14 @@ export const headerRow = css`
 
 export const title = css`
   margin: 0;
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 25px;
+  font-weight: 700;
   color: #111827;
 `;
 
 export const sub = css`
   margin: 6px 0 0;
-  font-size: 14px;
+  font-size: 13px;
   color: #6b7280;
 `;
 
@@ -49,7 +49,7 @@ export const primaryBtn = css`
   color: #fff;
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:hover {
@@ -63,6 +63,12 @@ export const toolbar = css`
   align-items: center;
   gap: 10px;
   margin-bottom: 14px;
+
+  /* 모바일: 탭은 한 줄 전체, 검색과 정렬은 아래 한 줄에 나란히 */
+  @media (max-width: 600px) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 112px;
+  }
 `;
 
 // 전체 / 공개 중 / 비공개 탭
@@ -71,6 +77,14 @@ export const segment = css`
   padding: 4px;
   border-radius: 12px;
   background: #f3f4f6;
+
+  @media (max-width: 600px) {
+    grid-column: 1 / -1;
+
+    & > button {
+      flex: 1;
+    }
+  }
 `;
 
 export const segmentBtn = (active: boolean) => css`
@@ -97,6 +111,10 @@ export const searchWrap = css`
   position: relative;
   flex: 1;
   min-width: 180px;
+
+  @media (max-width: 600px) {
+    min-width: 0;
+  }
 `;
 
 export const searchInput = css`
@@ -143,6 +161,10 @@ export const searchClear = css`
 
 export const sortSelect = css`
   width: 140px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 // 처리해야 할 예약 요청 안내
@@ -160,7 +182,7 @@ export const banner = css`
   font-size: 14px;
 
   b {
-    font-weight: 800;
+    font-weight: 600;
   }
 `;
 
@@ -172,7 +194,7 @@ export const bannerLink = css`
   color: #1b1d20;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
 `;

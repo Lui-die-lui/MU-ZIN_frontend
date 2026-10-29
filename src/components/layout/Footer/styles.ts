@@ -56,7 +56,7 @@ export const link = css`
 
   strong {
     color: ${ink};
-    font-weight: 800;
+    font-weight: 600;
   }
   &:hover {
     color: ${ink};

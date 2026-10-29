@@ -18,7 +18,7 @@ const badge = (bg: string, color: string) => css`
   background: ${bg};
   color: ${color};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 `;
 

@@ -20,7 +20,7 @@ export const ghostBtn = css`
   color: #1b1d20;
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 `;
 
@@ -33,6 +33,6 @@ export const solidBtn = css`
   color: #fff;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 `;

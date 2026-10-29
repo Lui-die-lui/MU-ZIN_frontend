@@ -61,7 +61,7 @@ export const statusBadge = (active: boolean) => css`
   padding: 0 12px;
   border-radius: 999px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   background: ${active ? "#f3f4f6" : "#f3f4f6"};
   color: ${active ? "#111827" : "#6b7280"};
 
@@ -109,7 +109,7 @@ export const bannerLink = css`
   color: #1b1d20;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
 `;
@@ -129,7 +129,7 @@ export const sectionLabel = css`
   gap: 8px;
   margin: 22px 0 10px;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #111827;
 
   small {
@@ -206,7 +206,7 @@ export const dayHeader = css`
   background: #fafafa;
   border-bottom: 1px solid #eef0f2;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #374151;
 `;
 
@@ -225,7 +225,7 @@ export const slotRow = css`
 export const slotTime = css`
   min-width: 112px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: #111827;
   font-variant-numeric: tabular-nums;
 `;
@@ -245,7 +245,7 @@ export const smallBtn = (variant: "ghost" | "danger" = "ghost") => css`
   color: ${variant === "danger" ? "#b91c1c" : "#374151"};
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover:not(:disabled) {

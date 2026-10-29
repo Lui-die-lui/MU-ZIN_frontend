@@ -1,22 +1,22 @@
-import { useMemo } from "react";
+/** @jsxImportSource @emotion/react */
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useLessonForm } from "../../../../../hooks/Lesson/useLessonForm";
 import { useStartDts } from "../../../../../hooks/Lesson/useStartDts";
 import { useCreateLessonWithSlots } from "../../../../../hooks/Lesson/useCreateLessonWithSlots";
-import LessonFormSection from "../common/LessonFormSection";
-import { useQuery } from "@tanstack/react-query";
 import { getMyArtistProfileReq } from "../../../../../apis/artist/artistApi";
 import type { InstrumentResponse } from "../../../../../Types/instrumentTypes";
-import type {
-  LessonCreateReq,
-  LessonFormValues,
-} from "../../../../../Types/lessonTypes";
-
-import TimeSlotSelectedList from "../common/TimeSlots/TimeSlotSelectedList/TimeSlotSelectedList";
+import type { LessonCreateReq, LessonFormValues } from "../../../../../Types/lessonTypes";
+import { LessonBasicFields, LessonIntroFields, type LessonFormErrors } from "../common/LessonFormSection";
 import TimeSlotCreatePanel from "../common/TimeSlots/TimeSlotCreatePanel/TimeSlotCreatePanel";
 import ClosingPolicyRadio from "../common/ClosingPolicyRadio/ClosingPolicyRadio";
+import { validateLessonForm } from "../EditLesson/buildLessonUpdatePatch";
 import { toast } from "../../../../../stores/useToastStore";
-import { MAX_SLOTS_PER_SAVE } from "../../../../../utils/timeSlotUtils";
+import { findOverlappingStart, formatSlotLabel, MAX_SLOTS_PER_SAVE } from "../../../../../utils/timeSlotUtils";
+import * as f from "../common/formStyles";
+import * as sl from "../common/TimeSlots/slotStyles";
+import * as s from "./styles";
 
 // 변환 함수 - form 재사용을 위해서
 const toCreateReq = (v: LessonFormValues): LessonCreateReq => ({
@@ -37,17 +37,11 @@ function CreateLessonPage() {
     queryKey: ["artistProfile", "me"],
     queryFn: async () => (await getMyArtistProfileReq()).data.data,
   });
-
   const myInstruments = (profile?.instruments ?? []) as InstrumentResponse[];
 
-  const {
-    lessonDraft, // lessonFormValues
-    setField,
-    reset,
-  } = useLessonForm();
-
+  const { lessonDraft, setField, reset } = useLessonForm();
   const { startDts, add, addMany, remove, clear } = useStartDts();
-
+  const [errors, setErrors] = useState<LessonFormErrors>({});
   const { mutate, isPending } = useCreateLessonWithSlots();
 
   const durationMinNum = useMemo(() => {
@@ -55,18 +49,38 @@ function CreateLessonPage() {
     return Number.isFinite(n) ? n : NaN;
   }, [lessonDraft.durationMin]);
 
+  const onFieldChange = <K extends keyof LessonFormValues>(key: K, v: LessonFormValues[K]) => {
+    setField(key, v);
+    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
+  };
+
+  // 추가 예정 시간끼리 같은 시각 / 겹치는 시각인지 (수업 시간을 아직 안 넣었으면 같은 시각만)
+  const checkConflict = useCallback(
+    (dt: string) => {
+      const dm = durationMinNum > 0 ? durationMinNum : 1;
+      const hit = findOverlappingStart(dt, startDts, dm);
+      if (!hit) return null;
+      return hit.slice(0, 16) === dt.slice(0, 16)
+        ? `${formatSlotLabel(dt)}은 이미 추가된 시간이에요.`
+        : `${formatSlotLabel(hit)} 수업과 시간이 겹쳐요. (수업 ${dm}분)`;
+    },
+    [startDts, durationMinNum],
+  );
+
   const onSubmit = () => {
-    if (!lessonDraft.title.trim()) return alert("레슨명을 입력하세요.");
-
-    const dm = Number(lessonDraft.durationMin);
-    if (!Number.isFinite(dm) || dm <= 0)
-      // 수업 시간이 입력되어있지 않으면
-      return alert("수업 시간(분)을 입력하세요.");
-
-    if (!lessonDraft.instId) return alert("악기를 선택하세요.");
-
-    if (startDts.length > MAX_SLOTS_PER_SAVE)
-      return alert(`시간은 한 번에 ${MAX_SLOTS_PER_SAVE}개까지 추가할 수 있어요.`);
+    const nextErrors = validateLessonForm(lessonDraft);
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) {
+      toast.error("입력 내용을 확인해주세요.");
+      requestAnimationFrame(() =>
+        document.querySelector('[role="alert"]')?.scrollIntoView({ behavior: "smooth", block: "center" }),
+      );
+      return;
+    }
+    if (startDts.length > MAX_SLOTS_PER_SAVE) {
+      toast.error(`시간은 한 번에 ${MAX_SLOTS_PER_SAVE}개까지 추가할 수 있어요.`);
+      return;
+    }
 
     mutate(
       { lesson: toCreateReq(lessonDraft), startDts },
@@ -86,39 +100,95 @@ function CreateLessonPage() {
       },
     );
   };
+
+  const goList = () => navigate("/mypage/artist/manage");
+
   return (
-    <div style={{ padding: 16, maxWidth: 720 }}>
-      <h2>레슨 만들기</h2>
-      {/* 재사용 + onChange로 받고있어서  */}
-      <LessonFormSection
-        value={lessonDraft}
-        onChange={setField}
-        myInstruments={myInstruments}
-      />
+    <div css={s.page}>
+      <button type="button" css={s.backLink} onClick={goList}>← 내 레슨 관리</button>
 
-      <hr style={{ margin: "20px 0" }} />
-      <ClosingPolicyRadio
-        value={lessonDraft.closingPolicy}
-        onChange={(value) => setField("closingPolicy", value)}
-      />
-      
-      <TimeSlotCreatePanel
-        durationMin={durationMinNum}
-        onAdd={add}
-        onAddMany={addMany}
-      />
+      <div css={s.header}>
+        <div>
+          <h1 css={s.title}>레슨 만들기</h1>
+          <p css={s.subtitle}>만든 레슨은 바로 공개되고, 열어둔 시간에 수강생이 예약할 수 있어요.</p>
+        </div>
+      </div>
 
-      <hr style={{ margin: "20px 0" }} />
+      <div css={s.stack}>
+        <section css={f.card}>
+          <div css={f.cardHeader}>
+            <div>
+              <h2 css={f.cardTitle}>기본 정보</h2>
+              <p css={f.cardDesc}>레슨 검색과 상세 화면에 보여지는 정보예요.</p>
+            </div>
+          </div>
+          <LessonBasicFields value={lessonDraft} onChange={onFieldChange} myInstruments={myInstruments} errors={errors} />
+        </section>
 
-      <TimeSlotSelectedList
-        startDts={startDts}
-        onRemove={remove}
-        onClear={clear}
-      />
+        <section css={f.card}>
+          <div css={f.cardHeader}>
+            <div>
+              <h2 css={f.cardTitle}>레슨 소개</h2>
+              <p css={f.cardDesc}>수강생이 예약 전에 확인하는 내용이에요.</p>
+            </div>
+          </div>
+          <LessonIntroFields value={lessonDraft} onChange={onFieldChange} errors={errors} />
+        </section>
 
-      <div style={{ marginTop: 16 }}>
-        <button type="button" disabled={isPending} onClick={onSubmit}>
-          {isPending ? "생성 중..." : "레슨 생성"}
+        <section css={f.card}>
+          <div css={f.cardHeader}>
+            <div>
+              <h2 css={f.cardTitle}>예약 가능한 시간이 없을 때</h2>
+              <p css={f.cardDesc}>열어둔 시간이 모두 지나거나 마감됐을 때 레슨을 어떻게 보여줄지 정해요.</p>
+            </div>
+          </div>
+          <ClosingPolicyRadio
+            showHeader={false}
+            value={lessonDraft.closingPolicy}
+            onChange={(v) => onFieldChange("closingPolicy", v)}
+          />
+        </section>
+
+        <section css={f.card}>
+          <div css={f.cardHeader}>
+            <div>
+              <h2 css={f.cardTitle}>레슨 시간</h2>
+              <p css={f.cardDesc}>
+                수강생이 예약할 수 있는 시간이에요. 지금 넣지 않아도 레슨을 만든 뒤 수정 화면에서 추가할 수 있어요.
+              </p>
+            </div>
+          </div>
+          <TimeSlotCreatePanel durationMin={durationMinNum} onAdd={add} onAddMany={addMany} checkConflict={checkConflict} />
+
+          <div css={s.sectionLabel}>
+            <span>추가할 시간 {startDts.length}개 <small>· 레슨을 만들면 함께 등록돼요</small></span>
+            {startDts.length > 0 && (
+              <button type="button" css={s.textBtn} onClick={clear}>모두 빼기</button>
+            )}
+          </div>
+          {startDts.length === 0 ? (
+            <div css={s.empty}>아직 추가한 시간이 없어요.</div>
+          ) : (
+            <div css={s.draftList}>
+              {startDts.map((dt) => (
+                <span key={dt} css={s.draftChip}>
+                  {formatSlotLabel(dt)}
+                  <button type="button" aria-label={`${formatSlotLabel(dt)} 빼기`} onClick={() => remove(dt)}>×</button>
+                </span>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+
+      {/* 하단 고정 바 */}
+      <div css={s.actionBar}>
+        <span css={s.dirtyText(startDts.length > 0)}>
+          {startDts.length > 0 ? `시간 ${startDts.length}개와 함께 만들어요` : "시간 없이 만들어요"}
+        </span>
+        <button type="button" css={sl.btn()} onClick={goList} disabled={isPending}>취소</button>
+        <button type="button" css={sl.btn("primary")} onClick={onSubmit} disabled={isPending}>
+          {isPending ? "만드는 중..." : "레슨 만들기"}
         </button>
       </div>
     </div>

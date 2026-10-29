@@ -31,7 +31,7 @@ export const pill = (tone: "strong" | "plain" | "dark" | "danger") => css`
   background: ${tone === "dark" ? ink : tone === "danger" ? "#fdf0ef" : tone === "strong" ? "#fff" : "#f3f4f6"};
   color: ${tone === "dark" ? "#fff" : tone === "danger" ? "#b42318" : text};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 `;
 
@@ -56,7 +56,7 @@ export const field = css`
 
   > span {
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 600;
     color: ${mutedColor};
   }
   > p {

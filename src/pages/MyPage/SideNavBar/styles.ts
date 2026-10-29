@@ -62,7 +62,7 @@ export const Title = styled.h2`
   margin: 0 10px 14px;
   text-align: left;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.02em;
   color: ${faint};
   cursor: pointer;
@@ -106,7 +106,7 @@ const itemBase = `
   text-decoration: none;
   color: ${sub};
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   transition: background 0.15s ease, color 0.15s ease;
 
   &:hover {
@@ -155,7 +155,7 @@ export const Badge = styled.span`
   background: #e5484d;
   color: #fff;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1;
 `;
 
@@ -241,7 +241,7 @@ export const SwitchButton = styled.button`
   color: ${ink};
   font-family: inherit;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease;
 

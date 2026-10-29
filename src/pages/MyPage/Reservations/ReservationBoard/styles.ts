@@ -27,7 +27,7 @@ export const header = css`
 export const title = css`
   margin: 0;
   font-size: 25px;
-  font-weight: 800;
+  font-weight: 700;
 `;
 
 export const desc = css`
@@ -42,14 +42,36 @@ export const toolbar = css`
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+
+  /* 모바일: 1줄 = 기간(가득), 2줄 = 기준 · 정렬 · 달력 (남는 칸 없이 나눠 씀) */
+  @media (max-width: 600px) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    grid-template-areas:
+      "range range range"
+      "basis sort cal";
+    gap: 8px;
+  }
 `;
 
 export const basisSelect = css`
   width: 140px;
+
+  @media (max-width: 600px) {
+    grid-area: basis;
+    width: auto;
+    min-width: 0;
+  }
 `;
 
 export const sortSelect = css`
   width: 120px;
+
+  @media (max-width: 600px) {
+    grid-area: sort;
+    width: auto;
+    min-width: 0;
+  }
 `;
 
 export const range = css`
@@ -57,6 +79,16 @@ export const range = css`
   align-items: center;
   gap: 6px;
   color: #9aa0a6;
+
+  @media (max-width: 600px) {
+    grid-area: range;
+    min-width: 0;
+
+    input {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
 `;
 
 export const dateInput = (invalid: boolean) => css`
@@ -74,9 +106,15 @@ export const dateInput = (invalid: boolean) => css`
     outline: none;
     border-color: ${invalid ? "#ef4444" : text};
   }
+
+  @media (max-width: 600px) {
+    padding: 0 8px;
+    font-size: 13px;
+  }
 `;
 
 export const textBtn = css`
+  flex-shrink: 0;
   padding: 0 4px;
   border: 0;
   background: none;
@@ -84,6 +122,7 @@ export const textBtn = css`
   font: inherit;
   font-size: 13px;
   text-decoration: underline;
+  white-space: nowrap;
   cursor: pointer;
 `;
 
@@ -97,11 +136,19 @@ export const calendarToggle = (on: boolean) => css`
   color: ${on ? "#fff" : text};
   font: inherit;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
+  white-space: nowrap;
   cursor: pointer;
 
+  /* 모바일: "달력" 만 */
   @media (max-width: 600px) {
+    grid-area: cal;
     margin-left: 0;
+    padding: 0 14px;
+
+    span {
+      display: none;
+    }
   }
 `;
 
@@ -122,7 +169,7 @@ export const pickedChip = css`
   background: ${text};
   color: #fff;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 
   button {
     width: 22px;
@@ -172,7 +219,7 @@ export const empty = css`
 
 export const askText = css`
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #b91c1c;
   white-space: nowrap;
 `;

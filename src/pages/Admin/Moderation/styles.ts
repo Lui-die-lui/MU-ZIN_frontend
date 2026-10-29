@@ -64,6 +64,6 @@ export const linkBtn = css`
   background: #fff;
   color: ${text};
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
 `;

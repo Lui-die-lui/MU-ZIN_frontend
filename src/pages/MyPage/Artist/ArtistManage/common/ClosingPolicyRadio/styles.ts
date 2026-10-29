@@ -9,7 +9,7 @@ export const wrap = css`
 
 export const label = css`
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: #111827;
 `;
 
@@ -86,7 +86,7 @@ export const dot = (selected: boolean) => css`
 
 export const optionTitle = css`
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #111827;
 `;
 

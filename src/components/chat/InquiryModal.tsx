@@ -105,7 +105,7 @@ const s = {
   `,
   label: css`
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     color: #1b1d20;
   `,
   textarea: css`
@@ -153,7 +153,7 @@ const s = {
     color: ${primary ? "#fff" : "#1b1d20"};
     font: inherit;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
     &:disabled {
       opacity: 0.5;

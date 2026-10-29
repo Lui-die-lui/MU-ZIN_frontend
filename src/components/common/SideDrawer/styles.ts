@@ -99,7 +99,7 @@ export const header = css`
 // 타이틀
 export const headerTitle = css`
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 // 닫기 버튼

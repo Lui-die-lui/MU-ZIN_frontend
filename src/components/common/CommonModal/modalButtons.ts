@@ -25,7 +25,7 @@ export const modalBtn = (variant: ModalButtonVariant = "secondary") => css`
   color: ${FILL[variant].color};
   font-family: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
   transition: background 0.15s ease;

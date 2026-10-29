@@ -381,9 +381,13 @@ function MySchedule() {
             내 레슨 일정
           </h2>
         </div>
-        <Link to={conf.morePath} css={s.more}>
-          더보기
-          {upcoming.length > 0 && <span css={s.count}>{upcoming.length}</span>}
+        <Link to={conf.morePath} css={s.more} aria-label="내 레슨 일정 더보기">
+          MORE
+          <span css={s.moreIcon} aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <path d="M6 1.5v9M1.5 6h9" />
+            </svg>
+          </span>
         </Link>
       </div>
 

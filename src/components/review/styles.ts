@@ -140,7 +140,7 @@ export const topKeywords = css`
 
 export const topKeywordsTitle = css`
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${text};
 `;
 
@@ -192,7 +192,7 @@ export const rankNo = (i: number) => css`
   background: ${i === 0 ? "#111827" : "#eef0f2"};
   color: ${i === 0 ? "#fff" : mutedColor};
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
 `;
 
 export const rankName = css`
@@ -244,7 +244,7 @@ export const toggleChip = (on: boolean) => css`
   color: ${on ? "#fff" : text};
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 `;
 
@@ -318,7 +318,7 @@ export const lessonTag = css`
 `;
 
 export const lessonTagArtist = css`
-  font-weight: 700;
+  font-weight: 600;
   color: ${text};
 `;
 
@@ -346,7 +346,7 @@ export const chip = css`
   background: #ffffff;
   color: #17191c;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const content = css`
@@ -390,7 +390,7 @@ export const replyBadge = css`
   background: #111827;
   color: #fff;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const replyContent = css`
@@ -460,7 +460,7 @@ export const moreButton = css`
   background: #ecebe7;
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${text};
   cursor: pointer;
 
@@ -476,7 +476,7 @@ export const textButton = css`
   background: none;
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: ${text};
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -531,7 +531,7 @@ export const formBlock = css`
 
 export const formLabel = css`
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${text};
 `;
 
@@ -611,7 +611,7 @@ export const btn = (tone: "primary" | "ghost" | "danger", small = false) => css`
   color: ${tone === "primary" ? "#fff" : tone === "danger" ? "#e11d48" : text};
   font: inherit;
   font-size: ${small ? 13 : 14}px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
 

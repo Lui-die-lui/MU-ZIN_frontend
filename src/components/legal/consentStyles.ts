@@ -41,7 +41,7 @@ export const all = css`
   padding-bottom: 10px;
   border-bottom: 1px solid ${line};
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${ink};
 `;
 
@@ -70,7 +70,7 @@ export const label = css`
 
 export const required = css`
   color: ${sub};
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const view = css`

@@ -116,7 +116,7 @@ export const capsBadge = css`
   background: #f3f4f6;
   color: #1b1d20;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 `;
 

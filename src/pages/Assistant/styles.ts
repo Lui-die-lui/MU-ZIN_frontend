@@ -46,7 +46,7 @@ export const gate = css`
   h1 {
     margin: 4px 0 0;
     font-size: 26px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.03em;
   }
   p {
@@ -116,7 +116,7 @@ export const newChatBtn = css`
   color: ${ink};
   font-family: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: box-shadow 0.15s ease;
 
@@ -129,7 +129,7 @@ export const newChatBtn = css`
 export const sideLabel = css`
   margin: 14px 10px 4px;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${faint};
 `;
 
@@ -238,7 +238,7 @@ export const brand = css`
   gap: 8px;
   min-width: 0;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   white-space: nowrap;
 `;
 
@@ -252,9 +252,11 @@ export const sparkle = (size = 28) => css`
   background: ${ink};
   color: #ffffff;
 
+  /* 메트로놈은 그림 안 여백이 있어 원의 64% 크기로 */
   svg {
-    width: ${Math.round(size * 0.52)}px;
-    height: ${Math.round(size * 0.52)}px;
+    display: block;
+    width: ${Math.round(size * 0.64)}px;
+    height: ${Math.round(size * 0.64)}px;
   }
 `;
 
@@ -324,7 +326,7 @@ export const threadHead = css`
     margin: 0;
     overflow: hidden;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
@@ -512,7 +514,7 @@ export const context = css`
 
   a {
     color: ${ink};
-    font-weight: 700;
+    font-weight: 600;
     text-underline-offset: 3px;
   }
 `;
@@ -534,7 +536,7 @@ export const check = css`
   }
   strong {
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${ink};
   }
   span {
@@ -557,7 +559,7 @@ export const chip = css`
   border-radius: 999px;
   background: #ffffff;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${ink};
   white-space: nowrap;
 `;
@@ -703,7 +705,7 @@ export const primaryBtn = css`
   color: #ffffff;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
 
@@ -730,7 +732,7 @@ export const secondaryBtn = css`
   color: ${ink};
   font-family: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -750,7 +752,7 @@ export const textBtn = css`
   color: ${sub};
   font-family: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: underline;
   text-decoration-color: ${silver};
   text-underline-offset: 3px;
@@ -820,13 +822,13 @@ export const kind = css`
   background: ${ink};
   color: #ffffff;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
 `;
 
 export const cardTitle = css`
   margin: 0;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 1.4;
   letter-spacing: -0.02em;
   overflow-wrap: anywhere;
@@ -855,13 +857,13 @@ export const facts = css`
   }
   dt {
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${faint};
   }
   dd {
     margin: 0;
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
 `;
@@ -891,7 +893,7 @@ export const reason = css`
 
   span {
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 600;
     color: ${faint};
   }
 `;
@@ -912,7 +914,7 @@ export const cardLink = css`
   background: ${ink};
   color: #ffffff;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
 
   &:hover {

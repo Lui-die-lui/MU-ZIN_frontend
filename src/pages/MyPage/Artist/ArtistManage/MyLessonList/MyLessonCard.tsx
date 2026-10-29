@@ -49,7 +49,8 @@ function MyLessonCard({ lesson, onOpen, onOpenRequests, onToggleStatus, isToggli
         <div css={s.titleBlock}>
           <div css={s.titleRow}>
             <strong css={s.cardTitle} title={lesson.title}>{lesson.title}</strong>
-            <span css={s.statusChip(active)}>{active ? "공개 중" : "비공개"}</span>
+            {/* 공개 중은 옆 스위치로 보이니 비공개일 때만 표시 */}
+            {!active && <span css={s.statusChip(active)}>비공개</span>}
           </div>
           <div css={s.cardMeta}>
             <span>{lesson.instName}</span>

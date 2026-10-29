@@ -1,4 +1,16 @@
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
+
+// 아이콘 자리: 글자 기준선 때문에 아래로 밀리지 않게 블록으로
+export const mark = css`
+  display: grid;
+  place-items: center;
+  line-height: 0;
+
+  svg {
+    display: block;
+  }
+`;
 
 
 export const OAuthButton = styled.a<{ provider: "google" | "naver" | "kakao" }>`
@@ -42,6 +54,6 @@ export const OAuthButton = styled.a<{ provider: "google" | "naver" | "kakao" }>`
     provider === "kakao" &&
     `
       background: #fee500;
-      color: #000;
+      color: #191919;
     `}
 `;

@@ -121,17 +121,16 @@ function SignupForm({ form, errors, isSubmitting, from, onChange, onBlur, onSubm
               {isSubmitting ? "가입하는 중..." : "회원가입"}
             </button>
 
-            <p css={a.infoText}>가입 후 마이페이지에서 이메일 인증을 마치면 레슨을 예약할 수 있어요.</p>
+            <p css={a.centerNote}>가입 후 마이페이지에서 이메일 인증을 마치면 레슨을 예약할 수 있어요.</p>
           </form>
 
           <div css={a.divider}>또는 소셜 계정으로 가입</div>
-          <p css={a.infoText}>소셜 계정으로 가입하면 다음 화면에서 약관 동의를 받아요.</p>
-
           <div css={a.socialList}>
             <OAuth2Button provider="google" flow="signup" redirectPath={redirectPath} />
             <OAuth2Button provider="naver" flow="signup" redirectPath={redirectPath} />
             <OAuth2Button provider="kakao" flow="signup" redirectPath={redirectPath} />
           </div>
+          <p css={a.centerNote}>소셜 계정으로 가입하면 다음 화면에서 약관 동의를 받아요.</p>
         </div>
 
         <nav css={a.links} aria-label="계정">

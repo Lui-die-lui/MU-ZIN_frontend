@@ -11,15 +11,15 @@ export const page = css`
   display: grid;
   gap: 24px;
   /* 폭은 #root(1440) 를 그대로 씀. 좌우 8px + 바깥 16px = 상단 메뉴 로고와 같은 선 */
-  /* 위: 바깥 16px + 4px = 상단 메뉴와 20px */
-  padding: 4px 8px 88px;
+  /* 위: 바깥 16px + 4px = 상단 메뉴와 20px / 아래: 푸터가 자체 위 여백(56px, 모바일 40px)을 가지므로 0 */
+  padding: 4px 8px 0;
   color: ${ink};
   text-align: left;
   box-sizing: border-box;
 
   @media (max-width: 600px) {
     gap: 16px;
-    padding: 0 0 56px;
+    padding: 0;
   }
 `;
 
@@ -238,16 +238,21 @@ export const aiButton = css`
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
   height: 48px;
-  padding: 0 18px;
+  padding: 0 18px 0 15px; /* 아이콘 쪽 여백을 조금 줄여 아이콘+글자 묶음이 가운데로 */
   border-radius: 999px;
   background: ${ink};
   color: #FFFFFF;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   transition: background 0.15s ease;
+
+  svg {
+    display: block;
+    flex-shrink: 0;
+  }
 
   /* 좁으면 질문 칸을 남기려고 버튼을 줄임 */
   @container (max-width: 400px) {
@@ -351,7 +356,7 @@ export const pathText = css`
 
   strong {
     font-size: 17px;
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1.3;
     letter-spacing: -0.02em;
   }
@@ -398,7 +403,7 @@ export const sectionHead = css`
 
 export const eyebrow = css`
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.14em;
   color: ${faint};
 `;
@@ -480,7 +485,7 @@ export const stepNo = (first: boolean) => css`
   border: 1px solid ${first ? ink : silver};
   box-sizing: border-box;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: ${first ? "#FFFFFF" : ink};
 `;
@@ -492,7 +497,7 @@ export const stepText = css`
 
   strong {
     font-size: 17px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -0.02em;
   }
   p {
@@ -604,7 +609,7 @@ export const meta = css`
     background: #FFFFFF;
     box-shadow: inset 0 0 0 1px ${line};
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: ${sub};
   }
 `;
@@ -629,7 +634,7 @@ export const cta = css`
   background: ${ink};
   color: #FFFFFF;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   transition: background 0.15s ease;
 
@@ -651,7 +656,7 @@ export const secondary = css`
   box-shadow: inset 0 0 0 1px ${line};
   color: ${ink};
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
 
   &:hover {

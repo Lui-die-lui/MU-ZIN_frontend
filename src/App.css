@@ -10,6 +10,26 @@ html,body {
   padding: 0;
 }
 
+/* 글꼴: Pretendard (없으면 기기 기본 글꼴). 굵기 기준 - 로고·메인 제목 800~900 / 제목 700 / 강조·버튼 600 / 보조 500 / 본문 400 */
+html {
+  font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo",
+    "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+button,
+input,
+select,
+textarea,
+.MuiTypography-root,
+.MuiButtonBase-root,
+.MuiInputBase-root,
+.MuiMenuItem-root {
+  font-family: inherit;
+}
+b,
+strong {
+  font-weight: 600;
+}
+
 /* 아이폰 노치·홈 표시줄: viewport-fit=cover 로 화면 끝까지 쓰고, 아래 고정 요소는 각자 env(safe-area-inset-bottom) 만큼 띄움
    가로 화면에서는 노치 쪽으로 내용이 들어가지 않게 좌우 여백 (세로 화면·PC 에서는 0) */
 #root {

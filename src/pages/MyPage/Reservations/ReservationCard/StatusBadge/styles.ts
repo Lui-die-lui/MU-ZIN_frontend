@@ -25,7 +25,7 @@ const basePill = css`
   border-radius: 999px;
 
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
 
   white-space: nowrap;

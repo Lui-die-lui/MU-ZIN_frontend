@@ -24,5 +24,5 @@ export const fallback = (size: number) => css`
   background: #eef0f2;
   color: #4c5157;
   font-size: ${Math.max(12, Math.round(size * 0.4))}px;
-  font-weight: 700;
+  font-weight: 600;
 `;

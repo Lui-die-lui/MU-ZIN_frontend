@@ -63,7 +63,7 @@ function PushEnablePanel({ showOff = false }: Props) {
 
   return (
     <div css={s.enableBox}>
-      <button type="button" css={s.primaryBtn} onClick={onEnable} disabled={busy || on === null}>
+      <button type="button" css={[s.primaryBtn, showOff && s.fitBtn]} onClick={onEnable} disabled={busy || on === null}>
         {busy ? "켜는 중..." : permission === "granted" ? "이 기기에서 알림 받기" : "알림 켜기"}
       </button>
       <p css={s.note}>

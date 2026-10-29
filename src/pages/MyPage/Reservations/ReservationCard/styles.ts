@@ -53,7 +53,7 @@ export const dateBox = css`
 
 export const dateDay = css`
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const dateTime = css`
@@ -71,7 +71,7 @@ export const info = css`
 export const title = css`
   overflow: hidden;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
@@ -118,7 +118,7 @@ export const actionBtn = (variant: "primary" | "ghost" | "danger") => css`
   color: ${variant === "primary" ? "#fff" : variant === "danger" ? "#b91c1c" : text};
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
 

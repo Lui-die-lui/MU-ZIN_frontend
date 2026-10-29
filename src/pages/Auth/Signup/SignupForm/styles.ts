@@ -22,6 +22,6 @@ export const ruleItem = (ok: boolean) => css`
 export const okText = css`
   margin: 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: #111827;
 `;

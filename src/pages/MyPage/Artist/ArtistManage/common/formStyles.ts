@@ -27,7 +27,7 @@ export const cardHeader = css`
 export const cardTitle = css`
   margin: 0;
   font-size: 17px;
-  font-weight: 700;
+  font-weight: 600;
   color: #111827;
 `;
 
@@ -70,7 +70,7 @@ export const labelRow = css`
 
 export const label = css`
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #3f444a;
 `;
 

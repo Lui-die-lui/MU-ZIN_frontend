@@ -1,5 +1,5 @@
 import { css, keyframes } from "@emotion/react";
-import { faint, focusRing, ink, silver, sub } from "./styles";
+import { faint, focusRing, ink, mist, silver, sub } from "./styles";
 
 // 메인 > 내 레슨 일정 패널
 // 반투명 판 위에 반투명 흰 타일·카드가 겹치는 구성. 테두리 없이 투명도와 옅은 그림자로만 층을 나눔 (선택한 날만 차콜)
@@ -45,7 +45,7 @@ export const headText = css`
 
 export const eyebrow = css`
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: 0.14em;
   color: ${faint};
 `;
@@ -53,23 +53,24 @@ export const eyebrow = css`
 export const title = css`
   margin: 0;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.035em;
 `;
 
-// 더보기: 흰 알약 + 다가오는 레슨 수
+// 더보기: 흰 알약 안에 MORE + 플러스 (제목 줄과 높이를 맞춤)
 export const more = css`
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 6px;
-  height: 36px;
-  padding: 0 7px 0 14px;
-  line-height: 1;
+  gap: 8px;
+  height: 32px;
+  padding: 0 5px 0 13px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1;
   color: ${ink};
   text-decoration: none;
   transition: background 0.15s ease;
@@ -81,20 +82,14 @@ export const more = css`
   ${focusRing}
 `;
 
-export const count = css`
+export const moreIcon = css`
   display: grid;
   place-items: center;
-  min-width: 22px;
+  width: 22px;
   height: 22px;
-  padding: 0 6px;
-  border-radius: 999px;
+  border-radius: 50%;
   background: ${ink};
   color: #FFFFFF;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  box-sizing: border-box;
 `;
 
 // 아티스트: 하는 레슨 / 받는 레슨 전환 - 반투명 알약 안에서 검정 손잡이가 좌우로 미끄러짐
@@ -143,7 +138,7 @@ export const segBtn = (active: boolean) => css`
   color: ${active ? "#FFFFFF" : sub};
   font-family: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
@@ -165,7 +160,7 @@ export const segCount = (active: boolean) => css`
   background: ${active ? "rgba(255, 255, 255, 0.22)" : "rgba(23, 25, 28, 0.08)"};
   color: inherit;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   box-sizing: border-box;
 `;
@@ -202,12 +197,12 @@ export const navRow = css`
 export const navTitle = css`
   text-align: center;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 600;
   letter-spacing: -0.02em;
 
   small {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     color: ${sub};
   }
 `;
@@ -241,7 +236,7 @@ export const weekHead = css`
   span {
     text-align: center;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${faint};
   }
 `;
@@ -347,12 +342,12 @@ export const dayPill = (st: DayState) => css`
 
   small {
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 500;
     color: ${st.selected ? "rgba(255, 255, 255, 0.7)" : faint};
   }
   span {
     font-size: 17px;
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1.1;
   }
 `;
@@ -373,7 +368,7 @@ export const listHead = css`
   gap: 8px;
   min-height: 24px;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${sub};
 `;
 
@@ -382,7 +377,7 @@ export const dday = css`
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.7);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${ink};
   font-variant-numeric: tabular-nums;
 `;
@@ -393,7 +388,7 @@ export const clearBtn = css`
   background: none;
   font-family: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${sub};
   text-decoration: underline;
   text-decoration-color: ${silver};
@@ -449,7 +444,7 @@ export const avatar = css`
   border-radius: 50%;
   background: rgba(23, 25, 28, 0.06);
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${ink};
 `;
 
@@ -466,7 +461,7 @@ export const nextText = css`
   }
   strong {
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -0.02em;
   }
   span {
@@ -482,7 +477,7 @@ export const nextBar = css`
   padding: 10px 14px;
   background: rgba(245, 244, 240, 0.7);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 
@@ -533,7 +528,7 @@ export const rowDate = css`
 
   strong {
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
   small {
@@ -555,7 +550,7 @@ export const rowText = css`
   }
   strong {
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
   }
   span {
     font-size: 12px;
@@ -569,7 +564,7 @@ export const badge = (tone: "solid" | "wait" | "muted") => css`
   padding: 4px 8px;
   border-radius: 8px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   ${tone === "solid"
     ? css`
@@ -593,7 +588,7 @@ export const moreNote = css`
 
   a {
     color: ${sub};
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: underline;
     text-decoration-color: ${silver};
     text-underline-offset: 3px;
@@ -603,10 +598,13 @@ export const moreNote = css`
   }
 `;
 
+// 안내 문구 왼쪽 + 버튼 오른쪽 한 줄 (좁으면 버튼이 아래로)
 export const empty = css`
-  display: grid;
-  justify-items: start;
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 12px;
   padding: 18px 16px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.55);
@@ -618,24 +616,28 @@ export const empty = css`
   }
 `;
 
+// 빈 일정 안의 보조 버튼: 양끝 둥근 알약 + 따뜻한 회색 면 (주요 버튼인 차콜보다 한 단계 아래)
 export const emptyAction = css`
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
-  height: 38px;
+  white-space: nowrap;
+  height: 36px;
   padding: 0 16px;
   border: 0;
-  border-radius: 12px;
-  background: ${ink};
-  color: #FFFFFF;
+  border-radius: 999px;
+  background: ${mist};
+  color: ${ink};
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  transition: background 0.15s ease;
 
   &:hover {
-    color: #FFFFFF;
-    background: #000000;
+    color: ${ink};
+    background: #E2E0DA;
   }
   ${focusRing}
 `;

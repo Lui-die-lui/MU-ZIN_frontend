@@ -32,7 +32,7 @@ export const header = css`
 export const title = css`
   margin: 0;
   font-size: 25px;
-  font-weight: 800;
+  font-weight: 700;
   color: ${tone.text};
 `;
 
@@ -48,7 +48,12 @@ export const card = css`
   background: #fff;
   border: 1px solid ${tone.border};
   border-radius: 18px;
-  overflow: hidden;
+  /* overflow: hidden 을 두면 카드 안 드롭다운 목록(스타일·악기 선택)이 카드 밖에서 잘림 */
+`;
+
+// 회원 탈퇴 - 위 설정 카드와 간격을 더 두고 따로
+export const dangerCard = css`
+  margin-top: 24px;
 `;
 
 export const SubContainer = styled.div`
@@ -100,7 +105,7 @@ export const reserveBtn = css`
   color: #fff;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
@@ -133,7 +138,7 @@ export const actionBtn = css`
   color: ${tone.text};
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
   transition: border-color 0.15s ease;
@@ -164,12 +169,12 @@ export const statusDone = css`
   background: ${tone.soft};
   color: ${tone.success};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 
   &::before {
     content: "✓";
-    font-weight: 800;
+    font-weight: 600;
   }
 `;
 
@@ -208,7 +213,7 @@ export const labelWithIcon = css`
   align-items: center;
   gap: 10px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${tone.text};
   line-height: 1.2;
 
@@ -241,7 +246,7 @@ export const errorText = css`
 export const successText = css`
   margin: 6px 0 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
   color: ${tone.success};
 `;
@@ -274,7 +279,7 @@ export const sectionLabel = css`
   h3 {
     margin: 0;
     font-size: 17px;
-    font-weight: 800;
+    font-weight: 600;
     color: ${tone.text};
   }
 
@@ -299,7 +304,7 @@ export const fieldGroup = css`
 
   label {
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     color: ${tone.text};
   }
 `;
@@ -332,7 +337,7 @@ export const subSectionHeader = css`
   h3 {
     margin: 0;
     font-size: 17px;
-    font-weight: 800;
+    font-weight: 600;
     color: ${tone.text};
   }
 

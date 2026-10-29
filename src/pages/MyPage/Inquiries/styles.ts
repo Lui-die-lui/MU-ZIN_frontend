@@ -39,7 +39,7 @@ export const who = css`
   strong,
   a {
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 600;
     color: ${text};
     text-decoration: none;
     overflow: hidden;
@@ -64,7 +64,7 @@ export const status = (st: "OPEN" | "REPLIED" | "CHAT") => css`
   background: ${st === "OPEN" ? "#fff" : st === "CHAT" ? ink : "#f3f4f6"};
   color: ${st === "CHAT" ? "#fff" : text};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
 `;
 
 export const content = css`
@@ -96,7 +96,7 @@ export const reply = css`
 
 export const replyLabel = css`
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 600;
   color: ${mutedColor};
 `;
 
@@ -138,7 +138,7 @@ export const btn = (primary: boolean) => css`
   color: ${primary ? "#fff" : text};
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:disabled {
@@ -177,7 +177,7 @@ export const textBtn = css`
   background: none;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${text};
   text-decoration: underline;
   text-underline-offset: 3px;

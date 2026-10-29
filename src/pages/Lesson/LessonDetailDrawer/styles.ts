@@ -33,7 +33,7 @@ export const step = (current: boolean, done: boolean) => css`
   background: ${current ? text : done ? "#f0f1f2" : "#fafafa"};
   color: ${current ? "#fff" : done ? text : "#9aa0a6"};
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
 
   span {
@@ -85,7 +85,7 @@ export const artistMeta = css`
 
 export const artistName = css`
   overflow: hidden;
-  font-weight: 700;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
@@ -94,7 +94,7 @@ export const artistName = css`
 export const title = css`
   margin: 0;
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.35;
   letter-spacing: -0.02em;
   word-break: keep-all;
@@ -133,7 +133,7 @@ export const noticeCheck = css`
   gap: 8px;
   width: fit-content;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: #17191c;
   cursor: pointer;
 
@@ -167,7 +167,7 @@ export const infoBlock = css`
 export const blockTitle = css`
   margin: 0 0 8px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.4;
   color: ${text};
 `;
@@ -214,7 +214,7 @@ export const filterToggle = (active: boolean) => css`
   color: ${text};
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover {
@@ -245,7 +245,7 @@ export const appliedChip = css`
   background: #fff;
   color: ${text};
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 
   button {
     width: 20px;
@@ -275,7 +275,7 @@ export const filterBox = css`
     background: #fff;
     color: ${text};
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
   }
 
   button[aria-pressed]:hover:not(:disabled),
@@ -314,7 +314,7 @@ export const footerInfo = css`
 
 export const footerLabel = css`
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${muted};
 `;
 
@@ -338,7 +338,7 @@ export const primaryBtn = css`
   color: #fff;
   font: inherit;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 
   &:disabled {
@@ -357,7 +357,7 @@ export const ghostBtn = css`
   color: ${text};
   font: inherit;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
 

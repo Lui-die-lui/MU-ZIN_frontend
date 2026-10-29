@@ -19,6 +19,7 @@ import { isComplete, toAssistantContext } from "../../features/hobbyFinder/engin
 import { loadSaved } from "../../features/hobbyFinder/storage";
 import { ApiError } from "../../utils/errorUtils";
 import { formatDateTime } from "../../utils/reservationFormat";
+import AssistantIcon from "../../components/common/AssistantIcon";
 
 const EXAMPLES = [
   "주말 오후에 배울 수 있는 기타 레슨을 찾아줘",
@@ -42,13 +43,6 @@ function newKey() {
     : `k-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
 }
 
-const SparkleIcon = () => (
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-    <path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z" />
-    <path d="M19 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z" />
-  </svg>
-);
-
 // 마이페이지처럼 로그인 필요. 로그인 안 했으면 안내 (기존 로그인 화면으로)
 function AssistantPage() {
   const hydrated = usePrincipalState((st) => st.hydrated);
@@ -62,7 +56,7 @@ function AssistantPage() {
       <main css={s.page}>
         <section css={s.gate} aria-labelledby="assistant-gate-title">
           <span css={s.sparkle(48)}>
-            <SparkleIcon />
+            <AssistantIcon />
           </span>
           <h1 id="assistant-gate-title">AI 레슨 내비게이터</h1>
           <p>
@@ -181,7 +175,7 @@ function AssistantWorkspace() {
           </button>
           <h1 css={s.brand}>
             <span css={s.sparkle(26)}>
-              <SparkleIcon />
+              <AssistantIcon />
             </span>
             AI 레슨 내비게이터
           </h1>
@@ -393,12 +387,12 @@ function useIdempotencyKey() {
   };
 }
 
-// AI 답변 한 줄 (왼쪽 ✦)
+// AI 답변 한 줄 (왼쪽 메트로놈)
 function AiRow({ children }: { children: ReactNode }) {
   return (
     <div css={s.answer}>
       <span css={s.sparkle(28)}>
-        <SparkleIcon />
+        <AssistantIcon />
       </span>
       <div css={s.answerBody}>{children}</div>
     </div>
@@ -508,7 +502,7 @@ function Starter({
         <>
           <div css={s.hello}>
             <span css={s.sparkle(48)}>
-              <SparkleIcon />
+              <AssistantIcon />
             </span>
             <h2>어떤 레슨을 찾고 있나요?</h2>
             <p>원하는 레슨을 말로 설명하면 MU:ZIN에 등록된 공개 레슨·아티스트 중에서 찾아 드려요. 가격과 예약 가능 시간은 카드의 최신 정보로 확인하세요.</p>

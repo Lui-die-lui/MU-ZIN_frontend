@@ -36,7 +36,7 @@ export const header = (inRoom: boolean) => css`
 export const title = css`
   margin: 0;
   font-size: 25px;
-  font-weight: 800;
+  font-weight: 700;
 `;
 
 export const desc = css`
@@ -153,7 +153,7 @@ export const roleTag = css`
   border-radius: 6px;
   background: ${soft};
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${muted};
 `;
 
@@ -190,7 +190,7 @@ export const unread = css`
   background: ${ink};
   color: #fff;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 600;
   line-height: 20px;
   text-align: center;
 `;
@@ -231,7 +231,7 @@ export const textBtn = css`
   background: none;
   font: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${text};
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -280,7 +280,7 @@ export const roomWho = css`
   a,
   strong {
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 600;
     color: ${text};
     text-decoration: none;
   }
@@ -306,7 +306,7 @@ export const headerBtn = css`
   background: #fff;
   font: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   color: ${muted};
   cursor: pointer;
 
@@ -370,7 +370,7 @@ export const daySep = css`
   gap: 10px;
   margin: 18px 0 12px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: ${muted};
 
   &::before,
@@ -534,7 +534,7 @@ export const msgMenuItem = (danger: boolean) => css`
   background: none;
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: ${danger ? "#b42318" : text};
   text-align: left;
   cursor: pointer;
@@ -563,7 +563,7 @@ export const msgMeta = css`
   white-space: nowrap;
 
   b {
-    font-weight: 700;
+    font-weight: 600;
     color: ${muted};
   }
 `;
@@ -587,7 +587,7 @@ export const newBelowBtn = css`
   color: #fff;
   font: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   white-space: nowrap;
   box-shadow: 0 6px 18px rgba(17, 24, 39, 0.18);
   cursor: pointer;
@@ -670,7 +670,7 @@ export const sendBtn = css`
   color: #fff;
   font: inherit;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease;
 
