@@ -71,7 +71,13 @@ export const card = (busy: boolean) => css`
   opacity: ${busy ? 0.7 : 1};
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: #d1d5db;
+      box-shadow: 0 4px 14px rgba(17, 24, 39, 0.06);
+    }
+  }
+  &:active {
     border-color: #d1d5db;
     box-shadow: 0 4px 14px rgba(17, 24, 39, 0.06);
   }
@@ -215,7 +221,12 @@ export const infoChip = (tone: Tone) => css`
 export const chipButton = css`
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  &:active {
     text-decoration: underline;
   }
 `;
@@ -232,7 +243,12 @@ export const manageBtn = css`
   font-weight: 600;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: #111827;
+    }
+  }
+  &:active {
     border-color: #111827;
   }
 `;

@@ -27,7 +27,13 @@ export const OAuthButton = styled.a<{ provider: "google" | "naver" | "kakao" }>`
   text-decoration: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(17, 24, 39, 0.12);
+    }
+  }
+  &:active {
     transform: translateY(-1px);
     box-shadow: 0 4px 10px rgba(17, 24, 39, 0.12);
   }

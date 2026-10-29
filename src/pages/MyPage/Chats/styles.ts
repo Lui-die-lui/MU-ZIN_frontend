@@ -104,7 +104,12 @@ export const roomItem = (active: boolean) => css`
   text-align: left;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: ${soft};
+    }
+  }
+  &:active {
     background: ${soft};
   }
   &:focus-visible {
@@ -284,7 +289,13 @@ export const roomWho = css`
     color: ${text};
     text-decoration: none;
   }
-  a:hover {
+  @media (hover: hover) {
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  a:active {
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -310,7 +321,13 @@ export const headerBtn = css`
   color: ${muted};
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${text};
+      border-color: #cfd4da;
+    }
+  }
+  &:active {
     color: ${text};
     border-color: #cfd4da;
   }
@@ -408,8 +425,15 @@ export const msgRow = (mine: boolean, groupStart: boolean) => css`
   margin-top: ${groupStart ? 10 : 2}px;
 
   /* 마우스로 올리거나 키보드로 고르면 "⋯" 버튼 보이기 */
-  &:hover [data-more],
   &:focus-within [data-more] {
+    opacity: 1;
+  }
+  @media (hover: hover) {
+    &:hover [data-more] {
+      opacity: 1;
+    }
+  }
+  &:active [data-more] {
     opacity: 1;
   }
 `;
@@ -466,8 +490,21 @@ export const moreBtn = css`
   opacity: 0;
   transition: opacity 0.12s ease, background 0.12s ease;
 
-  &:hover,
   &:focus-visible {
+    background: ${soft};
+    color: ${text};
+    outline: none;
+    opacity: 1;
+  }
+  @media (hover: hover) {
+    &:hover {
+      background: ${soft};
+      color: ${text};
+      outline: none;
+      opacity: 1;
+    }
+  }
+  &:active {
     background: ${soft};
     color: ${text};
     outline: none;
@@ -544,8 +581,17 @@ export const msgMenuItem = (danger: boolean) => css`
     font-weight: 500;
     color: #9ca3af;
   }
-  &:hover:not(:disabled),
   &:focus-visible {
+    background: ${soft};
+    outline: none;
+  }
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: ${soft};
+      outline: none;
+    }
+  }
+  &:active:not(:disabled) {
     background: ${soft};
     outline: none;
   }
@@ -674,7 +720,12 @@ export const sendBtn = css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover:enabled {
+  @media (hover: hover) {
+    &:hover:enabled {
+      background: #2b3240;
+    }
+  }
+  &:active:enabled {
     background: #2b3240;
   }
   &:disabled {

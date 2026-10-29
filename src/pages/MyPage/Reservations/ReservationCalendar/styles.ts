@@ -49,7 +49,12 @@ export const navBtn = (dark: boolean) => css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: ${dark ? "#000000" : "#FFFFFF"};
+    }
+  }
+  &:active {
     background: ${dark ? "#000000" : "#FFFFFF"};
   }
   ${focusRing}
@@ -67,7 +72,13 @@ export const todayBtn = css`
   font-weight: 500;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #ffffff;
+      color: ${ink};
+    }
+  }
+  &:active {
     background: #ffffff;
     color: ${ink};
   }
@@ -112,7 +123,12 @@ export const calendarBox = css`
     cursor: pointer;
     transition: background 0.15s ease, box-shadow 0.15s ease;
   }
-  .fc .fc-daygrid-day-frame:hover {
+  @media (hover: hover) {
+    .fc .fc-daygrid-day-frame:hover {
+      background: #ffffff;
+    }
+  }
+  .fc .fc-daygrid-day-frame:active {
     background: #ffffff;
   }
 

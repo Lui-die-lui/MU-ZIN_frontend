@@ -98,7 +98,12 @@ export const Logo = styled(Link)`
     color: ${silver};
   }
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+    }
+  }
+  &:active {
     color: ${ink};
   }
   ${focusRing}
@@ -133,7 +138,13 @@ export const link = css`
   white-space: nowrap;
   transition: background-color 0.15s ease, color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      background: ${soft};
+    }
+  }
+  &:active {
     color: ${ink};
     background: ${soft};
   }
@@ -181,7 +192,12 @@ export const Btn = styled.button`
   cursor: pointer;
   transition: background-color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #000000;
+    }
+  }
+  &:active {
     background: #000000;
   }
   ${focusRing}
@@ -208,8 +224,17 @@ export const IconBtn = styled.button`
   color: #4a4f55; /* 로고·프로필보다 한 톤 옅게, 누를 때는 진하게 */
   transition: background-color 0.15s ease, color 0.15s ease;
 
-  &:hover,
   &[data-open="true"] {
+    background: ${soft};
+    color: ${ink};
+  }
+  @media (hover: hover) {
+    &:hover {
+      background: ${soft};
+      color: ${ink};
+    }
+  }
+  &:active {
     background: ${soft};
     color: ${ink};
   }
@@ -269,8 +294,15 @@ export const ProfileBtn = styled.button`
   cursor: pointer;
   transition: background-color 0.15s ease;
 
-  &:hover,
   &[aria-expanded="true"] {
+    background: ${soft};
+  }
+  @media (hover: hover) {
+    &:hover {
+      background: ${soft};
+    }
+  }
+  &:active {
     background: ${soft};
   }
   ${focusRing}
@@ -342,7 +374,13 @@ export const MenuHeader = styled.header`
     font-weight: 500;
     cursor: pointer;
 
-    &:hover:not(:disabled) {
+    @media (hover: hover) {
+      &:hover:not(:disabled) {
+        border-color: #b9bec5;
+        background: #f7f8f9;
+      }
+    }
+    &:active:not(:disabled) {
       border-color: #b9bec5;
       background: #f7f8f9;
     }
@@ -438,7 +476,12 @@ export const NotificationButton = styled.button`
     background: #f7f8fa;
   }
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #f1f3f5;
+    }
+  }
+  &:active {
     background: #f1f3f5;
   }
 
@@ -551,7 +594,8 @@ export const profileMenuPaperSx = {
     fontFamily: "inherit",
     color: "#1b1d20",
   },
-  "& .MuiMenuItem-root:hover, & .MuiMenuItem-root.Mui-focusVisible": { backgroundColor: "#f3f4f6" },
+  "& .MuiMenuItem-root.Mui-focusVisible, & .MuiMenuItem-root:active": { backgroundColor: "#f3f4f6" },
+  "@media (hover: hover)": { "& .MuiMenuItem-root:hover": { backgroundColor: "#f3f4f6" } },
 };
 
 export const profileMenuHeader = css`

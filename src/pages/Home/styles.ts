@@ -175,11 +175,22 @@ export const aiPrompt = css`
   box-sizing: border-box;
   transition: box-shadow 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${sub};
+      box-shadow: 0 18px 34px -20px rgba(23, 25, 28, 0.5);
+    }
+  }
+  &:active {
     color: ${sub};
     box-shadow: 0 18px 34px -20px rgba(23, 25, 28, 0.5);
   }
-  &:hover > span:last-of-type {
+  @media (hover: hover) {
+    &:hover > span:last-of-type {
+      background: #000000;
+    }
+  }
+  &:active > span:last-of-type {
     background: #000000;
   }
   ${focusRing}
@@ -294,14 +305,24 @@ const pathBase = css`
   text-decoration: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+  &:active {
     transform: translateY(-1px);
   }
   ${focusRing}
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        transform: none;
+      }
+    }
+    &:active {
       transform: none;
     }
   }
@@ -325,7 +346,13 @@ export const pathPrimary = css`
     color: ${ink};
   }
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: #FFFFFF;
+      background: #000000;
+    }
+  }
+  &:active {
     color: #FFFFFF;
     background: #000000;
   }
@@ -342,7 +369,14 @@ export const pathSecondary = css`
     color: ${sub};
   }
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      background: #FFFFFF;
+      box-shadow: 0 14px 28px -18px rgba(23, 25, 28, 0.45);
+    }
+  }
+  &:active {
     color: ${ink};
     background: #FFFFFF;
     box-shadow: 0 14px 28px -18px rgba(23, 25, 28, 0.45);
@@ -638,7 +672,13 @@ export const cta = css`
   text-decoration: none;
   transition: background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: #FFFFFF;
+      background: #000000;
+    }
+  }
+  &:active {
     color: #FFFFFF;
     background: #000000;
   }
@@ -659,7 +699,13 @@ export const secondary = css`
   font-weight: 600;
   text-decoration: none;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      box-shadow: inset 0 0 0 1px ${silver};
+    }
+  }
+  &:active {
     color: ${ink};
     box-shadow: inset 0 0 0 1px ${silver};
   }

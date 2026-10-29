@@ -41,7 +41,12 @@ export const backLink = css`
   font-weight: 500;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+    }
+  }
+  &:active {
     color: ${ink};
   }
   ${focusRing}
@@ -175,7 +180,12 @@ export const ratingLine = css`
   span {
     color: ${sub};
   }
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      box-shadow: 0 8px 18px -14px rgba(23, 25, 28, 0.5);
+    }
+  }
+  &:active {
     box-shadow: 0 8px 18px -14px rgba(23, 25, 28, 0.5);
   }
   ${focusRing}
@@ -319,7 +329,13 @@ export const tab = (active: boolean) => css`
     opacity: 0.7;
     font-variant-numeric: tabular-nums;
   }
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: ${active ? "#000000" : "#e8e7e2"};
+      color: ${active ? "#ffffff" : ink};
+    }
+  }
+  &:active {
     background: ${active ? "#000000" : "#e8e7e2"};
     color: ${active ? "#ffffff" : ink};
   }
@@ -529,7 +545,13 @@ export const btn = (variant: "primary" | "ghost") => css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${variant === "primary" ? "#ffffff" : ink};
+      background: ${variant === "primary" ? "#000000" : "#fbfaf8"};
+    }
+  }
+  &:active {
     color: ${variant === "primary" ? "#ffffff" : ink};
     background: ${variant === "primary" ? "#000000" : "#fbfaf8"};
   }
@@ -541,7 +563,12 @@ export const btn = (variant: "primary" | "ghost") => css`
     font-size: 14px;
     background: ${variant === "primary" ? ink : mist};
 
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        background: ${variant === "primary" ? "#000000" : "#e2e1dc"};
+      }
+    }
+    &:active {
       background: ${variant === "primary" ? "#000000" : "#e2e1dc"};
     }
   }
@@ -562,7 +589,13 @@ export const smallBtn = css`
   text-decoration: none;
   white-space: nowrap;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      box-shadow: 0 8px 18px -14px rgba(23, 25, 28, 0.5);
+    }
+  }
+  &:active {
     color: ${ink};
     box-shadow: 0 8px 18px -14px rgba(23, 25, 28, 0.5);
   }
@@ -597,7 +630,14 @@ export const lessonCard = css`
   cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #efede8;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px -24px rgba(23, 25, 28, 0.55);
+    }
+  }
+  &:active {
     background: #efede8;
     transform: translateY(-2px);
     box-shadow: 0 16px 30px -24px rgba(23, 25, 28, 0.55);
@@ -606,7 +646,12 @@ export const lessonCard = css`
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        transform: none;
+      }
+    }
+    &:active {
       transform: none;
     }
   }

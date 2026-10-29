@@ -82,7 +82,13 @@ export const avatarButton = css`
     border-radius: 50%;
   }
 
-  &:hover:enabled {
+  @media (hover: hover) {
+    &:hover:enabled {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(20, 25, 30, 0.12);
+    }
+  }
+  &:active:enabled {
     transform: translateY(-1px);
     box-shadow: 0 10px 24px rgba(20, 25, 30, 0.12);
   }

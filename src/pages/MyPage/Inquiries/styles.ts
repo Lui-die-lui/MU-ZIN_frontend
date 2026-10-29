@@ -46,7 +46,13 @@ export const who = css`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  a:hover {
+  @media (hover: hover) {
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  a:active {
     text-decoration: underline;
     text-underline-offset: 3px;
   }

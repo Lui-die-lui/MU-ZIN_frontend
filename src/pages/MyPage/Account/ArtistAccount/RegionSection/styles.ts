@@ -69,7 +69,12 @@ export const outlineButton = css`
   background: #fff;
   color: #111827;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      border-color: #111827;
+    }
+  }
+  &:active:not(:disabled) {
     border-color: #111827;
   }
 `;
@@ -80,7 +85,12 @@ export const ghostButton = css`
   background: transparent;
   color: #b91c1c;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: #fef2f2;
+    }
+  }
+  &:active:not(:disabled) {
     background: #fef2f2;
   }
 `;
@@ -175,7 +185,12 @@ export const emptyAddress = css`
     font-weight: 600;
   }
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      border-color: #111827;
+    }
+  }
+  &:active:not(:disabled) {
     border-color: #111827;
   }
 

@@ -75,7 +75,13 @@ export const more = css`
   text-decoration: none;
   transition: background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      background: #FFFFFF;
+    }
+  }
+  &:active {
     color: ${ink};
     background: #FFFFFF;
   }
@@ -144,7 +150,12 @@ export const segBtn = (active: boolean) => css`
   cursor: pointer;
   transition: color 0.2s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${active ? "#FFFFFF" : ink};
+    }
+  }
+  &:active {
     color: ${active ? "#FFFFFF" : ink};
   }
   ${focusRing}
@@ -222,7 +233,12 @@ export const navBtn = (dark: boolean) => css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: ${dark ? "#000000" : "#FFFFFF"};
+    }
+  }
+  &:active {
     background: ${dark ? "#000000" : "#FFFFFF"};
   }
   ${focusRing}
@@ -297,14 +313,24 @@ const dayFill = (st: DayState) =>
     : st.past
       ? css`
           background: repeating-linear-gradient(135deg, rgba(23, 25, 28, 0.032) 0 2px, transparent 2px 6px);
-          &:hover {
+          @media (hover: hover) {
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.5);
+            }
+          }
+          &:active {
             background-color: rgba(255, 255, 255, 0.5);
           }
         `
       : css`
           background: ${st.today ? "#FFFFFF" : "rgba(255, 255, 255, 0.62)"};
           box-shadow: ${st.today ? "0 6px 14px -8px rgba(23, 25, 28, 0.35)" : "none"};
-          &:hover {
+          @media (hover: hover) {
+            &:hover {
+              background: #FFFFFF;
+            }
+          }
+          &:active {
             background: #FFFFFF;
           }
         `;
@@ -395,7 +421,12 @@ export const clearBtn = css`
   text-underline-offset: 3px;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+    }
+  }
+  &:active {
     color: ${ink};
   }
   ${focusRing}
@@ -412,7 +443,15 @@ export const nextCard = css`
   overflow: hidden;
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      transform: translateY(-1px);
+      background: #FFFFFF;
+      box-shadow: 0 20px 34px -24px rgba(23, 25, 28, 0.55);
+    }
+  }
+  &:active {
     color: ${ink};
     transform: translateY(-1px);
     background: #FFFFFF;
@@ -422,7 +461,12 @@ export const nextCard = css`
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        transform: none;
+      }
+    }
+    &:active {
       transform: none;
     }
   }
@@ -508,7 +552,13 @@ export const row = css`
   text-decoration: none;
   transition: background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      background: rgba(255, 255, 255, 0.85);
+    }
+  }
+  &:active {
     color: ${ink};
     background: rgba(255, 255, 255, 0.85);
   }
@@ -593,7 +643,12 @@ export const moreNote = css`
     text-decoration-color: ${silver};
     text-underline-offset: 3px;
   }
-  a:hover {
+  @media (hover: hover) {
+    a:hover {
+      color: ${ink};
+    }
+  }
+  a:active {
     color: ${ink};
   }
 `;
@@ -635,7 +690,13 @@ export const emptyAction = css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      background: #E2E0DA;
+    }
+  }
+  &:active {
     color: ${ink};
     background: #E2E0DA;
   }

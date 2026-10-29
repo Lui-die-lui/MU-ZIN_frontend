@@ -77,8 +77,17 @@ export const timeBtn = (active: boolean) => css`
   transition: background 120ms ease, border-color 120ms ease;
 
   /* 마우스를 올리거나 키보드로 초점이 오면 테두리 대신 배경만 살짝 진하게 */
-  &:hover:not(:disabled),
   &:focus-visible {
+    outline: none;
+    background: ${active ? "#000" : "#e9ebee"};
+  }
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      outline: none;
+      background: ${active ? "#000" : "#e9ebee"};
+    }
+  }
+  &:active:not(:disabled) {
     outline: none;
     background: ${active ? "#000" : "#e9ebee"};
   }

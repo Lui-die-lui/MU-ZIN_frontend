@@ -109,7 +109,13 @@ export const CloseBtn = styled.button`
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #f2f1ed;
+      color: ${ink};
+    }
+  }
+  &:active {
     background: #f2f1ed;
     color: ${ink};
   }

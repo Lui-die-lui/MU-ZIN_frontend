@@ -56,7 +56,12 @@ export const primaryButton = css`
   cursor: pointer;
   transition: background-color 0.15s ease;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: #000;
+    }
+  }
+  &:active:not(:disabled) {
     background: #000;
   }
 
@@ -132,7 +137,13 @@ export const link = css`
   font-weight: 600;
   text-decoration: none;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  &:active {
     text-decoration: underline;
     text-underline-offset: 3px;
   }

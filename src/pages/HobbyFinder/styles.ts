@@ -116,7 +116,12 @@ export const option = (selected: boolean) => css`
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: ${selected ? ink : "#9ca3af"};
+    }
+  }
+  &:active {
     border-color: ${selected ? ink : "#9ca3af"};
   }
   &:focus-visible {
@@ -165,7 +170,12 @@ export const btn = (tone: "primary" | "ghost", wide = false) => css`
   white-space: nowrap;
   cursor: pointer;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: ${tone === "primary" ? "#000" : softer};
+    }
+  }
+  &:active:not(:disabled) {
     background: ${tone === "primary" ? "#000" : softer};
   }
   &:disabled {
@@ -516,7 +526,13 @@ export const lessonOpen = css`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  &:hover h4 {
+  @media (hover: hover) {
+    &:hover h4 {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  &:active h4 {
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -577,7 +593,13 @@ export const artistRow = css`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  a:hover {
+  @media (hover: hover) {
+    a:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  a:active {
     text-decoration: underline;
     text-underline-offset: 3px;
   }

@@ -109,7 +109,13 @@ const itemBase = `
   font-weight: 600;
   transition: background 0.15s ease, color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      background: rgba(255, 255, 255, 0.85);
+    }
+  }
+  &:active {
     color: ${ink};
     background: rgba(255, 255, 255, 0.85);
   }
@@ -128,7 +134,12 @@ const itemBase = `
     font-size: 13px;
     white-space: nowrap;
 
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        background: #e8e7e2;
+      }
+    }
+    &:active {
       background: #e8e7e2;
     }
     &.active {
@@ -245,7 +256,13 @@ export const SwitchButton = styled.button`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #fbfaf8;
+      box-shadow: 0 10px 22px -18px rgba(23, 25, 28, 0.5);
+    }
+  }
+  &:active {
     background: #fbfaf8;
     box-shadow: 0 10px 22px -18px rgba(23, 25, 28, 0.5);
   }
@@ -277,7 +294,14 @@ export const SwitchButton = styled.button`
       margin-top: -10px;
       background: #e1e0db;
     }
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        background: transparent;
+        box-shadow: none;
+        text-decoration-color: ${ink};
+      }
+    }
+    &:active {
       background: transparent;
       box-shadow: none;
       text-decoration-color: ${ink};

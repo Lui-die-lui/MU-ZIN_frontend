@@ -110,7 +110,13 @@ export const reserveBtn = css`
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 
-  &:hover:enabled {
+  @media (hover: hover) {
+    &:hover:enabled {
+      background: #33373b;
+      border-color: #33373b;
+    }
+  }
+  &:active:enabled {
     background: #33373b;
     border-color: #33373b;
   }
@@ -143,7 +149,12 @@ export const actionBtn = css`
   cursor: pointer;
   transition: border-color 0.15s ease;
 
-  &:hover:enabled {
+  @media (hover: hover) {
+    &:hover:enabled {
+      border-color: ${tone.text};
+    }
+  }
+  &:active:enabled {
     border-color: ${tone.text};
   }
 

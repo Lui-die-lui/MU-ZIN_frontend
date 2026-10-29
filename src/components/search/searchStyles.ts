@@ -152,7 +152,12 @@ export const searchButton = css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: #000000;
+    }
+  }
+  &:active:not(:disabled) {
     background: #000000;
   }
   &:disabled {
@@ -226,7 +231,13 @@ export const chip = (active: boolean) => css`
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: ${active ? "#000000" : "#ffffff"};
+      color: ${active ? "#ffffff" : ink};
+    }
+  }
+  &:active {
     background: ${active ? "#000000" : "#ffffff"};
     color: ${active ? "#ffffff" : ink};
   }
@@ -336,7 +347,12 @@ export const ghostButton = css`
   font-weight: 600;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #e2e1dc;
+    }
+  }
+  &:active {
     background: #e2e1dc;
   }
   ${focusRing}
@@ -354,7 +370,12 @@ export const primaryButton = css`
   font-weight: 600;
   cursor: pointer;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: #000000;
+    }
+  }
+  &:active:not(:disabled) {
     background: #000000;
   }
   &:disabled {

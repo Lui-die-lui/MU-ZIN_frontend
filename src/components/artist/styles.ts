@@ -26,7 +26,13 @@ export const followButton = (on: boolean, size: "md" | "sm") => css`
   cursor: pointer;
   transition: background-color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: ${on ? grayHover : inkHover};
+      border-color: ${on ? grayHover : inkHover};
+    }
+  }
+  &:active {
     background: ${on ? grayHover : inkHover};
     border-color: ${on ? grayHover : inkHover};
   }
@@ -115,7 +121,14 @@ const dialogRow = css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover,
+  &:active {
+    background: #faf9f6;
+  }
+  @media (hover: hover) {
+    &:hover {
+      background: #faf9f6;
+    }
+  }
   &:active {
     background: #faf9f6;
   }

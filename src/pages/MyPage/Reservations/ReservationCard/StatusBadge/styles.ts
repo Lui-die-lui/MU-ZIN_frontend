@@ -53,7 +53,12 @@ export const statusBtn = (tone: StatusTone) => {
 
     transition: transform 0.08s ease, filter 0.12s ease;
 
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        filter: brightness(0.98);
+      }
+    }
+    &:active {
       filter: brightness(0.98);
     }
     &:active {

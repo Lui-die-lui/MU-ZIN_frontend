@@ -37,7 +37,14 @@ export const card = css`
   text-decoration: none;
   transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: #aeb4bc;
+      box-shadow: 0 6px 18px rgba(20, 25, 30, 0.06);
+      transform: translateY(-1px);
+    }
+  }
+  &:active {
     border-color: #aeb4bc;
     box-shadow: 0 6px 18px rgba(20, 25, 30, 0.06);
     transform: translateY(-1px);

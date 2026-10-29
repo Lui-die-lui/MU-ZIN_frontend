@@ -20,7 +20,13 @@ export const card = (past: boolean) => css`
   opacity: ${past ? 0.75 : 1};
   transition: border-color 150ms ease, box-shadow 150ms ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: #aeb4bc;
+      box-shadow: 0 6px 18px rgba(20, 25, 30, 0.06);
+    }
+  }
+  &:active {
     border-color: #aeb4bc;
     box-shadow: 0 6px 18px rgba(20, 25, 30, 0.06);
   }

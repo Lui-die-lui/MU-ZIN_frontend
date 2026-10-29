@@ -59,19 +59,36 @@ export const card = css`
   cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #efede8;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px -24px rgba(23, 25, 28, 0.55);
+    }
+  }
+  &:active {
     background: #efede8;
     transform: translateY(-2px);
     box-shadow: 0 16px 30px -24px rgba(23, 25, 28, 0.55);
   }
-  &:hover > span:last-of-type > span:last-of-type {
+  @media (hover: hover) {
+    &:hover > span:last-of-type > span:last-of-type {
+      background: #000000;
+    }
+  }
+  &:active > span:last-of-type > span:last-of-type {
     background: #000000;
   }
   ${focusRing}
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        transform: none;
+      }
+    }
+    &:active {
       transform: none;
     }
   }

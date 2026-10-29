@@ -90,7 +90,12 @@ export const iconButton = css`
   font-size: 20px;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: #1b1d20;
+    }
+  }
+  &:active {
     color: #1b1d20;
   }
 
@@ -104,7 +109,12 @@ export const clearButton = css`
   font-size: 18px;
   color: #c4c8cd;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: #6b7280;
+    }
+  }
+  &:active {
     color: #6b7280;
   }
 `;
