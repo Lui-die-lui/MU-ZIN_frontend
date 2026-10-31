@@ -131,7 +131,12 @@ export const dropdownMenuButton = css`
   white-space: nowrap;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #f3f4f6;
+    }
+  }
+  &:active {
     background: #f3f4f6;
   }
 `;
@@ -154,7 +159,7 @@ export const dropdownOption = (selected: boolean, active: boolean, disabled = fa
   text-align: left;
   cursor: ${disabled ? "default" : "pointer"};
 
-  ${!disabled && "&:hover { background: #f3f4f6; }"}
+  ${!disabled && "@media (hover: hover) { &:hover { background: #f3f4f6; } } &:active { background: #f3f4f6; }"}
 
   /* 다중 선택 체크박스 */
   input[type="checkbox"] {

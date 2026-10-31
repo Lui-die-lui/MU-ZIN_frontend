@@ -62,7 +62,12 @@ export const artistHeader = css`
   cursor: pointer;
   text-align: left;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: #aeb4bc;
+    }
+  }
+  &:active {
     border-color: #aeb4bc;
   }
 
@@ -217,7 +222,12 @@ export const filterToggle = (active: boolean) => css`
   font-weight: 500;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #e9ebee;
+    }
+  }
+  &:active {
     background: #e9ebee;
   }
 
@@ -278,16 +288,38 @@ export const filterBox = css`
     font-weight: 500;
   }
 
-  button[aria-pressed]:hover:not(:disabled),
   button[aria-pressed]:focus-visible {
+    outline: none;
+    border-color: #eceef0;
+    background: #eef0f2;
+  }
+  @media (hover: hover) {
+    button[aria-pressed]:hover:not(:disabled) {
+      outline: none;
+      border-color: #eceef0;
+      background: #eef0f2;
+    }
+  }
+  button[aria-pressed]:active:not(:disabled) {
     outline: none;
     border-color: #eceef0;
     background: #eef0f2;
   }
 
   button[aria-pressed="true"],
-  button[aria-pressed="true"]:hover,
   button[aria-pressed="true"]:focus-visible {
+    border-color: ${text};
+    background: ${text};
+    color: #fff;
+  }
+  @media (hover: hover) {
+    button[aria-pressed="true"]:hover {
+      border-color: ${text};
+      background: ${text};
+      color: #fff;
+    }
+  }
+  button[aria-pressed="true"]:active {
     border-color: ${text};
     background: ${text};
     color: #fff;
@@ -412,7 +444,12 @@ export const ratingLine = css`
     text-decoration: underline;
     text-underline-offset: 3px;
   }
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #eef0f2;
+    }
+  }
+  &:active {
     background: #eef0f2;
   }
 `;

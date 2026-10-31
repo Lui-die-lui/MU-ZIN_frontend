@@ -43,7 +43,12 @@ export const optionCard = css`
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: #9ca3af;
+    }
+  }
+  &:active {
     border-color: #9ca3af;
   }
 

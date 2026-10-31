@@ -75,7 +75,12 @@ export const btn = (variant: "primary" | "ghost" | "danger" = "ghost") => css`
   background: ${variant === "primary" ? "#111827" : "#fff"};
   color: ${variant === "primary" ? "#fff" : variant === "danger" ? "#b91c1c" : "#1b1d20"};
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: ${variant === "primary" ? "#1f2937" : variant === "danger" ? "#fef2f2" : "#f3f4f6"};
+    }
+  }
+  &:active:not(:disabled) {
     background: ${variant === "primary" ? "#1f2937" : variant === "danger" ? "#fef2f2" : "#f3f4f6"};
   }
 

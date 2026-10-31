@@ -43,7 +43,12 @@ export const starButton = css`
   line-height: 0;
   transition: transform 0.1s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      transform: scale(1.08);
+    }
+  }
+  &:active {
     transform: scale(1.08);
   }
   &:focus-visible {
@@ -175,7 +180,12 @@ export const rankButton = (selected: boolean) => css`
   font-size: 13px;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #f3f4f6;
+    }
+  }
+  &:active {
     background: #f3f4f6;
   }
   &:focus-visible {
@@ -464,7 +474,12 @@ export const moreButton = css`
   color: ${text};
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #e2e1dc;
+    }
+  }
+  &:active {
     background: #e2e1dc;
   }
 `;
@@ -554,7 +569,12 @@ export const keywordOption = (on: boolean) => css`
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: ${on ? "#111827" : "#9ca3af"};
+    }
+  }
+  &:active {
     border-color: ${on ? "#111827" : "#9ca3af"};
   }
   &:focus-visible {

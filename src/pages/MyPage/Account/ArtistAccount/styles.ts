@@ -34,7 +34,12 @@ export const profileLink = css`
   text-decoration: none;
   transition: border-color 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      border-color: ${tone.text};
+    }
+  }
+  &:active {
     border-color: ${tone.text};
   }
 

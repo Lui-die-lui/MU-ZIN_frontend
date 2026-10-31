@@ -58,7 +58,14 @@ export const link = css`
     color: ${ink};
     font-weight: 600;
   }
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+  &:active {
     color: ${ink};
     text-decoration: underline;
     text-underline-offset: 3px;

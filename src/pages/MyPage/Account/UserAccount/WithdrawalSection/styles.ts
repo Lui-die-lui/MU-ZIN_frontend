@@ -13,7 +13,9 @@ export const openButton = css`
   font-weight: 600;
   cursor: pointer;
 
-  &:hover { background: #fff7f6; }
+  @media (hover: hover) { &:hover { background: #fff7f6; } }
+
+  &:active { background: #fff7f6; }
   &:focus-visible { outline: 3px solid rgba(192, 54, 44, 0.18); outline-offset: 2px; }
 `;
 

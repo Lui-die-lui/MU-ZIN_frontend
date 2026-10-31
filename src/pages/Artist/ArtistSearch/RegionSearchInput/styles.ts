@@ -49,5 +49,7 @@ export const locationButton = css`
   white-space: nowrap;
   font-weight: 600;
 
-  &:hover { background: #eceef0; }
+  @media (hover: hover) { &:hover { background: #eceef0; } }
+
+  &:active { background: #eceef0; }
 `;

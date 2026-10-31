@@ -90,7 +90,13 @@ export const textButton = css`
   font-size: 12px;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${sub};
+      text-decoration: underline;
+    }
+  }
+  &:active {
     color: ${sub};
     text-decoration: underline;
   }

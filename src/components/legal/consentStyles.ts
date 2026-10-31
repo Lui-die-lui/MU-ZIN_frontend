@@ -82,7 +82,12 @@ export const view = css`
   border-radius: 4px;
   ${focusRing};
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+    }
+  }
+  &:active {
     color: ${ink};
   }
 `;

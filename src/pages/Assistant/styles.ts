@@ -120,7 +120,12 @@ export const newChatBtn = css`
   cursor: pointer;
   transition: box-shadow 0.15s ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      box-shadow: 0 8px 18px -14px rgba(23, 25, 28, 0.55);
+    }
+  }
+  &:active {
     box-shadow: 0 8px 18px -14px rgba(23, 25, 28, 0.55);
   }
   ${focusRing}
@@ -175,7 +180,12 @@ export const convItem = (active: boolean) => css`
     color: ${faint};
     font-variant-numeric: tabular-nums;
   }
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: ${active ? "#ffffff" : "rgba(255, 255, 255, 0.6)"};
+    }
+  }
+  &:active {
     background: ${active ? "#ffffff" : "rgba(255, 255, 255, 0.6)"};
   }
   ${focusRing}
@@ -225,7 +235,12 @@ export const historyBtn = css`
     color: ${ink};
     cursor: pointer;
 
-    &:hover {
+    @media (hover: hover) {
+      &:hover {
+        background: #f2f1ed;
+      }
+    }
+    &:active {
       background: #f2f1ed;
     }
     ${focusRing}
@@ -491,7 +506,12 @@ export const exampleBtn = css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: #ecebe7;
+    }
+  }
+  &:active:not(:disabled) {
     background: #ecebe7;
   }
   &:disabled {
@@ -643,7 +663,12 @@ export const sendBtn = css`
   cursor: pointer;
   transition: background 0.15s ease, opacity 0.15s ease;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: #000000;
+    }
+  }
+  &:active:not(:disabled) {
     background: #000000;
   }
   &:disabled {
@@ -709,7 +734,13 @@ export const primaryBtn = css`
   text-decoration: none;
   cursor: pointer;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      color: #ffffff;
+      background: #000000;
+    }
+  }
+  &:active:not(:disabled) {
     color: #ffffff;
     background: #000000;
   }
@@ -737,7 +768,13 @@ export const secondaryBtn = css`
   white-space: nowrap;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+      background: #e2e1dc;
+    }
+  }
+  &:active {
     color: ${ink};
     background: #e2e1dc;
   }
@@ -758,7 +795,12 @@ export const textBtn = css`
   text-underline-offset: 3px;
   cursor: pointer;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      color: ${ink};
+    }
+  }
+  &:active:not(:disabled) {
     color: ${ink};
   }
   &:disabled {
@@ -917,7 +959,13 @@ export const cardLink = css`
   font-weight: 600;
   text-decoration: none;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: #ffffff;
+      background: #000000;
+    }
+  }
+  &:active {
     color: #ffffff;
     background: #000000;
   }

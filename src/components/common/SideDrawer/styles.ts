@@ -106,6 +106,7 @@ export const headerTitle = css`
 export const closeBtn = css`
   border: 0;
   background: transparent;
+  color: #1b1d20;
   font-size: 26px;
   line-height: 1;
   cursor: pointer;

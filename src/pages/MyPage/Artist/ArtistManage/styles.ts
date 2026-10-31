@@ -52,7 +52,12 @@ export const primaryBtn = css`
   font-weight: 600;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #1f2937;
+    }
+  }
+  &:active {
     background: #1f2937;
   }
 `;
@@ -153,7 +158,13 @@ export const searchClear = css`
   font-size: 16px;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      background: #f3f4f6;
+      color: #374151;
+    }
+  }
+  &:active {
     background: #f3f4f6;
     color: #374151;
   }

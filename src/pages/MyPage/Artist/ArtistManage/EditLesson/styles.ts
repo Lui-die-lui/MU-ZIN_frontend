@@ -26,7 +26,12 @@ export const backLink = css`
   font-size: 13px;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: #111827;
+    }
+  }
+  &:active {
     color: #111827;
   }
 `;
@@ -185,7 +190,13 @@ export const draftChip = css`
     cursor: pointer;
   }
 
-  button:hover {
+  @media (hover: hover) {
+    button:hover {
+      background: #f3f4f6;
+      color: #111827;
+    }
+  }
+  button:active {
     background: #f3f4f6;
     color: #111827;
   }
@@ -248,7 +259,12 @@ export const smallBtn = (variant: "ghost" | "danger" = "ghost") => css`
   font-weight: 500;
   cursor: pointer;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: ${variant === "danger" ? "#fef2f2" : "#f3f4f6"};
+    }
+  }
+  &:active:not(:disabled) {
     background: ${variant === "danger" ? "#fef2f2" : "#f3f4f6"};
   }
 

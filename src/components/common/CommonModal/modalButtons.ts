@@ -30,7 +30,12 @@ export const modalBtn = (variant: ModalButtonVariant = "secondary") => css`
   cursor: pointer;
   transition: background 0.15s ease;
 
-  &:hover:not(:disabled) {
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: ${FILL[variant].hover};
+    }
+  }
+  &:active:not(:disabled) {
     background: ${FILL[variant].hover};
   }
   &:disabled {

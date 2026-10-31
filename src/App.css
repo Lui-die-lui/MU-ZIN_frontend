@@ -30,6 +30,22 @@ strong {
   font-weight: 600;
 }
 
+/* 모바일에서 누를 때 브라우저가 띄우는 회색·파란 네모(탭 하이라이트) 끄기 - 누른 느낌은 각 버튼의 :active 로 */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 색을 따로 정하지 않은 버튼·링크가 브라우저 기본색(아이폰 버튼 파랑, 링크 파랑·보라)으로 보이지 않게 주변 글자색을 따름 */
+button,
+a {
+  color: inherit;
+}
+
+/* MUI 메뉴·버튼의 물결 효과: 다른 버튼처럼 배경색만 바뀌게 */
+.MuiTouchRipple-root {
+  display: none;
+}
+
 /* 아이폰 노치·홈 표시줄: viewport-fit=cover 로 화면 끝까지 쓰고, 아래 고정 요소는 각자 env(safe-area-inset-bottom) 만큼 띄움
    가로 화면에서는 노치 쪽으로 내용이 들어가지 않게 좌우 여백 (세로 화면·PC 에서는 0) */
 #root {

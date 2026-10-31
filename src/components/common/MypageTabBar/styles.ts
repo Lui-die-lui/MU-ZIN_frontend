@@ -41,7 +41,13 @@ export const tab = (active: boolean) => css`
     background-color 120ms ease,
     opacity 120ms ease;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-1px);
+      background: ${active ? "#eef0f2" : "rgba(0,0,0,0.04)"};
+    }
+  }
+  &:active {
     transform: translateY(-1px);
     background: ${active ? "#eef0f2" : "rgba(0,0,0,0.04)"};
   }

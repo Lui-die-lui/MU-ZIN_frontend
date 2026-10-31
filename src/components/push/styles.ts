@@ -128,7 +128,12 @@ export const textBtn = css`
   font-weight: 500;
   cursor: pointer;
 
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      color: ${ink};
+    }
+  }
+  &:active {
     color: ${ink};
   }
   &:focus-visible {
