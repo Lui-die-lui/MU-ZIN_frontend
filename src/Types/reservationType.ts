@@ -140,7 +140,7 @@ export type ArtistReservationDetailResp = {
   requesterUserId: number;
   requesterUsername: string;
 
-  requestedMsg: string | null;
+  requestMsg: string | null;
 
   canMarkCompleted: boolean;
   myCompletionConfirmed: boolean;
@@ -157,7 +157,6 @@ export type ReservationKeyParams = {
   tab: ReservationTab;
   status?: ReservationStatus;
 };
-
 
 export type CalendarReservationItem = {
   reservationId: number;
