@@ -24,6 +24,7 @@ import { getErrorMessage } from "../../../utils/errorUtils";
 import type { ReservationStatus } from "../../../Types/reservationType";
 import { modalBtn } from "../../../components/common/CommonModal/modalButtons";
 import ReportButton from "../../../components/report/ReportButton";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 
 const sameGroup = (a?: ChatMessage, b?: ChatMessage) =>
   !!a &&
@@ -164,6 +165,7 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
   const [hasMore, setHasMore] = useState(true);
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [text, setText] = useState("");
+  const isMobile = useIsMobile();
   const [error, setError] = useState<string | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -530,7 +532,8 @@ function ChatRoomView({ roomId, onBack }: { roomId: number; onBack: () => void }
               css={s.input}
               rows={1}
               maxLength={CHAT_MESSAGE_MAX}
-              placeholder="메시지 입력 (Shift+Enter 줄바꿈)"
+              // 모바일은 키보드에 Shift+Enter 가 없고, 문구가 길어 줄바꿈되며 가려짐
+              placeholder={isMobile ? "메시지 입력" : "메시지 입력 (Shift+Enter 줄바꿈)"}
               value={text}
               disabled={!room}
               onChange={(e) => setText(e.target.value)}
