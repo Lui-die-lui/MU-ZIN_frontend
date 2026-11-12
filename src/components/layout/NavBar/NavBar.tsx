@@ -55,6 +55,7 @@ function NavBar() {
     // { path: "/", label: "홈" },
     { path: "/lessons", label: "레슨" },
     { path: "/artists", label: "아티스트" },
+    { path: "/assistant", label: "AI 네비게이터" },
   ];
 
   const onLogout = () => {
@@ -150,17 +151,20 @@ function NavBar() {
   // 알림 종류별 이동: 리뷰 알림은 리뷰 관리(받은 리뷰 / 내가 쓴 리뷰), 그 외는 예약 화면
   const goByNoti = (n: NotificationResponse) => {
     if (n.type === "REVIEW_CREATED") navigate("/mypage/reviews?tab=received");
-    else if (n.type === "REVIEW_REPLIED") navigate("/mypage/reviews?tab=written");
-    else if (n.type === "INQUIRY_CREATED") navigate("/mypage/inquiries?tab=received");
-    else if (n.type === "INQUIRY_REPLIED") navigate("/mypage/inquiries?tab=sent");
-    else if (n.type === "INQUIRY_TO_CHAT" && n.refId) navigate(`/mypage/chats/${n.refId}`);
+    else if (n.type === "REVIEW_REPLIED")
+      navigate("/mypage/reviews?tab=written");
+    else if (n.type === "INQUIRY_CREATED")
+      navigate("/mypage/inquiries?tab=received");
+    else if (n.type === "INQUIRY_REPLIED")
+      navigate("/mypage/inquiries?tab=sent");
+    else if (n.type === "INQUIRY_TO_CHAT" && n.refId)
+      navigate(`/mypage/chats/${n.refId}`);
     else if (n.type === "ARTIST_APPROVED" || n.type === "ARTIST_REJECTED") {
       // 심사 결과로 아티스트 상태가 바뀌었으므로 로그인 정보·내 프로필을 새로 받고 이동 (메뉴도 바로 바뀜)
       usePrincipalState.getState().refreshPrincipal();
       qc.invalidateQueries({ queryKey: ["myArtistProfile"] });
       navigate("/mypage/artist");
-    }
-    else navigate("/mypage/reservations");
+    } else navigate("/mypage/reservations");
     if (!n.isRead) markReadM.mutate(n.notificationId);
     notiMenu.onClose();
   };
@@ -183,7 +187,7 @@ function NavBar() {
       : principal?.artistStatus === "PENDING"
         ? [{ label: "아티스트 심사 현황", path: "/mypage/artist/pending" }]
         : [{ label: "아티스트 신청", path: "/mypage/artist/apply" }];
-  
+
   return (
     <s.Header data-scrolled={scrolled}>
       <s.Left>
@@ -212,11 +216,17 @@ function NavBar() {
             {/* 채팅 - 안 읽은 메시지 수 */}
             <s.IconBtn
               onClick={() => navigate("/mypage/chats")}
-              aria-label={chatUnread > 0 ? `채팅, 안 읽은 메시지 ${chatUnread}개` : "채팅"}
+              aria-label={
+                chatUnread > 0 ? `채팅, 안 읽은 메시지 ${chatUnread}개` : "채팅"
+              }
               title="채팅"
             >
               <ChatIcon strokeWidth={1.5} />
-              {chatUnread > 0 && <s.Badge aria-hidden="true">{chatUnread > 99 ? "99+" : chatUnread}</s.Badge>}
+              {chatUnread > 0 && (
+                <s.Badge aria-hidden="true">
+                  {chatUnread > 99 ? "99+" : chatUnread}
+                </s.Badge>
+              )}
             </s.IconBtn>
 
             {/* <s.Btn onClick={onLogout}>로그아웃</s.Btn> */}
@@ -225,7 +235,9 @@ function NavBar() {
             <s.IconBtn
               ref={notiMenu.anchorRef}
               onClick={notiMenu.onOpen}
-              aria-label={unread > 0 ? `알림, 읽지 않은 알림 ${unread}개` : "알림"}
+              aria-label={
+                unread > 0 ? `알림, 읽지 않은 알림 ${unread}개` : "알림"
+              }
               aria-haspopup="menu"
               aria-expanded={notiMenu.open}
               data-open={notiMenu.open}
@@ -297,7 +309,9 @@ function NavBar() {
                 <s.MenuEmpty>
                   <BellIcon strokeWidth={1.5} />
                   <strong>아직 도착한 알림이 없습니다</strong>
-                  <span>예약 진행 상황과 리뷰 소식을 이곳에서 알려드릴게요.</span>
+                  <span>
+                    예약 진행 상황과 리뷰 소식을 이곳에서 알려드릴게요.
+                  </span>
                 </s.MenuEmpty>
               ) : (
                 <s.NotificationList>
@@ -373,26 +387,49 @@ function NavBar() {
                 <div css={s.profileMenuWho}>
                   <div css={s.profileMenuNameRow}>
                     <strong>{principal.username}</strong>
-                    {principal.artistStatus === "APPROVED" && <span css={s.profileMenuBadge}>아티스트</span>}
+                    {principal.artistStatus === "APPROVED" && (
+                      <span css={s.profileMenuBadge}>아티스트</span>
+                    )}
                   </div>
                   <span css={s.profileMenuEmail}>{principal.email}</span>
                 </div>
               </li>
               <Divider sx={{ my: "6px !important" }} />
-              <MenuItem onClick={() => goFromProfile("/mypage")}>마이페이지</MenuItem>
-              <MenuItem onClick={() => goFromProfile("/mypage/reservations")}>내 예약</MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage")}>
+                마이페이지
+              </MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/reservations")}>
+                내 예약
+              </MenuItem>
               {artistMenuItems.map((item) => (
-                <MenuItem key={item.path} onClick={() => goFromProfile(item.path)}>
+                <MenuItem
+                  key={item.path}
+                  onClick={() => goFromProfile(item.path)}
+                >
                   {item.label}
                 </MenuItem>
               ))}
-              <MenuItem onClick={() => goFromProfile("/mypage/chats")}>채팅</MenuItem>
-              <MenuItem onClick={() => goFromProfile("/mypage/inquiries")}>문의</MenuItem>
-              <MenuItem onClick={() => goFromProfile("/mypage/reviews")}>리뷰 관리</MenuItem>
-              <MenuItem onClick={() => goFromProfile("/mypage/follows")}>팔로잉</MenuItem>
-              <MenuItem onClick={() => goFromProfile("/mypage/account")}>계정 설정</MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/chats")}>
+                채팅
+              </MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/inquiries")}>
+                문의
+              </MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/reviews")}>
+                리뷰 관리
+              </MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/follows")}>
+                팔로잉
+              </MenuItem>
+              <MenuItem onClick={() => goFromProfile("/mypage/account")}>
+                계정 설정
+              </MenuItem>
               {isAdmin && <Divider sx={{ my: "6px !important" }} />}
-              {isAdmin && <MenuItem onClick={() => goFromProfile("/admin")}>관리자 페이지로 전환</MenuItem>}
+              {isAdmin && (
+                <MenuItem onClick={() => goFromProfile("/admin")}>
+                  관리자 페이지로 전환
+                </MenuItem>
+              )}
               <Divider sx={{ my: "6px !important" }} />
               <MenuItem
                 onClick={() => {
