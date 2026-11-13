@@ -18,6 +18,7 @@ import {
   markReadReq,
 } from "../../../apis/notification/notificationApis";
 import { useMenuAnchor } from "../../../hooks/useMenuAnchor";
+import { useIsMobile } from "../../../hooks/useIsMobile";
 import type { NotificationResponse } from "../../../Types/notificationTypes";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -50,12 +51,14 @@ function NavBar() {
 
   const { principal } = usePrincipalState();
   const logout = usePrincipalState((s) => s.logout);
+  const isMobile = useIsMobile();
 
   const navItems = [
     // { path: "/", label: "홈" },
     { path: "/lessons", label: "레슨" },
     { path: "/artists", label: "아티스트" },
-    { path: "/assistant", label: "AI 네비게이터" },
+    // 모바일은 폭이 좁아 긴 이름이 채팅 아이콘과 겹침 -> 줄임말
+    { path: "/assistant", label: isMobile ? "AI 네비" : "AI 네비게이터" },
   ];
 
   const onLogout = () => {
