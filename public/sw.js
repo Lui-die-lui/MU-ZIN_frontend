@@ -1,7 +1,8 @@
 /* MU:ZIN 서비스 워커 - 웹 푸시 알림만 처리 (요청 가로채기·캐시 없음: API 응답과 로그인 정보는 저장하지 않음) */
 
 // 알림을 눌렀을 때 열 수 있는 경로 (서버 PushMessage.ALLOWED_URL 과 같은 규칙)
-const ALLOWED = /^\/mypage\/(chats(\/\d+)?|reservations(\/requests)?)$/;
+const ALLOWED =
+  /^\/mypage\/(chats(\/\d+)?|reservations(\/requests)?|reviews(\?tab=(received|written))?|inquiries(\?tab=(received|sent))?|artist)$/;
 const FALLBACK = "/mypage";
 
 self.addEventListener("install", () => self.skipWaiting());
