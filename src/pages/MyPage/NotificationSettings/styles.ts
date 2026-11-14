@@ -107,6 +107,49 @@ export const topicList = css`
   }
 `;
 
+// 알림이 오지 않을 때 확인 목록 (번호 원)
+export const checkList = css`
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: check;
+
+  li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    padding-left: 34px;
+    counter-increment: check;
+  }
+  li::before {
+    content: counter(check);
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: ${mist};
+    color: ${ink};
+    font-size: 12px;
+    font-weight: 600;
+  }
+  b {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 22px;
+  }
+  span {
+    font-size: 13px;
+    line-height: 1.6;
+    color: ${sub};
+  }
+`;
+
 export const note = css`
   margin: 0;
   font-size: 12px;

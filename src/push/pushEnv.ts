@@ -52,3 +52,6 @@ export function detectPushEnv(): PushEnv {
 
 export const notificationPermission = (): NotificationPermission | "unsupported" =>
   "Notification" in window ? Notification.permission : "unsupported";
+
+// 갤럭시 기본 브라우저 - 메뉴 위치와 절전 설정 안내가 달라서 따로 구분
+export const isSamsungBrowser = () => /SamsungBrowser/i.test(navigator.userAgent);

@@ -3,7 +3,7 @@ import { useState } from "react";
 import * as s from "./styles";
 import { usePushStatus } from "./usePushStatus";
 import { usePrincipalState } from "../../stores/usePrincipalState";
-import type { PushPlatform } from "../../push/pushEnv";
+import { isSamsungBrowser, type PushPlatform } from "../../push/pushEnv";
 import { toast } from "../../stores/useToastStore";
 
 // 권한이 거부됐을 때 바꾸는 곳 (다시 요청하지 않고 설정에서 바꾸도록 안내)
@@ -11,6 +11,19 @@ const DENIED_HELP: Record<PushPlatform, string> = {
   ios: "아이폰 설정 > 알림 > MU:ZIN 에서 '알림 허용'을 켜 주세요.",
   android: "브라우저 메뉴(⋮) > 설정 > 사이트 설정 > 알림에서 mu-zin.com 을 허용해 주세요. 휴대폰 설정에서 브라우저나 MU:ZIN 앱 알림이 꺼져 있어도 받을 수 없어요.",
   desktop: "주소창 왼쪽의 사이트 정보 아이콘을 눌러 알림을 '허용'으로 바꿔 주세요. 컴퓨터의 방해 금지·알림 설정도 확인해 주세요.",
+};
+
+const SAMSUNG = isSamsungBrowser();
+const SAMSUNG_DENIED_HELP =
+  "삼성 인터넷 메뉴(≡) > 설정 > 사이트 및 다운로드 > 알림에서 mu-zin.com 을 허용해 주세요. 휴대폰 설정에서 삼성 인터넷 알림이 꺼져 있어도 받을 수 없어요.";
+
+// 브라우저가 응답 없이 멈췄을 때 (대부분 휴대폰이 브라우저의 백그라운드 연결을 막은 경우)
+const timeoutHelp = (platform: PushPlatform) => {
+  if (platform !== "android") return "응답이 없어 알림을 켜지 못했어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.";
+  const app = SAMSUNG ? "삼성 인터넷" : "사용 중인 브라우저";
+  return `응답이 없어 알림을 켜지 못했어요. 휴대폰 설정 > 애플리케이션 > ${app} > 배터리를 '제한 없음'으로 바꾸고, 모바일 데이터에서 백그라운드 데이터를 허용한 뒤 다시 시도해 주세요.${
+    SAMSUNG ? " 비밀 모드에서는 알림을 켤 수 없어요." : ""
+  }`;
 };
 
 type Props = { showOff?: boolean }; // 설정 화면: 끄기 버튼까지
@@ -32,6 +45,7 @@ function PushEnablePanel({ showOff = false }: Props) {
     if (r === "on") toast.success("이 기기에서 알림을 받아요.");
     else if (r === "dismissed") setResult("알림 요청 창이 닫혔어요. 다시 눌러 허용해 주세요.");
     else if (r === "unavailable") setResult("지금은 알림을 켤 수 없어요. 잠시 후 다시 시도해 주세요.");
+    else if (r === "timeout") setResult(timeoutHelp(env.platform));
     else if (r === "error") setResult("알림을 켜지 못했어요. 네트워크를 확인하고 다시 시도해 주세요.");
   };
 
@@ -39,7 +53,7 @@ function PushEnablePanel({ showOff = false }: Props) {
     return (
       <div css={s.status("warn")} role="status">
         <strong>알림이 차단되어 있어요</strong>
-        <p>{DENIED_HELP[env.platform]}</p>
+        <p>{SAMSUNG ? SAMSUNG_DENIED_HELP : DENIED_HELP[env.platform]}</p>
         <button type="button" css={s.secondaryBtn} onClick={() => void refresh()}>
           바꿨어요, 다시 확인
         </button>
