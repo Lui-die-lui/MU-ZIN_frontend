@@ -6,6 +6,7 @@ import AdminArtistApplicationsPage from "../pages/Admin/ArtistApplications/Admin
 import AdminUsersPage from "../pages/Admin/Users/AdminUsersPage";
 import AdminDashboardPage from "../pages/Admin/Dashboard/AdminDashboardPage";
 import AdminModerationPage from "../pages/Admin/Moderation/AdminModerationPage";
+import AdminSupportPage from "../pages/Admin/Support/AdminSupportPage";
 
 // 관리자 페이지 (ROLE_ADMIN) - 마이페이지와 분리된 화면. 처음 들어오면 대시보드로
 function AdminRouter() {
@@ -25,6 +26,7 @@ function AdminRouter() {
         <Route path="moderation" element={<AdminModerationPage />} />
         <Route path="artist-applications" element={<AdminArtistApplicationsPage />} />
         <Route path="users" element={<AdminUsersPage />} />
+        <Route path="support" element={<AdminSupportPage />} />
         <Route path="*" element={<Navigate to="dashboard" replace />} />
       </Route>
     </Routes>

@@ -2,7 +2,7 @@
 
 // 알림을 눌렀을 때 열 수 있는 경로 (서버 PushMessage.ALLOWED_URL 과 같은 규칙)
 const ALLOWED =
-  /^\/mypage\/(chats(\/\d+)?|reservations(\/requests)?|reviews(\?tab=(received|written))?|inquiries(\?tab=(received|sent))?|artist)$/;
+  /^(\/mypage\/(chats(\/\d+)?|reservations(\/requests)?|reviews(\?tab=(received|written))?|inquiries(\?tab=(received|sent))?|artist|support)|\/admin\/support)$/;
 const FALLBACK = "/mypage";
 
 self.addEventListener("install", () => self.skipWaiting());
