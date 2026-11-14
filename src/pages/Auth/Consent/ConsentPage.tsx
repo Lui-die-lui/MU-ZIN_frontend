@@ -9,6 +9,7 @@ import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { toApiError } from "../../../utils/errorUtils";
 import { toast } from "../../../stores/useToastStore";
 import { clearPendingSignup, readPendingSignup } from "./pendingSignup";
+import PageLoader from "../../../components/common/PageLoader/PageLoader";
 
 const PROVIDER_NAMES: Record<string, string> = { google: "구글", naver: "네이버", kakao: "카카오" };
 
@@ -33,7 +34,7 @@ function ConsentPage() {
 
   const signupMode = !!pending && !principal;
   if (!signupMode) {
-    if (!hydrated) return <div style={{ padding: 16 }}>로딩중...</div>;
+    if (!hydrated) return <PageLoader />;
     if (!principal) return <Navigate to="/signin" replace />;
     if (!principal.consentRequired) return <Navigate to="/" replace />;
   }
