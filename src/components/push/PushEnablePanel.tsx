@@ -22,7 +22,7 @@ const timeoutHelp = (platform: PushPlatform) => {
   if (platform !== "android") return "응답이 없어 알림을 켜지 못했어요. 페이지를 새로고침한 뒤 다시 시도해 주세요.";
   const app = SAMSUNG ? "삼성 인터넷" : "사용 중인 브라우저";
   return `응답이 없어 알림을 켜지 못했어요. 휴대폰 설정 > 애플리케이션 > ${app} > 배터리를 '제한 없음'으로 바꾸고, 모바일 데이터에서 백그라운드 데이터를 허용한 뒤 다시 시도해 주세요.${
-    SAMSUNG ? " 비밀 모드에서는 알림을 켤 수 없어요." : ""
+    SAMSUNG ? " 비밀 모드에서는 알림을 켤 수 없어요. 그래도 안 되면 Chrome 에서 MU:ZIN 을 열어 알림을 켜 주세요." : ""
   }`;
 };
 
