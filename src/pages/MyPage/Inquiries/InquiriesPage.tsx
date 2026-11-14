@@ -20,7 +20,7 @@ const STATUS_LABEL: Record<Inquiry["status"], string> = {
   CHAT: "채팅으로 이어짐",
 };
 
-// 마이페이지 > 문의 (?tab=sent|received)
+// 마이페이지 > 레슨 문의 (?tab=sent|received)
 //  - 보낸 문의: 답변 확인, 채팅으로 이어졌으면 채팅방으로
 //  - 받은 문의(승인 아티스트): 답변하기(한 번) 또는 채팅으로 이어가기(14일 동안 대화)
 function InquiriesPage() {
@@ -41,7 +41,7 @@ function InquiriesPage() {
   return (
     <div css={s.page}>
       <div css={s.header}>
-        <h1 css={s.title}>문의</h1>
+        <h1 css={s.title}>레슨 문의</h1>
         <p css={s.desc}>레슨 목록에 없는 레슨도 아티스트에게 문의할 수 있어요. 아티스트는 답변하거나 채팅으로 이어갈 수 있어요.</p>
       </div>
 

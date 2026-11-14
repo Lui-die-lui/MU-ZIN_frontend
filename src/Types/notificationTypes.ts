@@ -1,5 +1,5 @@
 // 알림 타입
-export type NotificationRefType = "RESERVATION" | "CHAT_ROOM" | "REVIEW" | "INQUIRY";
+export type NotificationRefType = "RESERVATION" | "CHAT_ROOM" | "REVIEW" | "INQUIRY" | "SUPPORT";
 
 
 // 예약 알림 타입
@@ -18,7 +18,9 @@ export type NotificationType =
   | "INQUIRY_REPLIED" // 문의 답변
   | "INQUIRY_TO_CHAT" // 문의가 채팅으로 이어짐
   | "ARTIST_APPROVED" // 아티스트 신청 승인
-  | "ARTIST_REJECTED"; // 아티스트 신청 반려
+  | "ARTIST_REJECTED" // 아티스트 신청 반려
+  | "SUPPORT_CREATED" // 새 운영자 문의 (관리자)
+  | "SUPPORT_REPLIED"; // 운영자 문의 답변
 
 
 // 알림 resp 타입

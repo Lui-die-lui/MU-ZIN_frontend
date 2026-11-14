@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import * as layout from "../MyPage/styles";
 import * as s from "../MyPage/SideNavBar/styles";
 import { useModerationCounts, usePendingApplicationCount } from "../../hooks/admin/useAdmin";
+import { useAdminSupportOpenCount } from "../../hooks/support/useSupport";
 import NavBar from "../../components/layout/NavBar/NavBar";
 import Footer from "../../components/layout/Footer/Footer";
 import { outside as footerOutside } from "../../components/layout/Footer/styles";
@@ -13,6 +14,7 @@ function AdminLayout() {
   const { data: pending = 0 } = usePendingApplicationCount(true);
   const { data: counts } = useModerationCounts(true);
   const moderation = (counts?.openFlags ?? 0) + (counts?.openReports ?? 0);
+  const { data: supportOpen = 0 } = useAdminSupportOpenCount(true);
 
   return (
     <>
@@ -48,6 +50,16 @@ function AdminLayout() {
                 {moderation > 0 && (
                   <s.Badge aria-label={`확인할 이상행동·신고 ${moderation}건`}>
                     {moderation}
+                  </s.Badge>
+                )}
+              </s.LinkItem>
+            </s.Item>
+            <s.Item>
+              <s.LinkItem to="/admin/support">
+                <span>운영자 문의</span>
+                {supportOpen > 0 && (
+                  <s.Badge aria-label={`답변 대기 문의 ${supportOpen}건`}>
+                    {supportOpen}
                   </s.Badge>
                 )}
               </s.LinkItem>

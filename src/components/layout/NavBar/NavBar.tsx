@@ -162,6 +162,8 @@ function NavBar() {
       navigate("/mypage/inquiries?tab=sent");
     else if (n.type === "INQUIRY_TO_CHAT" && n.refId)
       navigate(`/mypage/chats/${n.refId}`);
+    else if (n.type === "SUPPORT_CREATED") navigate("/admin/support");
+    else if (n.type === "SUPPORT_REPLIED") navigate("/mypage/support");
     else if (n.type === "ARTIST_APPROVED" || n.type === "ARTIST_REJECTED") {
       // 심사 결과로 아티스트 상태가 바뀌었으므로 로그인 정보·내 프로필을 새로 받고 이동 (메뉴도 바로 바뀜)
       usePrincipalState.getState().refreshPrincipal();
@@ -416,7 +418,7 @@ function NavBar() {
                 채팅
               </MenuItem>
               <MenuItem onClick={() => goFromProfile("/mypage/inquiries")}>
-                문의
+                레슨 문의
               </MenuItem>
               <MenuItem onClick={() => goFromProfile("/mypage/reviews")}>
                 리뷰 관리
@@ -434,6 +436,9 @@ function NavBar() {
                 </MenuItem>
               )}
               <Divider sx={{ my: "6px !important" }} />
+              <MenuItem onClick={() => goFromProfile("/mypage/support")}>
+                운영자 문의
+              </MenuItem>
               <MenuItem
                 onClick={() => {
                   profileMenu.onClose();
