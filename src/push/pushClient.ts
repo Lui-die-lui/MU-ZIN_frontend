@@ -11,6 +11,31 @@ import { detectPushEnv } from "./pushEnv";
  */
 
 const SW_URL = "/sw.js";
+
+// 단계별 제한 시간 - 브라우저나 푸시 서버가 실패도 성공도 없이 멈추는 경우가 있음
+//  (갤럭시 삼성 인터넷: 브라우저가 절전·백그라운드 데이터 제한에 묶이면 구독이 응답 없이 멈춤)
+//  -> "켜는 중"에 갇히지 않고 안내를 띄우도록 PUSH_TIMEOUT 으로 끊음
+const withTimeout = <T>(p: Promise<T>, ms: number): Promise<T> =>
+  new Promise<T>((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error("PUSH_TIMEOUT")), ms);
+    p.then(
+      (v) => {
+        clearTimeout(t);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(t);
+        reject(e);
+      },
+    );
+  });
+
+// 예전 삼성 인터넷 등은 Promise 대신 콜백으로만 결과를 줌 -> 둘 다 받음
+const requestPermission = () =>
+  new Promise<NotificationPermission>((resolve) => {
+    const r = Notification.requestPermission(resolve);
+    if (r) r.then(resolve);
+  });
 const pushPrefKey = (userId: number) => `muzin.push.on.u${userId}`;
 
 type PushConfig = { enabled: boolean; publicKey: string | null };
@@ -71,27 +96,34 @@ const sendToServer = (sub: PushSubscription) => {
 
 // 브라우저 구독을 만들거나(키가 바뀌었으면 새로) 서버에 이 계정으로 등록
 async function ensureSubscribed(): Promise<PushSubscription> {
-  const config = await getPushConfig();
+  const config = await withTimeout(getPushConfig(), 10_000);
   if (!config.enabled || !config.publicKey) throw new Error("PUSH_DISABLED");
   const key = b64ToBytes(config.publicKey);
-  const reg = await register();
-  let sub = await reg.pushManager.getSubscription();
+  const reg = await withTimeout(register(), 15_000);
+  let sub = await withTimeout(reg.pushManager.getSubscription(), 10_000);
   if (sub && !sameKey(sub.options.applicationServerKey, key)) {
-    await sub.unsubscribe(); // 서버 키가 바뀐 예전 구독
+    await withTimeout(sub.unsubscribe(), 10_000); // 서버 키가 바뀐 예전 구독
     sub = null;
   }
-  sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key });
-  await sendToServer(sub);
+  // 브라우저가 푸시 서버에 연결해 구독을 만듦 - 갤럭시에서 멈추는 곳
+  sub ??= await withTimeout(reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key }), 20_000);
+  await withTimeout(sendToServer(sub), 15_000);
   return sub;
 }
 
-export type EnableResult = "on" | "denied" | "dismissed" | "unavailable" | "error";
+export type EnableResult = "on" | "denied" | "dismissed" | "unavailable" | "timeout" | "error";
 
 // "알림 켜기" 버튼에서만 호출 (권한 요청은 사용자가 직접 눌렀을 때만)
 export async function enablePush(userId: number): Promise<EnableResult> {
   if (detectPushEnv().readiness !== "ready") return "unavailable";
   // 아이폰 Safari 는 버튼을 누른 흐름 안에서 바로 요청해야 해서 다른 await 보다 먼저
-  const permission = Notification.permission === "default" ? await Notification.requestPermission() : Notification.permission;
+  //  권한 창은 사용자가 고르는 시간이 필요해 넉넉하게 (창이 안 보이는 "조용한 요청" 이면 여기서 끊김)
+  let permission: NotificationPermission;
+  try {
+    permission = Notification.permission === "default" ? await withTimeout(requestPermission(), 60_000) : Notification.permission;
+  } catch {
+    return "dismissed";
+  }
   if (permission === "denied") return "denied";
   if (permission !== "granted") return "dismissed";
   try {
@@ -99,7 +131,8 @@ export async function enablePush(userId: number): Promise<EnableResult> {
     writePref(userId, true);
     return "on";
   } catch (e) {
-    return e instanceof Error && e.message === "PUSH_DISABLED" ? "unavailable" : "error";
+    const code = e instanceof Error ? e.message : "";
+    return code === "PUSH_DISABLED" ? "unavailable" : code === "PUSH_TIMEOUT" ? "timeout" : "error";
   }
 }
 
@@ -115,9 +148,13 @@ export async function disablePush(userId: number) {
 // 이 브라우저 구독이 지금 계정에 연결돼 있는지
 export async function isPushOnForThisDevice(): Promise<boolean> {
   if (detectPushEnv().readiness !== "ready" || Notification.permission !== "granted") return false;
-  const sub = await (await getRegistration())?.pushManager.getSubscription();
+  const reg = await withTimeout(getRegistration(), 10_000);
+  const sub = await withTimeout(reg?.pushManager.getSubscription() ?? Promise.resolve(null), 10_000);
   if (!sub) return false;
-  const r = await instance.post<ApiRespDto<{ subscribed: boolean }>>("/push/subscriptions/status", { endpoint: sub.endpoint });
+  const r = await withTimeout(
+    instance.post<ApiRespDto<{ subscribed: boolean }>>("/push/subscriptions/status", { endpoint: sub.endpoint }),
+    10_000,
+  );
   return r.data.data.subscribed;
 }
 

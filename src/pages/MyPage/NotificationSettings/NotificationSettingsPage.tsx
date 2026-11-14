@@ -4,7 +4,7 @@ import * as s from "./styles";
 import * as p from "../../../components/push/styles";
 import PushEnablePanel from "../../../components/push/PushEnablePanel";
 import PushGuideModal from "../../../components/push/PushGuideModal";
-import { detectPushEnv } from "../../../push/pushEnv";
+import { detectPushEnv, isSamsungBrowser, type PushPlatform } from "../../../push/pushEnv";
 import { usePrincipalState } from "../../../stores/usePrincipalState";
 import { ackGuide } from "../../../push/pushGuideStorage";
 
@@ -15,6 +15,47 @@ const READINESS_TEXT = {
   insecure: "보안 연결(https)에서만 알림을 켤 수 있어요.",
   unsupported: "이 브라우저는 웹 알림을 지원하지 않아요. 최신 Chrome·Edge·Firefox·삼성 인터넷 등에서 열어 주세요.",
 } as const;
+
+// 알림이 오지 않을 때 확인할 것 - 지금 기기 종류에 맞는 것만 (메뉴 이름은 기기·버전마다 조금 다를 수 있음)
+type Check = { title: string; desc: string };
+const checklist = (platform: PushPlatform, samsung: boolean): Check[] => {
+  const common: Check = {
+    title: "이 기기에서 알림을 켰나요?",
+    desc: "위 '이 기기 알림'에서 '알림을 받고 있어요'가 보이는지 확인해 주세요. 휴대폰·컴퓨터마다 따로 켜야 하고, 로그아웃하면 이 기기 알림도 멈췄다가 같은 계정으로 다시 로그인하면 이어져요.",
+  };
+  if (platform === "ios") {
+    return [
+      common,
+      { title: "홈 화면 아이콘으로 열었나요?", desc: "아이폰은 홈 화면에 추가한 MU:ZIN 아이콘으로 열었을 때만 알림을 받을 수 있어요. Safari 에서 연 화면에서는 오지 않아요." },
+      { title: "아이폰 알림이 켜져 있나요?", desc: "아이폰 설정 > 알림 > MU:ZIN 에서 '알림 허용'을 켜 주세요." },
+      { title: "집중 모드가 켜져 있지 않나요?", desc: "방해 금지·수면 같은 집중 모드에서는 알림이 보이지 않을 수 있어요." },
+    ];
+  }
+  if (platform === "android") {
+    const app = samsung ? "삼성 인터넷" : "사용 중인 브라우저(Chrome 등)";
+    return [
+      common,
+      {
+        title: "브라우저에서 알림을 허용했나요?",
+        desc: samsung
+          ? "삼성 인터넷 메뉴(≡) > 설정 > 사이트 및 다운로드 > 알림에서 mu-zin.com 을 허용해 주세요."
+          : "브라우저 메뉴(⋮) > 설정 > 사이트 설정 > 알림에서 mu-zin.com 을 허용해 주세요.",
+      },
+      { title: "휴대폰에서 브라우저 알림이 켜져 있나요?", desc: `휴대폰 설정 > 애플리케이션 > ${app} > 알림을 켜 주세요.` },
+      {
+        title: "배터리·데이터 제한에 묶여 있지 않나요?",
+        desc: `휴대폰 설정 > 애플리케이션 > ${app} > 배터리를 '제한 없음'으로, 모바일 데이터에서 백그라운드 데이터를 허용해 주세요. 절전 앱 목록에 있거나 데이터 절약 모드가 켜져 있으면 알림이 늦거나 오지 않고, 알림 켜기가 멈출 수도 있어요.`,
+      },
+      ...(samsung ? [{ title: "비밀 모드가 아닌가요?", desc: "삼성 인터넷 비밀 모드에서는 알림을 받을 수 없어요. 일반 모드로 열어 주세요." }] : []),
+    ];
+  }
+  return [
+    common,
+    { title: "브라우저에서 알림을 허용했나요?", desc: "주소창 왼쪽의 사이트 정보 아이콘을 눌러 알림을 '허용'으로 바꿔 주세요." },
+    { title: "컴퓨터 알림이 켜져 있나요?", desc: "컴퓨터의 방해 금지·집중 모드를 끄고, 알림 설정에서 브라우저 알림을 허용해 주세요." },
+    { title: "브라우저가 켜져 있나요?", desc: "컴퓨터에서는 브라우저가 실행 중일 때 알림을 받을 수 있어요." },
+  ];
+};
 
 // 푸시로 보내는 소식 (서버 PushEventListener 와 같게)
 const TOPICS = [
@@ -36,6 +77,7 @@ const BellIcon = () => (
 // 마이페이지 > 알림 설정 - 이 기기 알림 켜기/끄기 + 안내 다시 보기
 function NotificationSettingsPage() {
   const [env] = useState(detectPushEnv);
+  const checks = checklist(env.platform, isSamsungBrowser());
   const userId = usePrincipalState((st) => st.principal?.userId ?? null);
   const [guideOpen, setGuideOpen] = useState(false);
 
@@ -80,14 +122,25 @@ function NotificationSettingsPage() {
         <p css={s.note}>휴대폰 설정이나 네트워크 상태에 따라 알림이 늦거나 보이지 않을 수 있어요.</p>
       </section>
 
-      <section css={[s.card, s.helpRow]}>
+      <section css={s.card}>
         <div>
           <h2 css={s.cardTitle}>알림이 오지 않나요?</h2>
-          <p css={s.cardDesc}>기기별로 알림을 켜는 방법을 다시 볼 수 있어요.</p>
+          <p css={s.cardDesc}>아래를 차례로 확인해 주세요. 지금 쓰는 기기에 맞는 내용만 보여 드려요.</p>
         </div>
-        <button type="button" css={p.secondaryBtn} onClick={() => setGuideOpen(true)}>
-          설정 안내 다시 보기
-        </button>
+        <ol css={s.checkList}>
+          {checks.map((c) => (
+            <li key={c.title}>
+              <b>{c.title}</b>
+              <span>{c.desc}</span>
+            </li>
+          ))}
+        </ol>
+        <div css={s.helpRow}>
+          <p css={s.note}>그래도 오지 않으면 운영자 문의로 기기와 브라우저 이름을 알려 주세요.</p>
+          <button type="button" css={p.secondaryBtn} onClick={() => setGuideOpen(true)}>
+            설정 안내 다시 보기
+          </button>
+        </div>
       </section>
 
       {guideOpen && (
