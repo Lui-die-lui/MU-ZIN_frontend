@@ -21,7 +21,7 @@ export const loadDaumPostcodeScript = (): Promise<void> => {
 
     const script = document.createElement("script");
     script.src =
-      "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+      "https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"; // daumcdn.net 은 2026-11-30 제공 종료
     script.async = true;
     script.onload = () => resolve();
     script.onerror = () =>
