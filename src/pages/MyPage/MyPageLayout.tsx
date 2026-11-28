@@ -28,20 +28,25 @@ function MyPageLayout() {
   const isAdmin = useIsAdmin();
 
   const badgeMap = useMemo(() => {
-    // 내 예약 알림
-    const myReservationUnreadCount = notifications.filter(
-      (notification) =>
-        notification.refType === "RESERVATION" &&
-        notification.type !== "RESERVATION_REQUESTED" &&
-        !notification.isRead,
+    // 아티스트(요청 받은 쪽)에게 오는 알림 = 요청 관리 소속
+    // 새 요청 / 수강생 취소 / 레슨 끝나서 완료 처리 필요 (푸시 링크도 같은 기준으로 /mypage/reservations/requests)
+    const isArtistSide = (type: string) =>
+      type === "RESERVATION_REQUESTED" ||
+      type === "RESERVATION_CANCELED_BY_USER" ||
+      type === "RESERVATION_COMPLETION_PENDING";
+
+    const unreadReservation = notifications.filter(
+      (notification) => notification.refType === "RESERVATION" && !notification.isRead,
+    );
+
+    // 내 예약 알림 (내가 신청한 예약의 확정·거절·취소·만료·완료)
+    const myReservationUnreadCount = unreadReservation.filter(
+      (notification) => !isArtistSide(notification.type),
     ).length;
 
     // 요청 알림
-    const artistRequestUnreadCount = notifications.filter(
-      (notification) =>
-        notification.refType === "RESERVATION" &&
-        notification.type === "RESERVATION_REQUESTED" &&
-        !notification.isRead,
+    const artistRequestUnreadCount = unreadReservation.filter(
+      (notification) => isArtistSide(notification.type),
     ).length;
 
     return {
